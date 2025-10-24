@@ -24,7 +24,7 @@ INSTALLED_APPS = [
     
     #Aplicaciones Propias
     'Applications.Docente',
-    'Applications.Estudiante'
+    'Applications.Estudiante',
     'Applications.Administrador',
 ]
 
