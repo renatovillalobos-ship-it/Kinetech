@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'Applications.Estudiante',
     'Applications.Administrador',
     'Applications.Cuestionario',
+    'Applications.Caso_Clinico',
 ]
 
 MIDDLEWARE = [
