@@ -9,7 +9,7 @@ class Docente(models.Model):
     pais_docente = models.CharField('País Docente', max_length=150, null=False)
     foto_perfil_docente = models.Field()
     correo_docente = models.EmailField('Correo electronico', unique=True)
-    contrasena_docente = models.CharField('Contraseña', max_length=150)
+    #contrasena_docente = models.CharField('Contraseña', max_length=150)
 
 
     def __str__(self):
@@ -22,7 +22,6 @@ class Curso(models.Model):
     fecha_realización_curso = models.DateField('Fecha Realización Curso')
     paralelo_curso= models.CharField('Paralelo Curso')
     curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-    #curso_administrador=models.ForeignKey(Administrador, on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.id) + '-' + self.nombre_del_Curso + '-' + self.fecha_realización_curso
