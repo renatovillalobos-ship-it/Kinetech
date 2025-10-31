@@ -7,7 +7,7 @@ class Docente(models.Model):
     apellido_docente = models.CharField('Apellido Docente', max_length=150, null=False)
     asignatura_docente = models.CharField('Asignatura', max_length=150, null=False)
     pais_docente = models.CharField('País Docente', max_length=150, null=False)
-    foto_perfil_docente = models.Field()
+    #foto_perfil_docente = models.ImageField()
     correo_docente = models.EmailField('Correo electronico', unique=True)
     #contrasena_docente = models.CharField('Contraseña', max_length=150)
 
@@ -20,7 +20,7 @@ class Curso(models.Model):
     nombre_del_Curso = models.CharField('Nombre del Curso', max_length=150, null=False)
     Descripcion_del_curso = models.TextField('Descripción del Curso', max_length=150, null=False)
     fecha_realización_curso = models.DateField('Fecha Realización Curso')
-    paralelo_curso= models.CharField('Paralelo Curso')
+    paralelo_curso= models.CharField('Paralelo Curso', max_length=10, null=False)
     curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
 
     def __str__(self):
