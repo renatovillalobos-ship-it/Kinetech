@@ -7,9 +7,13 @@ class Docente(models.Model):
     apellido_docente = models.CharField('Apellido Docente', max_length=150, null=False)
     asignatura_docente = models.CharField('Asignatura', max_length=150, null=False)
     pais_docente = models.CharField('País Docente', max_length=150, null=False)
-    #foto_perfil_docente = models.ImageField()
+    foto_perfil_docente = models.ImageField(
+    'Foto perfil docente', 
+    upload_to='perfiles/docentes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    null=True, blank=True
+)
     correo_docente = models.EmailField('Correo electronico', unique=True)
-    #contrasena_docente = models.CharField('Contraseña', max_length=150)
+    contrasena_docente = models.CharField('Contraseña', max_length=150)
 
 
     def __str__(self):
@@ -24,6 +28,7 @@ class Curso(models.Model):
     curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.id) + '-' + self.nombre_del_Curso + '-' + self.fecha_realización_curso
+        return str(self.id) + '-' + self.nombre_del_Curso + '-' + str(self.fecha_realización_curso)
+    
 
 

@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -15,6 +16,7 @@ SECRET_KEY = 'django-insecure-sw$_&cx=rdqf$+j(dt57hi6@9#v(ghhnwy-8)lmu#uzay5mk$3
 # Application definition
 
 INSTALLED_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -92,3 +94,30 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+STATICFILES_DIRS = [BASE_DIR / "static"]
+# 🔹 Agrega esta línea:
+STATIC_ROOT = BASE_DIR / "staticfiles"
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Kinetech",
+    "site_header": "Administradora sistema ",
+    "welcome_sign": "Bienvenida al Sistema de Kinetech",
+    "site_brand": "Kinetech",
+    "site_logo": "img/logo_ucn.jpg",
+    "custom_css": "css/admin_custom.css",
+    "custom_js": None,
+}
+
+
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
+# La URL para acceder a esas fotos (debe ser distinta a STATIC_URL)
+MEDIA_URL = '/media/' 
+
+# 2. ARCHIVOS DEL CÓDIGO (STATIC)
+STATIC_URL = '/static/'
+# Directorio donde Django busca tus archivos estáticos
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'static'), 
+]

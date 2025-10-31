@@ -34,5 +34,5 @@ class Respuesta(models.Model):
     ID_pregunta = models.ForeignKey(Preguntas,on_delete=models.CASCADE)
    
     def __str__(self):
-        return self.id + '-' + self.es_correcta + '-' + self.retro
+        return str(self.id)  + '-' + self.retro
 

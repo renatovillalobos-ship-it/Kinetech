@@ -6,10 +6,14 @@ from Applications.Docente.models import Docente
 # Create your models here.
 class Estudiante(models.Model):
     nombre_estudiante= models.CharField('Nombre Estudiante', max_length=150, null=False)
-    apellido_estudiante= models.CharField('Apellido_Estudiante', max_length=150, null=False)
+    apellido_estudiante= models.CharField('Apellido Estudiante', max_length=150, null=False)
     correo_estudiante= models.EmailField('Correo Electronico', unique=True)
-    pais_estudiante = models.CharField('País Docente', max_length=150, null=False)
-    foto_perfil_estudiante= models.Field()
+    pais_estudiante = models.CharField('País Estudiante', max_length=150, null=False)
+    foto_perfil_estudiante= models.ImageField(
+    'Foto perfil estudiante', 
+    upload_to='perfiles/estudiantes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    null=True, blank=True
+)
     contrasena_estudiante = models.CharField('Contraseña Estudiante', max_length=150)
     curso_estudiante= models.ForeignKey(Curso, on_delete=models.CASCADE)
 
