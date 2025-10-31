@@ -70,4 +70,4 @@ STATIC_URL = 'static/'
         - python manage.py runserver
 Al aplicar este comando dentro del Símbolo del Sistema nos dará el URL para poder abrir proyecto dentro del navegador. Se debe de visualizar de esta manera: http://127.0.0.1:8000
 
-luego en ese url cuando escribe http://127.0.0.1:8000/admin debe de dirigirlo al apartado para administrar las tablas dentro del proyecto.
+luego en ese url cuando escribe http://127.0.0.1:8000/admin debe de dirigirlo al apartado del log in en donde debe ingresar el nombre de usuario y la contraseña de su super usuario para así administrar las tablas dentro del proyecto.
