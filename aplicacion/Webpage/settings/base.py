@@ -111,7 +111,8 @@ JAZZMIN_SETTINGS = {
     # Top Menu #
     ############
 
-    # Links to put along the top menu
+
+      # Links to put along the top menu
     "topmenu_links": [
 
         # Url that gets reversed (Permissions can be added)
@@ -150,7 +151,7 @@ MEDIA_URL = '/media/'
 STATIC_URL = '/static/'
 # Directorio donde Django busca tus archivos estáticos
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'static'), 
+    os.path.join(BASE_DIR, 'static'),
 ]
 
 

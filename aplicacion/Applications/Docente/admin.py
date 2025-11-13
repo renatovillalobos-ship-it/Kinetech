@@ -1,16 +1,38 @@
 from django.contrib import admin
+from django.utils.html import format_html
 from .models import *
+
 
 class DocenteAdmin(admin.ModelAdmin):
     list_display=(
         'nombre_docente',
         'apellido_docente',
         'correo_docente',
-        'foto_perfil_docente',
+        'foto_preview',
         'pais_docente',
     )
     search_fields=('nombre_docente',)
-
+    readonly_fields = ('foto_preview',) 
+    fieldsets = (
+        (None, {
+            'fields': (
+                'nombre_docente',
+                'apellido_docente',
+                'correo_docente',
+                'pais_docente', 
+                'foto_perfil_docente',          
+                'foto_preview',   
+            )
+        }),
+    )
+    def foto_preview(self, obj): 
+        if obj.foto_perfil_docente:
+            return format_html(
+                '<img src="{}" width="80" height="80" style="object-fit: cover; border-radius: 50%;" />',
+                obj.foto_perfil_docente.url
+            )
+        return "Sin foto"
+    foto_preview.short_description = "Foto de perfil"
 class CursoAdmin(admin.ModelAdmin):
     list_display=(
         'id',

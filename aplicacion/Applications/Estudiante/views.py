@@ -7,5 +7,5 @@ from django.views.generic import (
 
 )
 
-class Home(TemplateView):
-    template_name='inicio/home.html'
+class Home_estudiante(TemplateView):
+    template_name='estudiante/home_estudiante.html'

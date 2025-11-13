@@ -15,7 +15,7 @@ class Estudiante(models.Model):
     null=True, blank=True
 )
     contrasena_estudiante = models.CharField('Contraseña Estudiante', max_length=150)
-    curso_estudiante= models.ForeignKey(Curso, on_delete=models.CASCADE)
+    curso_estudiante= models.ForeignKey(Curso, on_delete=models.CASCADE, null=True)
 
     class Meta:
         verbose_name='Estudiante'
