@@ -6,32 +6,36 @@ class cuestionario(models.Model):
     Curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
     nombre=models.CharField('Nombre Cuestionario',max_length=100, null=False)
 
+    class Meta:
+        verbose_name='Cuestionario'
+        verbose_name_plural='Cuestionarios'
+        ordering=['id']
+
     def __str__(self):
         return str(self.id)+'-'+self.nombre
-
-
-class Tipo_Respuesta(models.Model):
-    tipo = models.CharField(max_length=50, choices=[('Abierta', 'Abierta'), ('Cerrada', 'Cerrada')])
-
-
-    def __str__(self):
-        return str(self.id) + '-' + self.tipo
-
 
 class Preguntas(models.Model):
     cuestionario = models.ForeignKey(cuestionario, on_delete=models.CASCADE)
     enunciado = models.TextField('Enunciado Pregunta', null=False )
-    tipo_respuesta = models.ForeignKey(Tipo_Respuesta, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name='Pregunta'
+        verbose_name_plural='Preguntas'
+        ordering=['id','enunciado']
     
     def __str__(self):
         return str(self.id)+'-'+self.enunciado
 
 
 class Respuesta(models.Model):
+    ID_pregunta = models.ForeignKey(Preguntas,on_delete=models.CASCADE)
     es_correcta = models.BooleanField(default=False)
     retro = models.TextField('Retroalimentación', null=False)
-    ID_pregunta = models.ForeignKey(Preguntas,on_delete=models.CASCADE)
+
+    class Meta:
+        verbose_name='Respuesta'
+        verbose_name_plural='Respuestas'
+        ordering=['id']
    
     def __str__(self):
         return str(self.id)  + '-' + self.retro

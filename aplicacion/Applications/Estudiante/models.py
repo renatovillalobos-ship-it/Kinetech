@@ -17,8 +17,13 @@ class Estudiante(models.Model):
     contrasena_estudiante = models.CharField('Contraseña Estudiante', max_length=150)
     curso_estudiante= models.ForeignKey(Curso, on_delete=models.CASCADE)
 
+    class Meta:
+        verbose_name='Estudiante'
+        verbose_name_plural='Estudiantes'
+        ordering=['apellido_estudiante','nombre_estudiante']
+
     def __str__(self):
-        return str(self.id)+'-'+ self.nombre_estudiante + '-'+self.apellido_estudiante
+        return self.nombre_estudiante + '-'+self.apellido_estudiante
 
 
 
