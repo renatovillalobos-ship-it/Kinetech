@@ -1,5 +1,11 @@
 from django.db import models
 #from Applications.Administrador.models import Administrador
+from django.core.exceptions import ValidationError
+
+def validacion_imagen(value):
+    if not value.name.lower().endswith('.png'):
+        raise ValidationError("La imagen debe ser formato PNG.")
+
 
 # Create your models here.
 class Docente(models.Model):
@@ -9,7 +15,9 @@ class Docente(models.Model):
     pais_docente = models.CharField('País Docente', max_length=150, null=False)
     foto_perfil_docente = models.ImageField(
     'Foto perfil docente', 
-    upload_to='perfiles/docentes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    upload_to='perfiles/docentes/',
+     # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    validators=[validacion_imagen],
     null=True, blank=True
 )
     correo_docente = models.EmailField('Correo electronico', unique=True)
