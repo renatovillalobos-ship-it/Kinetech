@@ -9,7 +9,8 @@ class PacientesAdmin(admin.ModelAdmin):
         'prevision',
         'ocupacion',
     )
-    search_fields=('nomnbre',)
+    search_fields=('nombre',)
+    list_filter = ('fecha_nacimiento', 'edad','prevision','ocupacion',)
 
 class CasoClinicoAdmin(admin.ModelAdmin):
     list_display=(
