@@ -1,7 +1,21 @@
 from django.urls import path
 from . import views
 
+
+
+
+app_name = 'estudiante'
+
 urlpatterns = [
     path('home_estudiante',views.Home_estudiante.as_view(),name='home_estudiante'),
+    
+    
+    path('perfil_estudiante/', views.Perfil_estudiante.as_view(), name='perfil_estudiante'),
+    path('subir_foto/<int:id>/', views.subir_foto_estudiante, name='subir_foto_estudiante'),
+    path('eliminar_foto/<int:id>/', views.eliminar_foto_estudiante, name='eliminar_foto_estudiante'),
+
+
+
+
 ]
 

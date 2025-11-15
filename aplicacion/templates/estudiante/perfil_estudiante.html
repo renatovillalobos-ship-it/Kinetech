@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %} Perfil Estudiante {% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="card shadow border-0 p-4">
+
+                <div class="text-center">
+
+                    {% if estudiante.foto_perfil_estudiante %}
+                        <img src="{{ estudiante.foto_perfil_estudiante.url }}"
+                             class="rounded-circle shadow"
+                             style="width: 180px; height: 180px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/default.png' %}"
+                             class="rounded-circle shadow"
+                             style="width: 180px; height: 180px; object-fit: cover;">
+                    {% endif %}
+
+                    <h2 class="mt-4 text-primary">
+                        {{ estudiante.nombre_estudiante }} {{ estudiante.apellido_estudiante }}
+                    </h2>
+
+                    
+                    {% if estudiante %}
+                    <!-- SUBIR FOTO -->
+                    <form action="{% url 'estudiante:subir_foto_estudiante' estudiante.id %}"
+                        method="POST" enctype="multipart/form-data" class="mt-3">
+                        {% csrf_token %}
+                        <input type="file" name="foto" required class="form-control mb-2">
+                        <button class="btn btn-primary w-100">Actualizar foto</button>
+                    </form>
+
+                    <!-- ELIMINAR FOTO -->
+                    <form action="{% url 'estudiante:eliminar_foto_estudiante' estudiante.id %}"
+                        method="POST" class="mt-2">
+                        {% csrf_token %}
+                        <button class="btn btn-danger w-100">Eliminar foto</button>
+                    </form>
+
+                    {% else %}
+                        <p class="text-danger mt-3">No se encontró información del estudiante.</p>
+                    {% endif %}
+
+                </div>
+
+                <hr>
+
+                <div class="row mt-3">
+
+                    <div class="col-md-12 mb-3">
+                        <h5 class="text-secondary">Correo Electrónico</h5>
+                        <p class="fw-bold">{{ estudiante.correo_estudiante }}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-secondary">País</h5>
+                        <p class="fw-bold">{{ estudiante.pais_estudiante }}</p>
+                    </div>
+
+                    <div class="col-md-6 mb-3">
+                        <h5 class="text-secondary">Progreso del Curso</h5>
+
+                        {% if progreso %}
+                            <p class="fw-bold">
+                                {{ progreso }}%
+                            </p>
+                        {% else %}
+                            <p class="fw-bold text-muted">
+                                Sin progreso registrado
+                            </p>
+                        {% endif %}
+                    </div>
+                    
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

@@ -23,7 +23,7 @@ from Applications.Docente.views import Login
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Login.as_view(), name='login'),  # Ruta raiz para la vista login
-    path('estudiante/', include('Applications.Estudiante.urls')),
+    path('estudiante/', include(('Applications.Estudiante.urls','estudiante'), namespace='estudiante')),
     path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
 
 ]
