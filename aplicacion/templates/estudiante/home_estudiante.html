@@ -38,7 +38,7 @@
     </nav>
 {% endblock navbar %}
 
-{%block content%}
+{% block content %}
     <!-- Courses Start -->
     <div class="container-xxl py-5">
         <div class="container">
@@ -46,57 +46,56 @@
                 <h6 class="section-title bg-white text-center text-primary px-3">Cursos</h6>
                 <h1 class="mb-5">Bienvenido estudiante</h1>
             </div>
+
+            <div class="row">
+
 {% for curso in cursos %}
-    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-        <div class="course-item bg-light">
-            <div class="position-relative overflow-hidden">
-                <img class="img-fluid" src="{% static 'img/logo_ucn.jpg' %}" alt="Curso Default" style="width: 500px; height: 190px;">
-                <!--Botones de leer mas y entrar-->
-                <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                    <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
-                        data-bs-toggle="modal" data-bs-target="#modal-curso-{{ curso.id }}"
-                        style="border-radius: 30px 0 0 30px;">Leer Más</a>
-                    <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
-                        style="border-radius: 0 30px 30px 0;">
-                        Entrar Ahora
-                    </a>
-                </div>
-                </div>
-            </div>
-            <div class="text-center p-4 pb-0">
-                <h5 class="mb-4">{{ curso.nombre_del_Curso }}</h5>
-            <div class="d-flex border-top">
-                <small class="flex-fill text-center border-end py-2">
-                    <i class="fa fa-user-tie text-primary me-2"></i>{{ curso.curso_docente }}
-                </small>
-                <small class="flex-fill text-center border-end py-2">
-                    <i class="fa fa-clock text-primary me-2"></i>{{ curso.fecha_realización_curso }}
-                </small>
-                <small class="flex-fill text-center py-2">
-                    <i class="fa fa-user text-primary me-2"></i>Paralelo: {{ curso.paralelo_curso }}
-                </small>
+<div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+
+    <div class="course-item bg-light" style="display:flex; flex-direction:column; height:100%;">
+
+        <div class="position-relative overflow-hidden">
+            <img class="img-fluid"
+                 src="{% static 'img/logo_ucn.jpg' %}"
+                 alt="Curso Default"
+                 style="width: 500px; height: 190px;">
+
+            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                   data-bs-toggle="modal" data-bs-target="#modal-curso-{{ curso.id }}"
+                   style="border-radius: 30px 0 0 30px;">Leer Más</a>
+
+                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                   style="border-radius: 0 30px 30px 0;">Entrar Ahora</a>
             </div>
         </div>
-    </div>
 
-<!-- modal curso-->
-    <div class="modal fade" id="modal-curso-{{ curso.id }}" tabindex="-1" aria-labelledby="modalLabel{{ curso.id }}" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header">
-            <h5 class="modal-title" id="modalLabel{{ curso.id }}">{{ curso.nombre_del_Curso }}</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+        <div class="text-center p-4 pb-2">
+            <h5 class="mb-4">{{ curso.nombre_del_Curso }}</h5>
         </div>
-        <div class="modal-body">
-            {{ curso.Descripcion_del_curso }}
-        </div>
-        </div>
-    </div>
-    </div>
 
+        <div class="d-flex border-top mt-auto" style="width: 100%;">
+            <small class="flex-fill text-center border-end py-2">
+                <i class="fa fa-user-tie text-primary me-2"></i>{{ curso.curso_docente }}
+            </small>
+
+            <small class="flex-fill text-center border-end py-2">
+                <i class="fa fa-clock text-primary me-2"></i>{{ curso.fecha_realización_curso }}
+            </small>
+
+            <small class="flex-fill text-center py-2">
+                <i class="fa fa-user text-primary me-2"></i>
+                Paralelo: {{ curso.paralelo_curso }}
+            </small>
+        </div>
+
+    </div> <!-- cierre course-item -->
+
+</div> <!-- cierre col -->
 {% endfor %}
-    <!-- Courses End -->
-    
-{%endblock content%}
 
+</div> <!-- cierre row -->
+</div> <!-- cierre container -->
+</div> <!-- cierre container-xxl -->
 
+{% endblock content %}

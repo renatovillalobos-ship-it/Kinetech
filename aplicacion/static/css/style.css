@@ -432,3 +432,13 @@
     padding-right: 0;
     border-right: none;
 }
+
+.course-item {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.course-item .datos-curso {
+    margin-top: auto; /* Empuja esta parte al fondo */
+}
