@@ -1,0 +1,198 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Progreso Estudiantes{% endblock %}
+
+{% block navbar %}
+<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
+    <a href="{% url 'docente:home_docente' %}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+        <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN" style="height: 70px; margin-right: 10px;">
+        <h2 class="m-0 text-primary">UCN Kinesiologia</h2>
+    </a>
+    <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarCollapse">
+        <div class="navbar-nav ms-auto p-4 p-lg-0">
+            <a href="{% url 'docente:home_docente' %}" class="nav-item nav-link">Cursos</a>
+            <a href="{% url 'docente:perfil_docente' %}" class="nav-item nav-link">Perfil</a>
+            
+            <div class="nav-item dropdown">
+                <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Progreso</a>
+                <div class="dropdown-menu fade-down m-0">
+                    {% for curso in cursos %}
+                        <a href="{% url 'docente:progreso_curso' curso.id %}" class="dropdown-item">
+                            {{ curso.nombre_del_Curso }}
+                        </a>
+                    {% empty %}
+                        <span class="dropdown-item disabled">No hay cursos asignados</span>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <a href="{% url 'login' %}" class="btn btn-warning py-4 px-lg-5 d-none d-lg-block">Cerrar Sesión</a>
+        </div>
+    </div>
+</nav>
+{% endblock %}
+
+{% block content %}
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+            <h6 class="section-title bg-white text-center text-primary px-3">Seguimiento del Aprendizaje</h6>
+            <h1 class="mb-5">Progreso de Estudiantes</h1>
+        </div>
+
+        <div class="row mb-5">
+            <div class="col-12">
+                <h4 class="mb-4 text-primary">Mis Cursos</h4>
+                <div class="row g-4">
+                    {% for curso in cursos %}
+                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
+                        <div class="course-item bg-light shadow-sm rounded">
+                            <div class="position-relative overflow-hidden">
+                                <img class="img-fluid" src="{% static 'img/course-1.jpg' %}" alt="{{ curso.nombre_del_Curso }}">
+                            </div>
+                            <div class="text-center p-4">
+                                <h5 class="mb-3">{{ curso.nombre_del_Curso }}</h5>
+                                <p class="text-muted small">{{ curso.Descripcion_del_curso }}</p>
+                                <div class="d-flex justify-content-between small text-muted mb-3">
+                                    <span><i class="fa fa-calendar me-1"></i>{{ curso.fecha_realización_curso }}</span>
+                                    <span><i class="fa fa-users me-1"></i>{{ curso.paralelo_curso }}</span>
+                                </div>
+                                <a href="{% url 'docente:progreso_curso' curso.id %}" class="btn btn-primary btn-sm">
+                                    Ver Progreso del Curso
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="col-12 text-center">
+                        <div class="alert alert-info">
+                            <i class="fa fa-info-circle me-2"></i>
+                            No tienes cursos asignados.
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        {% if curso_seleccionado %}
+        <div class="row wow fadeInUp" data-wow-delay="0.3s">
+            <div class="col-12">
+                <div class="card shadow border-0">
+                    <div class="card-header bg-primary text-white py-3">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="mb-0">
+                                <i class="fa fa-chart-line me-2"></i>
+                                Progreso - {{ curso_seleccionado.nombre_del_Curso }}
+                            </h4>
+                            <span class="badge bg-light text-primary">Paralelo: {{ curso_seleccionado.paralelo_curso }}</span>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+
+                        {% if progreso_estudiantes %}
+                        <div class="table-responsive">
+                            <table class="table table-hover mb-0">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="text-center">#</th>
+                                        <th>Estudiante</th>
+                                        <th>Correo Electrónico</th>
+                                        <th class="text-center">Progreso General</th>
+                                        <th class="text-center">Último Puntaje</th>
+                                        <th class="text-center">Acciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in progreso_estudiantes %}
+                                    <tr>
+                                        <td class="text-center align-middle">{{ forloop.counter }}</td>
+                                        <td class="align-middle">
+                                            <strong>{{ item.estudiante.apellido_estudiante }}, {{ item.estudiante.nombre_estudiante }}</strong>
+                                        </td>
+                                        <td class="align-middle">
+                                            <small>{{ item.estudiante.correo_estudiante }}</small>
+                                        </td>
+
+                                        <td class="align-middle">
+                                            <div class="d-flex align-items-center">
+                                                <div class="progress flex-grow-1" style="height: 20px;">
+                                                    {% if item.progreso_promedio >= 80 %}
+                                                    <div class="progress-bar bg-success w-100">
+                                                        {{ item.progreso_promedio }}%
+                                                    </div>
+                                                    {% elif item.progreso_promedio >= 60 %}
+                                                    <div class="progress-bar bg-primary w-75">
+                                                        {{ item.progreso_promedio }}%
+                                                    </div>
+                                                    {% elif item.progreso_promedio >= 40 %}
+                                                    <div class="progress-bar bg-warning w-50">
+                                                        {{ item.progreso_promedio }}%
+                                                    </div>
+                                                    {% else %}
+                                                    <div class="progress-bar bg-danger w-25">
+                                                        {{ item.progreso_promedio }}%
+                                                    </div>
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </td>                                     
+                                       
+                                        <td class="text-center align-middle">
+                                            {% with item.progresos.last as ultimo_progreso %}
+                                                {% if ultimo_progreso %}
+                                                <span class="badge bg-primary rounded-pill">
+                                                    {{ ultimo_progreso.puntaje_obtenido_final }}
+                                                </span>
+                                                {% else %}
+                                                <span class="text-muted">N/A</span>
+                                                {% endif %}
+                                            {% endwith %}
+                                        </td>
+                                        <td class="text-center align-middle">
+                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
+                                                <i class="fa fa-chart-bar"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                        {% else %}
+                        <div class="text-center py-5">
+                            <i class="fa fa-users fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay datos de progreso disponibles</h5>
+                            <p class="text-muted">No hay estudiantes inscritos o no se han registrado progresos en este curso.</p>
+                        </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="row">
+            <div class="col-12 text-center">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa fa-line-chart fa-4x text-primary mb-4"></i>
+                        <h4 class="text-primary">Selecciona un Curso</h4>
+                        <p class="text-muted mb-4">Elige uno de tus cursos del catálogo superior para visualizar el progreso detallado de tus estudiantes.</p>
+                        <div class="alert alert-info d-inline-block">
+                            <i class="fa fa-lightbulb me-2"></i>
+                            Los estudiantes están ordenados alfabéticamente por apellido
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

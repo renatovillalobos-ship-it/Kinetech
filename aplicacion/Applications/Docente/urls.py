@@ -17,4 +17,10 @@ urlpatterns = [
     # RUtas para crear cursos automaticamente
 
     path('detalle_curso/<int:id>/', views.detalle_curso, name='detalle_curso'),
+
+
+    #Rutas para progreso docente
+
+    path('progreso/', views.ProgresoDocenteView.as_view(), name='progreso_docente'),
+    path('progreso/<int:curso_id>/', views.ProgresoDocenteView.as_view(), name='progreso_curso'),
 ]
