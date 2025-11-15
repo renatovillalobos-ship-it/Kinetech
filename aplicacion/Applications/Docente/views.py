@@ -69,7 +69,11 @@ def eliminar_foto_docente(request, id):
 
     return redirect('perfil_docente')
 
+#Para el tema de los cursos
 
+def detalle_curso(request, id):
+    curso = get_object_or_404(Curso, id=id)
+    return render(request, 'docente/detalle_curso.html', {'curso': curso})
 
 
 

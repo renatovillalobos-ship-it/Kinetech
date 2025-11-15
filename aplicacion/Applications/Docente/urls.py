@@ -1,6 +1,8 @@
 from django.urls import path
 from . import views
 
+app_name='docente'
+
 urlpatterns = [
     path('home_docente/',views.Home_docente.as_view(),name='home_docente'),
     path('login/',views.Login.as_view(),name='login'),
@@ -12,4 +14,7 @@ urlpatterns = [
     path('subir_foto/<int:id>/', views.subir_foto_docente, name='subir_foto_docente'),
     path('eliminar_foto/<int:id>/', views.eliminar_foto_docente, name='eliminar_foto_docente'),
 
+    # RUtas para crear cursos automaticamente
+
+    path('detalle_curso/<int:id>/', views.detalle_curso, name='detalle_curso'),
 ]

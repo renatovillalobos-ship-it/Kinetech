@@ -24,7 +24,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Login.as_view(), name='login'),  # Ruta raiz para la vista login
     path('estudiante/', include('Applications.Estudiante.urls')),
-    path('docente/', include('Applications.Docente.urls')),
+    path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
+
 ]
 
 if settings.DEBUG:
