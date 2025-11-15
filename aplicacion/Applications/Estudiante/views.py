@@ -33,11 +33,8 @@ class Perfil_estudiante(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Obtener el primer estudiante (o el único)
-        estudiante = Estudiante.objects.filter(
-            correo_estudiante=self.request.user.email
-        ).first()
-
+        # Tomar el PRIMER estudiante temporalmente (para pruebas sin login)
+        estudiante = Estudiante.objects.first()   
         context['estudiante'] = estudiante
 
 
