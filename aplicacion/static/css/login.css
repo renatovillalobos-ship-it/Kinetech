@@ -12,7 +12,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   font-size: 12px;
   background-color: #ecf0f3;
   color: #a0a5a8;
@@ -58,21 +58,44 @@ body {
   align-items: center;
   position: absolute;
   top: 0;
-  width: 600px;
+  width: 500px;
   height: 100%;
   padding: 25px;
   background-color: #ecf0f3;
-  transition: 1.25s;
+  transition: 1s;
 }
 
 .form {
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   flex-direction: column;
   width: 100%;
   height: 100%;
+  /*position:relative;
+  top:0;
+  left: 0;*/
+  padding-top: 180px;
 }
+
+
+
+.form_title.title {
+    /* Mantenemos tus estilos de fuente */
+    font-size: 34px;
+    font-weight: 700;
+    line-height: 3;
+    color: #181818;
+    
+    /* === POSICIONAMIENTO ABSOLUTO === */
+    position: absolute;
+    top: 60px; /* Colocar en la parte superior del a-container */
+    left: 50%; /* Centrar horizontalmente */
+    transform: translateX(-50%); /* Ajustar para un centrado perfecto */
+    z-index: 20; /* Asegurar que esté por encima de todo */
+
+}
+
 .form__icon {
   object-fit: contain;
   width: 30px;
@@ -94,12 +117,15 @@ body {
   letter-spacing: 0.15px;
   border: none;
   outline: none;
-  font-family: "Montserrat", sans-serif;
+  font-family: "Source Sans Pro", sans-serif;
   background-color: #ecf0f3;
   transition: 0.25s ease;
   border-radius: 8px;
   box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
 }
+
+
+
 .form__input:focus {
   box-shadow: inset 4px 4px 4px #d1d9e6, inset -4px -4px 4px #f9f9f9;
 }
@@ -122,6 +148,7 @@ body {
   color: #181818;
 }
 
+
 .description {
   font-size: 14px;
   letter-spacing: 0.25px;
@@ -134,24 +161,27 @@ body {
   height: 50px;
   border-radius: 25px;
   margin-top: 50px;
-  font-weight: 700;
+  font-family: "Source Sans Pro", sans-serif;
+  font-weight: 600;
   font-size: 14px;
   letter-spacing: 1.15px;
-  background-color: #4B70E2;
+  background-color: #2E539A;
   color: #f9f9f9;
   box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
   border: none;
   outline: none;
+  cursor: pointer;
 }
 
 /**/
 .a-container {
   z-index: 100;
-  left: calc(100% - 600px );
+  right:0; /* Empieza en el extremo derecho */
 }
 
+
 .b-container {
-  left: calc(100% - 600px );
+  left: 0; /* Empieza justo después del switch (400px) */
   z-index: 0;
 }
 
@@ -161,12 +191,12 @@ body {
   align-items: center;
   position: absolute;
   top: 0;
-  left: 0;
+  left:100px;
   height: 100%;
-  width: 400px;
+  width: 450px;
   padding: 50px;
   z-index: 200;
-  transition: 1.25s;
+  transition: 1s;
   background-color: #ecf0f3;
   overflow: hidden;
   box-shadow: 4px 4px 10px #d1d9e6, -4px -4px 10px #f9f9f9;
@@ -188,16 +218,19 @@ body {
   width: 300px;
   height: 300px;
 }
+
 .switch__container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  position: absolute;
-  width: 400px;
-  padding: 50px 55px;
-  transition: 1.25s;
-}
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: absolute;
+    width: 500px;
+    padding: 50px 55px;
+    transition: 1s;
+    text-align: center; /* Alinea el texto de los elementos internos (h2, p) */
+}  
+
 .switch__button {
   cursor: pointer;
 }
@@ -212,33 +245,51 @@ body {
   transition: 0.25s;
 }
 
+.switch__container img{
+    width: 150px; /* Ajusta este tamaño según lo necesites */
+    height: 150px; /* Mantiene la proporción de la imagen */
+    margin-bottom: 20px; /* Espacio entre la imagen y el título */
+    /* Otros ajustes de estilo si es necesario, como box-shadow para neomorfismo */
+    border-radius: 50%; /* Si quieres que sea circular, ajusta si el logo no es redondo */
+    box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #f9f9f9; /* Ejemplo neumórfico */
+    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
+}
+
+
+
 /**/
 .is-txr {
-  left: calc(100% - 400px );
-  transition: 1.25s;
+  left: calc(100% - 590px );
+  transition: 1s;
   transform-origin: left;
 }
 
 .is-txl {
-  left: 0;
-  transition: 1.25s;
+  left: 0; 
+  transition: 1s;
   transform-origin: right;
 }
 
 .is-z200 {
   z-index: 200;
-  transition: 1.25s;
+  transition: 1s;
+}
+
+.is-z0 {
+    z-index: 0;
+    transition: 1s;
 }
 
 .is-hidden {
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  transition: 1.25s;
+  transition: 1s;
 }
 
+
 .is-gx {
-  animation: is-gx 1.25s;
+  animation: is-gx 1s;
 }
 
 @keyframes is-gx {
@@ -248,4 +299,136 @@ body {
   30%, 50% {
     width: 500px;
   }
+}
+
+/* Estilos para el Modal de Éxito */
+.modal {
+    position: fixed; /* Fijo en la pantalla */
+    z-index: 1000; /* Por encima de todo lo demás */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto; /* Habilita scroll si el contenido es muy grande */
+    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
+    display: flex; /* Para centrar el contenido */
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #ecf0f3;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
+    text-align: center;
+    max-width: 400px;
+    position: relative;
+    color: #181818; /* Para que el texto sea legible */
+}
+
+.modal-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 20px;
+}
+
+/* Reutilizar el estilo del botón, pero con posible ajuste */
+.modal-content .button {
+    margin-top: 30px;
+    width: 150px; /* Un poco más pequeño si lo deseas */
+}
+
+
+.role-selector {
+    display: flex; /* Para que los botones se vean lado a lado */
+    justify-content: center; /* Centrar los botones horizontalmente */
+    align-items: center;
+    width: 100%; /* Ocupa todo el ancho disponible */
+    margin-bottom: 30px; /* Espacio para separar del primer campo de input */
+    position: absolute;
+    top: 150px; /* Ajusta este valor según la altura de tu h2 y el espaciado deseado */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10; /* Asegura que esté por encima de los inputs */
+}
+
+
+
+.role-btn {
+    width: 150px; /* Ancho fijo para que se vean uniformes */
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 8px; /* Bordes suaves como tus inputs */
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #f9f9f9; /* Estilo neomórfico */
+    margin: 0 10px; /* Espacio entre los dos botones */
+    border: none;       /* Elimina el borde predeterminado del navegador */
+    outline: none;      /* Elimina el contorno/borde negro al hacer clic o enfocar */
+    background: inherit;
+}
+
+.role-btn.is-active {
+    background-color: #2E539A; /* Color de tu marca o un color destacado, ej. UCN */
+    color: #fff;
+    font-weight: bold;
+}
+
+
+#messages-container {
+    /* Posicionamiento ABSOLUTO dentro del a-container */
+    position: absolute; 
+    
+    /* Colocamos el contenedor en la parte superior y centrado */
+    top: 15px; /* Distancia desde la parte superior del a-container */
+    left: 50%; /* Mueve el borde izquierdo al centro del a-container */
+    transform: translateX(-50%); /* Ajusta al propio centro */
+    
+    /* Asegura que esté por encima de todo en ese contenedor */
+    z-index: 9999;; 
+    
+    /* Estilos de caja */
+    width: 90%; 
+    max-width: 450px; 
+    text-align: center;
+}
+
+/* Además, ajusta el UL de Django para que no tenga estilos predeterminados */
+.messages {
+    list-style: none; /* Elimina los puntos de lista */
+    padding: 0;
+    margin: 0;
+}
+
+/* Estilos de las alertas de Django */
+.alert {
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid transparent;
+    border-radius: 8px; /* Bordes suaves */
+    font-weight: 600;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Colores de fondo basados en message.tags (success, error) */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border-color: #c3e6cb;
+}
+
+.alert-error, .alert-danger { /* Django usa 'error', Bootstrap usa 'danger' */
+    background-color: #f8d7da;
+    color: #721c24;
+    border-color: #f5c6cb;
+}
+
+.alert-info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border-color: #bee5eb;
 }
