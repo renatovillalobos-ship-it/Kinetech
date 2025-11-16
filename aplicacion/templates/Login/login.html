@@ -1,131 +1,193 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es" dir="ltr">
-  <head>
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0">
+<head>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <link href="{% static 'https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap'%}" rel="stylesheet">
-  </head>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
+</head>
 
+<body>
 
-  <body>
-    <div class="main">
-      <div class="container a-container" id="a-container">
-       
-        <h2 class="form_title title">Crear cuenta</h2>
-        <div id="messages-container">
-            {% if messages %}
-                <ul class="messages">
-                    {% for message in messages %}
-                        <li class="alert alert-{{ message.tags }}">{{ message }}</li>
-                    {% endfor %}
-                </ul>
-            {% endif %}
-        </div>
-        <div class="role-selector">
-              <button type="button" id="docente-role-btn" class="role-btn is-active">Docente</button>
-              <button type="button" id="estudiante-role-btn" class="role-btn">Estudiante</button>
-        </div>
+<!-- Toggle modo oscuro mejorado -->
+<div class="theme-toggle-container">
+    <span class="theme-label"></span>
+    <label class="theme-switch">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider">
+            <span class="slider-icon sun">☀️</span>
+            <span class="slider-icon moon">🌙</span>
+        </span>
+    </label>
+</div>
 
+<div class="main">
 
-<!--Formulario para crear cuenta docente-->
-        <form class="form" id="docente-form" method="POST" action="{% url 'docente:registro_docente' %}">
-          {% csrf_token %}
-         
-          <input class="form__input" type="text" placeholder="Nombre*" id="nombre_doc" name="nombre_doc" required>
-          <input class="form__input" type="text" placeholder="Apellido*" id="apellido_doc" name="apellido_doc" required>
-          <input class="form__input" type="text" placeholder="Correo electrónico*" id="correo_doc" name="correo_doc" required>
-          <input class="form__input" type="text" placeholder="Asignatura*" id="asigna_doc" name="asigna_doc" required>
+    <!-- CONTENEDOR REGISTRO -->
+    <div class="container a-container" id="a-container">
 
-          <select class="form__input" name="pais_doc" id="pais_doc" required>
-            <option value="" disabled selected>Selecciona tu país</option>
-            <option value="CL">Chile</option>
-            <option value="AR">Argentina</option>
-            <option value="PE">Perú</option>
-            <option value="BR">Brasil</option>
-            <option value="OTRO">Otro</option>
-          </select>
-          <input class="form__input" type="password" placeholder="Contraseña*" id="password_doc" name="password_doc" required>
-          <button class="form__button button submit" id="crear_doc">CREAR CUENTA</button>
-        </form>
-      
+        <form class="form" id="registro-form" method="POST">
+            {% csrf_token %}
 
+            <h2 class="form_title title">Crear cuenta</h2>
 
-
-
-<!--Formulario para crear cuenta estudiante-->
-
-
-        <form class="form is-hidden" id="estudiante-form" method="POST" action="{% url 'estudiante:registro_estudiante' %}">
-          {% csrf_token %}
-         
-          <input class="form__input" type="text" placeholder="Nombre" id="nombre_est" name="nombre_est" required>
-          <input class="form__input" type="text" placeholder="Apellido" id="apellido_est" name="apellido_est" required>
-          <input class="form__input" type="text" placeholder="Correo electrónico (@alumnos.ucn.cl)" id="correo_est" name="correo_est" required>
-          <select class="form__input"  id="pais_est" name="pais_est" required>
-            <option value="" disabled selected>Selecciona tu país</option>
-            <option value="CL">Chile</option>
-            <option value="AR">Argentina</option>
-            <option value="PE">Perú</option>
-            <option value="BR">Brasil</option>
-            <option value="OTRO">Otro</option>
-          </select>
-          <input class="form__input" type="password" placeholder="Contraseña" id="password_est" name="password_est" required>
-          
-
-          <button class="form__button button submit" id="crear_est">CREAR CUENTA</button>
-        </form>
-      </div>
-
-
-<!--Formulario para iniciar sesion-->
-      <div class="container b-container" id="b-container">
-          <form class="form" id="b-form" method="POST" action="{% url 'docente:autenticar' %}">
-            {% csrf_token %} 
-            <h2 class="form_title title">Iniciar sesión</h2>
-        
-            <input class="form__input" type="text" placeholder="Correo electrónico" name="correo" required>
-        
-            <input class="form__input" type="password" placeholder="Contraseña" name="contrasena" required>
-        
-            <div class="form__options-container">
-             <label class="form__checkbox-label">
-                <input type="checkbox" name="remember_me" id="remember_me" class="form__checkbox">
-                Recordarme en este dispositivo
-             </label>
+            <!-- Mensajes -->
+            <div id="messages-container">
+                {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
             </div>
-            <button class="form__button button submit">INGRESAR</button>
-            <div>
-             <a class="form__link" href="#">Olvidé mi contraseña</a>
+
+            <!-- Selección de rol -->
+            <div class="role-selector">
+                <button type="button" id="docente-role-btn" class="role-btn is-active">Docente</button>
+                <button type="button" id="estudiante-role-btn" class="role-btn">Estudiante</button>
             </div>
-          </form>
-      </div>
 
+            <!-- CAMPOS COMPARTIDOS -->
+            <input class="form__input" type="text" name="nombre" placeholder="Nombre*" required>
+            <input class="form__input" type="text" name="apellido" placeholder="Apellido*" required>
+            <input class="form__input" type="email" name="email" placeholder="Correo electrónico*" required>
 
-<!--In al inicio de sesión-->
-      </div>
-      <div class="switch" id="switch-cnt">
-        <div class="switch__circle"></div>
-        <div class="switch_circle switch_circle--t"></div>
-        <div class="switch__container" id="switch-c1">
-          <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN" class="logo-ucn">
-          <h2 class="switch__title title">Acceder</h2>
-         
-          <button class="switch__button button switch-btn" id="ir_inicio_doc">INICIAR SESIÓN</button>
-          <!--<button class="switch__button button switch-btn" id="ir_inicio_est">INICIAR SESIÓN ESTUDIANTE</button>-->
-        </div>
+            <!-- SOLO DOCENTE -->
+            <div id="campos-docente">
+                <input class="form__input" type="text" name="asignatura" placeholder="Asignatura*">
+            </div>
 
+            <!-- SOLO ESTUDIANTE -->
+            <div id="campos-estudiante" style="display:none;"></div>
 
-<!--Ir al formulario de registro-->
-        <div class="switch__container is-hidden" id="switch-c2">
-          <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN" class="logo-ucn">
-          <h2 class="switch__title title">¡BIENVENIDO!</h2>
-          <p class="switch__description description">¿No tienes una cuenta aún? Ingresa tus datos y regístrate!</p>
-          <button class="switch__button button switch-btn">REGISTRARME</button>
-        </div>
-      </div>
+            <!-- País -->
+            <select class="form__input" name="pais" required>
+                <option value="">Selecciona tu país</option>
+                <option value="CL">Chile</option>
+                <option value="AR">Argentina</option>
+                <option value="PE">Perú</option>
+                <option value="BR">Brasil</option>
+                <option value="OTRO">Otro</option>
+            </select>
+
+            <input class="form__input" type="password" name="password" placeholder="Contraseña*" required>
+
+            <button class="form__button button submit" type="submit">CREAR CUENTA</button>
+        </form>
+
     </div>
-    <script src="{% static 'js/login.js' %}"></script>
-  </body>
+
+    <!-- CONTENEDOR LOGIN -->
+    <div class="container b-container" id="b-container">
+
+        <form class="form" id="b-form" method="POST" action="{% url 'docente:autenticar' %}">
+            {% csrf_token %}
+
+            <h2 class="form_title title">Iniciar sesión</h2>
+
+            <input class="form__input" type="text" placeholder="Correo electrónico" name="correo" required>
+            <input class="form__input" type="password" placeholder="Contraseña" name="contrasena" required>
+
+            <label class="form__checkbox-label">
+                <input type="checkbox" name="remember_me" class="form__checkbox">
+                Recordarme en este dispositivo
+            </label>
+
+            <button class="form__button button submit">INGRESAR</button>
+
+            <a class="form__link" href="#">Olvidé mi contraseña</a>
+        </form>
+
+    </div>
+
+    <!-- SWITCH -->
+    <div class="switch" id="switch-cnt">
+        <div class="switch__circle"></div>
+        <div class="switch__circle switch__circle--t"></div>
+
+        <div class="switch__container" id="switch-c1">
+            <img src="{% static 'img/logo_ucn.jpg' %}" class="logo-ucn">
+            <h2 class="switch__title title">Acceder</h2>
+            <button class="switch__button button switch-btn">INICIAR SESIÓN</button>
+        </div>
+
+        <div class="switch__container is-hidden" id="switch-c2">
+            <img src="{% static 'img/logo_ucn.jpg' %}" class="logo-ucn">
+            <h2 class="switch__title title">¡BIENVENIDO!</h2>
+            <p class="switch__description description">¿No tienes una cuenta aún? Regístrate gratis.</p>
+            <button class="switch__button button switch-btn">REGISTRARME</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// CAMBIO DE ROL
+document.getElementById("docente-role-btn").addEventListener("click", function() {
+    this.classList.add("is-active");
+    document.getElementById("estudiante-role-btn").classList.remove("is-active");
+
+    document.getElementById("campos-docente").style.display = "block";
+    document.getElementById("campos-estudiante").style.display = "none";
+});
+
+document.getElementById("estudiante-role-btn").addEventListener("click", function() {
+    this.classList.add("is-active");
+    document.getElementById("docente-role-btn").classList.remove("is-active");
+
+    document.getElementById("campos-docente").style.display = "none";
+    document.getElementById("campos-estudiante").style.display = "block";
+});
+</script>
+
+</body>
 </html>
+
+<script src="{% static 'js/login.js' %}"></script>
+
+<script>
+// CAMBIO DE ROL
+document.getElementById("docente-role-btn").addEventListener("click", function() {
+    this.classList.add("is-active");
+    document.getElementById("estudiante-role-btn").classList.remove("is-active");
+
+    document.getElementById("campos-docente").style.display = "block";
+    document.getElementById("campos-estudiante").style.display = "none";
+});
+
+document.getElementById("estudiante-role-btn").addEventListener("click", function() {
+    this.classList.add("is-active");
+    document.getElementById("docente-role-btn").classList.remove("is-active");
+
+    document.getElementById("campos-docente").style.display = "none";
+    document.getElementById("campos-estudiante").style.display = "block";
+});
+
+// TOGGLE MODO OSCURO - CORREGIDO
+const themeToggle = document.getElementById('theme-toggle');
+const body = document.body;
+
+// Verificar si hay preferencia guardada
+const currentTheme = localStorage.getItem('theme');
+if (currentTheme === 'dark') {
+    body.classList.add('dark-mode');
+    themeToggle.checked = true;
+}
+
+// Evento cuando cambia el checkbox
+themeToggle.addEventListener('change', function() {
+    if (this.checked) {
+        body.classList.add('dark-mode');
+        localStorage.setItem('theme', 'dark');
+        console.log('Modo oscuro activado'); // Para debug
+    } else {
+        body.classList.remove('dark-mode');
+        localStorage.setItem('theme', 'light');
+        console.log('Modo claro activado'); // Para debug
+    }
+});
+</script>
+

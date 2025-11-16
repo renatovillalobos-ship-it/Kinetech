@@ -12,7 +12,7 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Montserrat", sans-serif;
   font-size: 12px;
   background-color: #ecf0f3;
   color: #a0a5a8;
@@ -58,44 +58,21 @@ body {
   align-items: center;
   position: absolute;
   top: 0;
-  width: 500px;
+  width: 600px;
   height: 100%;
   padding: 25px;
   background-color: #ecf0f3;
-  transition: 1s;
+  transition: 1.25s;
 }
 
 .form {
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  /*position:relative;
-  top:0;
-  left: 0;*/
-  padding-top: 180px;
 }
-
-
-
-.form_title.title {
-    /* Mantenemos tus estilos de fuente */
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 3;
-    color: #181818;
-    
-    /* === POSICIONAMIENTO ABSOLUTO === */
-    position: absolute;
-    top: 60px; /* Colocar en la parte superior del a-container */
-    left: 50%; /* Centrar horizontalmente */
-    transform: translateX(-50%); /* Ajustar para un centrado perfecto */
-    z-index: 20; /* Asegurar que esté por encima de todo */
-
-}
-
 .form__icon {
   object-fit: contain;
   width: 30px;
@@ -117,15 +94,12 @@ body {
   letter-spacing: 0.15px;
   border: none;
   outline: none;
-  font-family: "Source Sans Pro", sans-serif;
+  font-family: "Montserrat", sans-serif;
   background-color: #ecf0f3;
   transition: 0.25s ease;
   border-radius: 8px;
   box-shadow: inset 2px 2px 4px #d1d9e6, inset -2px -2px 4px #f9f9f9;
 }
-
-
-
 .form__input:focus {
   box-shadow: inset 4px 4px 4px #d1d9e6, inset -4px -4px 4px #f9f9f9;
 }
@@ -148,7 +122,6 @@ body {
   color: #181818;
 }
 
-
 .description {
   font-size: 14px;
   letter-spacing: 0.25px;
@@ -161,27 +134,24 @@ body {
   height: 50px;
   border-radius: 25px;
   margin-top: 50px;
-  font-family: "Source Sans Pro", sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14px;
   letter-spacing: 1.15px;
-  background-color: #2E539A;
+  background-color: #4B70E2;
   color: #f9f9f9;
   box-shadow: 8px 8px 16px #d1d9e6, -8px -8px 16px #f9f9f9;
   border: none;
   outline: none;
-  cursor: pointer;
 }
 
 /**/
 .a-container {
   z-index: 100;
-  right:0; /* Empieza en el extremo derecho */
+  left: calc(100% - 600px );
 }
 
-
 .b-container {
-  left: 0; /* Empieza justo después del switch (400px) */
+  left: calc(100% - 600px );
   z-index: 0;
 }
 
@@ -191,12 +161,12 @@ body {
   align-items: center;
   position: absolute;
   top: 0;
-  left:100px;
+  left: 0;
   height: 100%;
-  width: 450px;
+  width: 400px;
   padding: 50px;
   z-index: 200;
-  transition: 1s;
+  transition: 1.25s;
   background-color: #ecf0f3;
   overflow: hidden;
   box-shadow: 4px 4px 10px #d1d9e6, -4px -4px 10px #f9f9f9;
@@ -218,19 +188,16 @@ body {
   width: 300px;
   height: 300px;
 }
-
 .switch__container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    position: absolute;
-    width: 500px;
-    padding: 50px 55px;
-    transition: 1s;
-    text-align: center; /* Alinea el texto de los elementos internos (h2, p) */
-}  
-
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: absolute;
+  width: 400px;
+  padding: 50px 55px;
+  transition: 1.25s;
+}
 .switch__button {
   cursor: pointer;
 }
@@ -245,51 +212,33 @@ body {
   transition: 0.25s;
 }
 
-.switch__container img{
-    width: 150px; /* Ajusta este tamaño según lo necesites */
-    height: 150px; /* Mantiene la proporción de la imagen */
-    margin-bottom: 20px; /* Espacio entre la imagen y el título */
-    /* Otros ajustes de estilo si es necesario, como box-shadow para neomorfismo */
-    border-radius: 50%; /* Si quieres que sea circular, ajusta si el logo no es redondo */
-    box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #f9f9f9; /* Ejemplo neumórfico */
-    object-fit: cover; /* Asegura que la imagen cubra el área sin distorsionarse */
-}
-
-
-
 /**/
 .is-txr {
-  left: calc(100% - 590px );
-  transition: 1s;
+  left: calc(100% - 400px );
+  transition: 1.25s;
   transform-origin: left;
 }
 
 .is-txl {
-  left: 0; 
-  transition: 1s;
+  left: 0;
+  transition: 1.25s;
   transform-origin: right;
 }
 
 .is-z200 {
   z-index: 200;
-  transition: 1s;
-}
-
-.is-z0 {
-    z-index: 0;
-    transition: 1s;
+  transition: 1.25s;
 }
 
 .is-hidden {
   visibility: hidden;
   opacity: 0;
   position: absolute;
-  transition: 1s;
+  transition: 1.25s;
 }
 
-
 .is-gx {
-  animation: is-gx 1s;
+  animation: is-gx 1.25s;
 }
 
 @keyframes is-gx {
@@ -301,134 +250,320 @@ body {
   }
 }
 
-/* Estilos para el Modal de Éxito */
-.modal {
-    position: fixed; /* Fijo en la pantalla */
-    z-index: 1000; /* Por encima de todo lo demás */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto; /* Habilita scroll si el contenido es muy grande */
-    background-color: rgba(0,0,0,0.4); /* Fondo semi-transparente */
-    display: flex; /* Para centrar el contenido */
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background-color: #ecf0f3;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 10px 10px 10px #d1d9e6, -10px -10px 10px #f9f9f9;
-    text-align: center;
-    max-width: 400px;
-    position: relative;
-    color: #181818; /* Para que el texto sea legible */
-}
-
-.modal-title {
-    font-size: 24px;
-    font-weight: 700;
-    margin-bottom: 20px;
-}
-
-/* Reutilizar el estilo del botón, pero con posible ajuste */
-.modal-content .button {
-    margin-top: 30px;
-    width: 150px; /* Un poco más pequeño si lo deseas */
-}
-
-
+/* === SELECTOR DE ROL MEJORADO === */
 .role-selector {
-    display: flex; /* Para que los botones se vean lado a lado */
-    justify-content: center; /* Centrar los botones horizontalmente */
-    align-items: center;
-    width: 100%; /* Ocupa todo el ancho disponible */
-    margin-bottom: 30px; /* Espacio para separar del primer campo de input */
-    position: absolute;
-    top: 150px; /* Ajusta este valor según la altura de tu h2 y el espaciado deseado */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 10; /* Asegura que esté por encima de los inputs */
+    display: flex;
+    justify-content: center;
+    width: 90%;
+    max-width: 350px;
+    margin: 0 auto 30px auto;
+    background-color: #ecf0f3;
+    padding: 6px;
+    border-radius: 25px;
+    box-shadow: inset 2px 2px 5px #d1d9e6, inset -2px -2px 5px #f9f9f9;
 }
-
-
 
 .role-btn {
-    width: 150px; /* Ancho fijo para que se vean uniformes */
-    height: 40px;
+    flex: 1;
+    height: 45px;
     display: flex;
     justify-content: center;
     align-items: center;
-    border-radius: 8px; /* Bordes suaves como tus inputs */
+    border-radius: 20px;
     font-weight: 600;
     font-size: 14px;
     cursor: pointer;
-    box-shadow: 4px 4px 8px #d1d9e6, -4px -4px 8px #f9f9f9; /* Estilo neomórfico */
-    margin: 0 10px; /* Espacio entre los dos botones */
-    border: none;       /* Elimina el borde predeterminado del navegador */
-    outline: none;      /* Elimina el contorno/borde negro al hacer clic o enfocar */
-    background: inherit;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: #a0a5a8;
+    transition: all 0.3s ease;
+    font-family: "Montserrat", sans-serif;
 }
 
 .role-btn.is-active {
-    background-color: #2E539A; /* Color de tu marca o un color destacado, ej. UCN */
+    background: linear-gradient(145deg, #4B70E2, #3a5bc7);
     color: #fff;
-    font-weight: bold;
+    box-shadow: 3px 3px 6px #d1d9e6, -3px -3px 6px #f9f9f9;
 }
 
-
-#messages-container {
-    /* Posicionamiento ABSOLUTO dentro del a-container */
-    position: absolute; 
-    
-    /* Colocamos el contenedor en la parte superior y centrado */
-    top: 15px; /* Distancia desde la parte superior del a-container */
-    left: 50%; /* Mueve el borde izquierdo al centro del a-container */
-    transform: translateX(-50%); /* Ajusta al propio centro */
-    
-    /* Asegura que esté por encima de todo en ese contenedor */
-    z-index: 9999;; 
-    
-    /* Estilos de caja */
-    width: 90%; 
-    max-width: 450px; 
-    text-align: center;
+.role-btn:hover:not(.is-active) {
+    color: #4B70E2;
 }
 
-/* Además, ajusta el UL de Django para que no tenga estilos predeterminados */
-.messages {
-    list-style: none; /* Elimina los puntos de lista */
-    padding: 0;
-    margin: 0;
+/* Logo circular */
+.switch__container img,
+.logo-ucn {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%; /* Esto lo hace circular */
+    object-fit: cover;
+    box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #f9f9f9;
+    margin-bottom: 20px;
 }
 
-/* Estilos de las alertas de Django */
-.alert {
-    padding: 15px;
-    margin-bottom: 10px;
-    border: 1px solid transparent;
-    border-radius: 8px; /* Bordes suaves */
+body {
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Montserrat", sans-serif;
+  font-size: 12px;
+  background-color: #ecf0f353;
+  color: #a0a5a8;
+  
+  /* Ruta correcta para CSS */
+  background-image: url('../img/campus_guayacan.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+/* Overlay semi-transparente */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(160, 165, 168, 0.50); /* Cambiado de 0.85 a 0.50 */
+  z-index: -1;
+}
+
+/* === MODO OSCURO === */
+:root {
+    /* Colores claros (por defecto) */
+    --bg-main: #ecf0f3;
+    --bg-input: #ecf0f3;
+    --shadow-dark: #d1d9e6;
+    --shadow-light: #f9f9f9;
+    --text-primary: #181818;
+    --text-secondary: #a0a5a8;
+}
+
+body.dark-mode {
+    /* Colores oscuros */
+    --bg-main: #1e293b;
+    --bg-input: #0f172a;
+    --shadow-dark: #0a0f1a;
+    --shadow-light: #2d3b52;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+}
+
+/* Contenedor del toggle - CENTRADO */
+.theme-toggle-container {
+    position: fixed;
+    top: 30px;
+    left: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center; /* Añadido para centrar */
+    z-index: 9999;
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 12px; /* Reducido porque no hay texto */
+    border-radius: 50px;
+    box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
+    width: 84px; /* Ancho fijo para que quede perfecto */
+    height: 54px; /* Alto fijo */
+}
+
+body.dark-mode .theme-toggle-container {
+    background-color: rgba(30, 41, 59, 0.95);
+}
+
+.theme-label {
+    font-family: "Montserrat", sans-serif;
+    font-size: 14px;
     font-weight: 600;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    color: #181818;
+    user-select: none;
 }
 
-/* Colores de fondo basados en message.tags (success, error) */
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border-color: #c3e6cb;
+body.dark-mode .theme-label {
+    color: #f1f5f9;
 }
 
-.alert-error, .alert-danger { /* Django usa 'error', Bootstrap usa 'danger' */
-    background-color: #f8d7da;
-    color: #721c24;
-    border-color: #f5c6cb;
+/* Switch deslizante */
+.theme-switch {
+    position: relative;
+    display: inline-block;
+    width: 60px;
+    height: 30px;
+    cursor: pointer;
 }
 
-.alert-info {
-    background-color: #d1ecf1;
-    color: #0c5460;
-    border-color: #bee5eb;
+.theme-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #4B70E2;
+    border-radius: 30px;
+    transition: 0.4s;
+    box-shadow: inset 2px 2px 4px rgba(0,0,0,0.2);
+    display: flex;
+    align-items: center;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 24px;
+    width: 24px;
+    left: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    z-index: 2;
+}
+
+input:checked + .slider {
+    background-color: #4B70E2;
+}
+
+input:checked + .slider:before {
+    transform: translateX(30px);
+}
+
+/* Iconos del sol y luna - INVERTIDOS */
+.slider-icon {
+    position: absolute;
+    font-size: 16px;
+    transition: opacity 0.3s;
+    pointer-events: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    line-height: 1;
+}
+
+/* Sol a la DERECHA cuando el botón está a la izquierda (modo claro) */
+.sun {
+    right: 5px;
+    opacity: 1;
+}
+
+/* Luna a la IZQUIERDA cuando el botón está a la derecha (modo oscuro) */
+.moon {
+    left: 5px;
+    opacity: 0;
+}
+
+/* Cuando se activa el modo oscuro */
+input:checked ~ .slider .sun {
+    opacity: 0;
+}
+
+input:checked ~ .slider .moon {
+    opacity: 1;
+}
+
+/* Hover effect */
+.theme-toggle-container:hover {
+    box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Overlay para modo oscuro */
+body.dark-mode::before {
+    background-color: rgba(15, 23, 42, 0.75) !important;
+}
+
+/* POR DEFECTO TODO ES BLANCO (NO APLICAR VARIABLES AÚN) */
+/* Solo aplicamos las variables cuando dark-mode está activo */
+
+body.dark-mode .main {
+    background-color: var(--bg-main) !important;
+    box-shadow: 10px 10px 10px var(--shadow-dark), -10px -10px 10px var(--shadow-light) !important;
+}
+
+body.dark-mode .container {
+    background-color: var(--bg-main) !important;
+}
+
+body.dark-mode .form__input, 
+body.dark-mode .form__input option,
+body.dark-mode select.form__input {
+    background-color: var(--bg-input) !important;
+    color: var(--text-primary) !important;
+    box-shadow: inset 2px 2px 4px var(--shadow-dark), inset -2px -2px 4px var(--shadow-light) !important;
+}
+
+body.dark-mode .form__input::placeholder {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .form__input:focus {
+    box-shadow: inset 4px 4px 4px var(--shadow-dark), inset -4px -4px 4px var(--shadow-light) !important;
+}
+
+body.dark-mode .title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .description {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .form__link {
+    color: var(--text-primary) !important;
+    border-bottom: 1px solid var(--text-secondary) !important;
+}
+
+body.dark-mode .switch {
+    background-color: var(--bg-main) !important;
+    box-shadow: 4px 4px 10px var(--shadow-dark), -4px -4px 10px var(--shadow-light) !important;
+}
+
+body.dark-mode .switch__circle {
+    background-color: var(--bg-main) !important;
+    box-shadow: inset 8px 8px 12px var(--shadow-dark), inset -8px -8px 12px var(--shadow-light) !important;
+}
+
+body.dark-mode .switch__button:hover {
+    box-shadow: 6px 6px 10px var(--shadow-dark), -6px -6px 10px var(--shadow-light) !important;
+}
+
+body.dark-mode .switch__button:active, 
+body.dark-mode .switch__button:focus {
+    box-shadow: 2px 2px 6px var(--shadow-dark), -2px -2px 6px var(--shadow-light) !important;
+}
+
+body.dark-mode .role-selector {
+    background-color: var(--bg-main) !important;
+    box-shadow: inset 2px 2px 5px var(--shadow-dark), inset -2px -2px 5px var(--shadow-light) !important;
+}
+
+body.dark-mode .role-btn {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .role-btn.is-active {
+    box-shadow: 3px 3px 6px var(--shadow-dark), -3px -3px 6px var(--shadow-light) !important;
+}
+
+body.dark-mode .logo-ucn, 
+body.dark-mode .switch__container img {
+    box-shadow: 6px 6px 12px var(--shadow-dark), -6px -6px 12px var(--shadow-light) !important;
+}
+
+body.dark-mode .button {
+    box-shadow: 8px 8px 16px var(--shadow-dark), -8px -8px 16px var(--shadow-light) !important;
+}
+
+body.dark-mode .form__checkbox-label {
+    color: var(--text-primary);
 }

@@ -63,42 +63,42 @@ let mainF = (e) => {
 window.addEventListener("load", mainF);
 
 
-// 1. Elementos del Switch de Rol (Asegúrate de que estos IDs existan en login.html)
-const estudianteRoleBtn = document.getElementById("estudiante-role-btn");
-const docenteRoleBtn = document.getElementById("docente-role-btn");  
+    // 1. Elementos del Switch de Rol (Asegúrate de que estos IDs existan en login.html)
+    const estudianteRoleBtn = document.getElementById("estudiante-role-btn");
+    const docenteRoleBtn = document.getElementById("docente-role-btn");  
 
 
-const estudianteForm = document.getElementById("estudiante-form");
-const docenteForm = document.getElementById("docente-form");    
+    const estudianteForm = document.getElementById("estudiante-form");
+    const docenteForm = document.getElementById("docente-form");    
 
 
 
 
-// 2. Lógica para alternar la visibilidad de los formularios
-if (docenteRoleBtn && estudianteRoleBtn && docenteForm && estudianteForm) {
-   
-    // Al hacer clic en el botón DOCENTE:
-    docenteRoleBtn.addEventListener("click", () => {
-        // Muestra el formulario de Docente
-        docenteForm.classList.remove("is-hidden");
-        // Oculta el formulario de Estudiante
-        estudianteForm.classList.add("is-hidden");
-       
-        // Opcional: Manejo de estilos para resaltar el botón activo
-        docenteRoleBtn.classList.add("is-active");
-        estudianteRoleBtn.classList.remove("is-active");
-    });
+    // 2. Lógica para alternar la visibilidad de los formularios
+    if (docenteRoleBtn && estudianteRoleBtn && docenteForm && estudianteForm) {
+    
+        // Al hacer clic en el botón DOCENTE:
+        docenteRoleBtn.addEventListener("click", () => {
+            // Muestra el formulario de Docente
+            docenteForm.classList.remove("is-hidden");
+            // Oculta el formulario de Estudiante
+            estudianteForm.classList.add("is-hidden");
+        
+            // Opcional: Manejo de estilos para resaltar el botón activo
+            docenteRoleBtn.classList.add("is-active");
+            estudianteRoleBtn.classList.remove("is-active");
+        });
 
 
-    // Al hacer clic en el botón ESTUDIANTE:
-    estudianteRoleBtn.addEventListener("click", () => {
-        // Muestra el formulario de Estudiante
-        estudianteForm.classList.remove("is-hidden");
-        // Oculta el formulario de Docente
-        docenteForm.classList.add("is-hidden");
-       
-        // Opcional: Manejo de estilos para resaltar el botón activo
-        docenteRoleBtn.classList.remove("is-active");
-        estudianteRoleBtn.classList.add("is-active");
-    });
-}
+        // Al hacer clic en el botón ESTUDIANTE:
+        estudianteRoleBtn.addEventListener("click", () => {
+            // Muestra el formulario de Estudiante
+            estudianteForm.classList.remove("is-hidden");
+            // Oculta el formulario de Docente
+            docenteForm.classList.add("is-hidden");
+        
+            // Opcional: Manejo de estilos para resaltar el botón activo
+            docenteRoleBtn.classList.remove("is-active");
+            estudianteRoleBtn.classList.add("is-active");
+        });
+    }
