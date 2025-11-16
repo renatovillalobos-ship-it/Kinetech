@@ -43,103 +43,125 @@
 
 {% block content %}
 
-     <!-- Courses Start -->
-    <div class="container-xxl py-5">
-        <div class="container">
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-                <h6 class="section-title bg-white text-center text-primary px-3">Cursos</h6>
-                <h1 class="mb-5">Bienvenido docente</h1>
+<!-- HERO AREA -->
+<div class="container-xxl py-5 bg-light mb-5 rounded-4 shadow-sm">
+    <div class="container py-4">
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+                <h1 class="fw-bold text-primary mb-3">Bienvenido Docente</h1>
+                <p class="text-secondary fs-5 mb-3">
+                    Acceda a cursos, revisa el progreso estudiantil y crea casos clínicos
+                </p>
+                <p class="text-muted">
+                    Facultad de Medicina • Escuela de Kinesiología • Universidad Católica del Norte
+                </p>
             </div>
-            <div class="row g-4 justify-content-center">
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{%static 'img/course-1.jpg'%}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">Insertar curso existente desde la base de datos</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>Insertar nombre de profesor desde base de dato</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>Tiempo dedicado?</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Estudiantes maximos?</small>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.3s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{%static 'img/course-2.jpg'%}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">Web Design & Development Course for Beginners</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>Insertar nombre de profesor desde base de dato</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>Tiempo dedicado?</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Estudiantes maximos?</small>                        </div>
-                    </div>
-                </div>
-                <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.5s">
-                    <div class="course-item bg-light">
-                        <div class="position-relative overflow-hidden">
-                            <img class="img-fluid" src="{%static 'img/course-3.jpg'%}" alt="">
-                            <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end" style="border-radius: 30px 0 0 30px;">Read More</a>
-                                <a href="#" class="flex-shrink-0 btn btn-sm btn-primary px-3" style="border-radius: 0 30px 30px 0;">Join Now</a>
-                            </div>
-                        </div>
-                        <div class="text-center p-4 pb-0">
-                            <div class="mb-3">
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small class="fa fa-star text-primary"></small>
-                                <small>(123)</small>
-                            </div>
-                            <h5 class="mb-4">Insertar desde base de datos</h5>
-                        </div>
-                        <div class="d-flex border-top">
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-user-tie text-primary me-2"></i>Insertar nombre de profesor desde base de dato</small>
-                            <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>Tiempo dedicado?</small>
-                            <small class="flex-fill text-center py-2"><i class="fa fa-user text-primary me-2"></i>Estudiantes maximos?</small>                        </div>
-                    </div>
-                </div>
+
+            <div class="col-lg-5 text-center">
+                <img src="{% static 'img/ucn_escudo.png' %}" class="img-fluid" style="max-height: 180px;">
             </div>
+
         </div>
     </div>
+</div>
 
+  <!-- COURSES TITLE -->
+<div class="container text-center mb-5">
+    <h6 class="section-title bg-white text-primary px-3">Cursos</h6>
+    <h1 class="mb-3">Cursos Disponibles</h1>
+    <p class="text-secondary fs-5">
+        Selecciona un curso para editar contenido.
+    </p>
+</div>
+
+
+<!-- COURSES GRID -->
+<div class="container-xxl py-3">
+    <div class="container">
+        <div class="row">
+
+            {% for curso in cursos %}
+            <div class="col-lg-4 col-md-6 mb-4 wow fadeInUp" data-wow-delay="0.1s">
+
+                <div class="course-item bg-light shadow-sm rounded-3" style="display:flex; flex-direction:column; height:100%; position:relative;">
+
+                    <!-- Badge -->
+                    <span class="badge bg-primary text-white position-absolute m-3 px-3 py-2"
+                          style="border-radius: 20px; font-size: 0.9rem;">
+                        UCN · Curso
+                    </span>
+
+                    <div class="position-relative overflow-hidden rounded-top">
+                        <img class="img-fluid"
+                             src="{% static 'img/carousel-2.jpg' %}"
+                             alt="Curso Default"
+                             style="width: 100%; height: 190px; object-fit: cover;">
+
+                        <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
+                            <a href="#"
+                               class="flex-shrink-0 btn btn-sm btn-primary px-3 border-end"
+                               data-bs-toggle="modal" data-bs-target="#modal-curso-{{ curso.id }}"
+                               style="border-radius: 30px 0 0 30px;">Leer Más</a>
+
+                            <a href="#"
+                               class="flex-shrink-0 btn btn-sm btn-primary px-3"
+                               style="border-radius: 0 30px 30px 0;">Entrar Ahora</a>
+                        </div>
+                    </div>
+
+                    <div class="text-center p-4 pb-2">
+                        <h5 class="mb-4">{{curso.nombre_del_Curso }}</h5>
+                    </div>
+
+                    <div class="d-flex border-top mt-auto" style="width: 100%;">
+                        <small class="flex-fill text-center border-end py-2">
+                            <i class="fa fa-user-tie text-primary me-2"></i>{{ curso.curso_docente }}
+                        </small>
+
+                        <small class="flex-fill text-center border-end py-2">
+                            <i class="fa fa-clock text-primary me-2"></i>{{ curso.fecha_realización_curso }}
+                        </small>
+
+                        <small class="flex-fill text-center py-2">
+                            <i class="fa fa-user text-primary me-2"></i> Paralelo: {{ curso.paralelo_curso }}
+                        </small>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal fade" id="modal-curso-{{ curso.id }}" tabindex="-1" aria-labelledby="modalLabel{{ curso.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel{{ curso.id }}">
+                    {{ curso.nombre_del_Curso }}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+                {{ curso.Descripcion_del_curso|default:"Este curso no cuenta con una descripción disponible." }}
+            </div>
+
+        </div>
+    </div>
+</div>
+            {% endfor %}
+
+        </div>
+    </div>
+</div>
+
+
+
+<!-- FOOTER -->
 <footer class="bg-white py-4 mt-5 shadow-sm">
     <div class="container text-center">
         <p class="mb-1 text-secondary">© 2025 Facultad de Medicina - Universidad Católica del Norte</p>
-        <small class="text-muted">Escuela de Kinesiología | Portal Estudiantes</small>
+        <small class="text-muted">Escuela de Kinesiología | Portal Docentes</small>
     </div>
 </footer>
-    <!-- Courses End -->
-{%endblock content%}
 
+{% endblock content %}
