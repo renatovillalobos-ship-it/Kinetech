@@ -6,6 +6,11 @@ app_name='docente'
 urlpatterns = [
     path('home_docente/',views.Home_docente.as_view(),name='home_docente'),
     path('login/',views.Login.as_view(),name='login'),
+    path('registro_docente/', views.RegistroDocente.as_view(), name='registro_docente'),
+    path('autenticar/', views.AutenticarUsuario.as_view(), name='autenticar'),
+    path('logout/', views.CerrarSesion.as_view(), name='logout'),
+    path('home_docente', views.HomeDocente.as_view(), name='home_docente'),
+
 
      # Rutas para la foto del docente
     
