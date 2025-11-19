@@ -24,8 +24,8 @@
                 
                 <div class="dropdown-menu fade-down m-0">
                     {% for curso in cursos %}
-                        <a href="{% url 'docente:detalle_curso' curso.id %}" class="dropdown-item">
-                            {{ curso.nombre }}
+                        <a href="{% url 'docente:progreso_curso' curso.id %}" class="dropdown-item">
+                            {{ curso.nombre_del_Curso }}
                         </a>
                     {% empty %}
                         <span class="dropdown-item disabled">No hay cursos asignados</span>

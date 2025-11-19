@@ -5,9 +5,10 @@ from django.views.generic import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
+from django.db.models import Avg  
 import os
 
-from ..Estudiante.models import Estudiante
+from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
 
 
@@ -50,18 +51,68 @@ def detalle_curso(request, id):
 class ProgresoDocenteView(LoginRequiredMixin, TemplateView):
     template_name = 'docente/progreso_docente.html'
     
-    # Solo un bloque de get_context_data
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        curso_id = kwargs.get('curso_id')
+        curso_id = self.kwargs.get('curso_id')
         
-        docente = self.request.user.docente # Asume que el docente existe por LoginRequiredMixin
-        context['cursos'] = Curso.objects.filter(docente=docente)
-        
-        if curso_id:
-            context['curso_seleccionado'] = get_object_or_404(Curso, id=curso_id)
+        docente_id = self.request.session.get('usuario_id')
+        if docente_id:
+            try:
+                docente = Docente.objects.get(id=docente_id)
+                context['cursos'] = Curso.objects.filter(curso_docente=docente)
+                
+                if curso_id:
+                    curso_seleccionado = get_object_or_404(Curso, id=curso_id)
+                    context['curso_seleccionado'] = curso_seleccionado
+                    
+                    #ASIGNAR SIEMPRE ESTUDIANTES NUEVOS
+                    # Obtener estudiantes que NO están en este curso
+                    estudiantes_sin_este_curso = Estudiante.objects.exclude(
+                        curso_estudiante=curso_seleccionado
+                    )
+                    
+                    # Asignar TODOS los estudiantes que no están en este curso
+                    if estudiantes_sin_este_curso.exists():
+                        for estudiante in estudiantes_sin_este_curso:
+                            estudiante.curso_estudiante = curso_seleccionado
+                            estudiante.save()
+                        print(f" Asignados {estudiantes_sin_este_curso.count()} estudiantes nuevos al curso")
+                    
+                    # Obtener TODOS los estudiantes del curso (incluyendo nuevos)
+                    estudiantes_curso = Estudiante.objects.filter(
+                        curso_estudiante=curso_seleccionado
+                    ).order_by('apellido_estudiante', 'nombre_estudiante')
+                    
+                    print(f" Total estudiantes en curso: {estudiantes_curso.count()}")
+                    
+                    progreso_data = []
+                    for estudiante in estudiantes_curso:
+                        progresos = Progreso.objects.filter(
+                            progreso_estudiante=estudiante,
+                            progreso_curso=curso_seleccionado
+                        )
+                        
+                        # SI NO HAY PROGRESOS, PORCENTAJE = 0
+                        if progresos.exists():
+                            progreso_promedio = progresos.aggregate(
+                                avg_progreso=Avg('porcentaje_progreso')
+                            )['avg_progreso'] or 0
+                        else:
+                            progreso_promedio = 0
+                        
+                        progreso_data.append({
+                            'estudiante': estudiante,
+                            'progresos': progresos,
+                            'progreso_promedio': round(progreso_promedio, 2)
+                        })
+                    
+                    context['progreso_estudiantes'] = progreso_data
+                    
+            except Docente.DoesNotExist:
+                pass
         
         return context
+
 
 # -----------------------------------------------------------
 # PERFIL DOCENTE
@@ -74,6 +125,7 @@ class PerfilDocente(TemplateView):
         docente_id = self.request.session.get('usuario_id')
         docente = get_object_or_404(Docente, id=docente_id)
         context['docente'] = docente
+        context['cursos'] = Curso.objects.filter(curso_docente=docente)
         return context
 
 
@@ -187,3 +239,4 @@ class CerrarSesion(View):
         request.session.flush()
         messages.info(request, "Sesión cerrada correctamente.")
         return redirect('login')
+
