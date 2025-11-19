@@ -198,4 +198,3 @@ class HomeDocente(View):
         if request.session.get('usuario_tipo') == 'docente':
             return render(request, 'docente/home_docente.html')
         return redirect('login')
-
