@@ -7,7 +7,7 @@
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="{% url 'docente:home_docente' %}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
         <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN" style="height: 70px; margin-right: 10px;">
-        <h2 class="m-0 text-primary">UCN Kinesiologia</h2>
+        <h2 class="navbar-title">UCN Kinesiologia</h2>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -53,7 +53,6 @@
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
                         <div class="course-item bg-light shadow-sm rounded">
                             <div class="position-relative overflow-hidden">
-                                <img class="img-fluid" src="{% static 'img/course-1.jpg' %}" alt="{{ curso.nombre_del_Curso }}">
                             </div>
                             <div class="text-center p-4">
                                 <h5 class="mb-3">{{ curso.nombre_del_Curso }}</h5>
@@ -63,7 +62,7 @@
                                     <span><i class="fa fa-users me-1"></i>{{ curso.paralelo_curso }}</span>
                                 </div>
                                 <a href="{% url 'docente:progreso_curso' curso.id %}" class="btn btn-primary btn-sm">
-                                    Ver Progreso del Curso
+                                    Ver Progreso del Curso <!-- Aqui yo pondria lo de abajo pero desplegable, osea esa tabla-->
                                 </a>
                             </div>
                         </div>

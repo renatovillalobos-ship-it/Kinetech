@@ -11,7 +11,15 @@ import os
 from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
 
+from django.shortcuts import redirect
 
+class LoginRequeridoDocenteMixin(View):
+    login_url = '/docente/login/'
+
+    def dispatch(self, request, *args, **kwargs):
+        if request.session.get('usuario_tipo') != 'docente' or not request.session.get('usuario_id'):
+            return redirect(self.login_url)
+        return super().dispatch(request, *args, **kwargs)
 # -----------------------------------------------------------
 # LOGIN DOCENTE
 # -----------------------------------------------------------
@@ -26,15 +34,21 @@ class Home_docente(TemplateView):
     template_name = 'docente/home_docente.html'
 
     def get(self, request, *args, **kwargs):
-        # Bloquea acceso si no está logueado
         if request.session.get('usuario_tipo') != 'docente':
             return redirect('login')
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['cursos'] = Curso.objects.all()
+
+        docente_id = self.request.session.get('usuario_id')
+        docente = get_object_or_404(Docente, id=docente_id)
+
+        context['docente'] = docente
+        context['cursos'] = Curso.objects.filter(curso_docente=docente)
+
         return context
+
 
 # ----------------------------------------
 # VISTA PARA DETALLE Y PROGRESO
@@ -48,7 +62,7 @@ def detalle_curso(request, id):
     return render(request, 'docente/detalle_curso.html', contexto)
 
 
-class ProgresoDocenteView(LoginRequiredMixin, TemplateView):
+class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
     template_name = 'docente/progreso_docente.html'
     
     def get_context_data(self, **kwargs):

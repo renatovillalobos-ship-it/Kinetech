@@ -7,7 +7,7 @@
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="{% url 'estudiante:home_estudiante' %}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
         <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo Facultad de Medicina" style="height: 70px; margin-right: 10px;">
-        <h2 class="m-0 text-primary">UCN Kinesiologia</h2>
+        <h2 class="navbar-title">UCN Kinesiologia</h2>
     </a>
 
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
@@ -18,20 +18,9 @@
         <div class="navbar-nav ms-auto p-4 p-lg-0">
 
             <a href="{% url 'estudiante:home_estudiante' %}" class="nav-item nav-link">Cursos</a>
-            <a href="{% url 'estudiante:perfil_estudiante' %}" class="nav-item nav-link">Perfil</a>
+            <a href="{% url 'estudiante:perfil_estudiante' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'perfil_estudiante' %}active{% endif %}">Perfil</a>
 
-            <div class="nav-item dropdown">
-                <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Progreso</a>
-                <div class="dropdown-menu fade-down m-0">
-                    {% for curso in cursos %}
-                        <a href="{% url 'docente:detalle_curso' curso.id %}" class="dropdown-item">
-                            {{ curso.nombre }}
-                        </a>
-                    {% empty %}
-                        <span class="dropdown-item disabled">No hay cursos asignados</span>
-                    {% endfor %}
-                </div>
-            </div>
+
 
             <a href="{% url 'login' %}" class="btn btn-warning py-4 px-lg-5 d-none d-lg-block">Cerrar Sesión</a>
         </div>

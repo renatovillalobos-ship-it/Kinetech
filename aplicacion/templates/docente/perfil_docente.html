@@ -6,7 +6,7 @@
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="{% url 'docente:perfil_docente' %}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
         <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo Facultad de Medicina" style="height: 70px; margin-right: 10px;">
-        <h2 class="m-0 text-primary">UCN Kinesiologia</h2>
+        <h2 class="navbar-title">UCN Kinesiologia</h2>
     </a>
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
@@ -19,7 +19,7 @@
             <a href="{% url 'docente:home_docente' %}" class="nav-item nav-link">Cursos</a>
             <a href="{% url 'docente:perfil_docente' %}" class="nav-item nav-link active">Perfil</a>
             
-            <div class="nav-item dropdown">
+                        <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Progreso</a>
                 
                 <div class="dropdown-menu fade-down m-0">
@@ -32,7 +32,6 @@
                     {% endfor %}
                 </div>
             </div>
-            
             <a href="{% url 'login' %}" class="btn btn-warning py-4 px-lg-5 d-none d-lg-block">Cerrar Sesión</a>
 
         </div> 

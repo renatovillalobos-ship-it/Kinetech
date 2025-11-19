@@ -100,7 +100,7 @@ class RegistroEstudiante(View):
         correo = request.POST.get('correo_est')
         password = request.POST.get('password_est')
 
-        if not all([nombre, apellido, correo, password]):
+        if not all([nombre, apellido, pais, correo, password]):
             messages.error(request, "Todos los campos son obligatorios.")
             return render(request, self.template_name)
 

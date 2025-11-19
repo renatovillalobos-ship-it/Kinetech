@@ -38,10 +38,19 @@
 
 
 /*** Button ***/
+/* BOTONES — Pantone 540 C / Blanco / Source Sans Pro Semibold */
 .btn {
-    font-family: 'Nunito', sans-serif;
-    font-weight: 600;
-    transition: .5s;
+    background-color: #012A4A !important; /* Pantone 540 C */
+    color: #FFFFFF !important;
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important; /* Semibold */
+    border: none !important;
+}
+
+/* BOTÓN HOVER (opcional pero recomendado) */
+.btn:hover {
+    background-color: #013864 !important;
+    color: #FFFFFF !important;
 }
 
 .btn.btn-primary,
@@ -95,10 +104,20 @@
     outline: none;
 }
 
-.navbar-light .navbar-nav .nav-link:hover,
-.navbar-light .navbar-nav .nav-link.active {
-    color: var(--primary);
+/* Hover en menú: texto pasa a Pantone 649 C */
+.navbar .nav-link:hover {
+    color: #9BBAD1 !important; /* Pantone 649 C */
 }
+
+/* Página activa / presionado: fondo Pantone 652 */
+.navbar .nav-link.active,
+.navbar .nav-link:focus,
+.navbar .nav-link.active {
+    background-color: #7FA9C3 !important;
+    color: #FFFFFF !important;
+    border-radius: 6px;
+}
+
 
 @media (max-width: 991.98px) {
     .navbar-light .navbar-nav .nav-link  {
@@ -440,6 +459,69 @@
 }
 
 .course-item .datos-curso {
-    margin-top: auto; /* Empuja esta parte al fondo */
+    margin-top: auto;
 }
 
+.navbar-title {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important; /* Semibold */
+    color: #012A4A !important;   /* Pantone 540 C */
+}
+
+/* ======== GENERAL BODY ======== */
+body {
+    background-color: #f8fbfd; /* blanco muy suave con tono celeste */
+    font-family: 'Source Sans Pro', sans-serif;
+    color: #3a3a3a;
+    min-height: 100vh;
+}
+
+/* ======== TITULOS ======== */
+h1, h2, h3, h4, h5, h6 {
+    font-weight: 600; /* Semibold */
+}
+
+/* ======== CONTENEDORES PRINCIPALES ======== */
+.section-wrapper {
+    background: #ffffff;
+    padding: 35px;
+    border-radius: 18px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+}
+
+/* ======== TEXTOS ======== */
+.text-primary {
+    color: #00718c !important; /* Turquesa institucional */
+}
+
+a {
+    text-decoration: none;
+}
+a:hover {
+    color: #004d5e;
+}
+
+/* ======== TIPOGRAFÍA HERO ======== */
+.hero-wrapper h1,
+.hero-wrapper h2,
+.hero-wrapper h3,
+.hero-wrapper h4,
+.hero-wrapper h5,
+.hero-wrapper h6 {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important; /* Semibold */
+}
+
+/* ======== NAVBAR TIPOGRAFÍA — Source Sans Pro ======== */
+.navbar .nav-link,
+.navbar .dropdown-menu a {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important; /* Semibold */
+    letter-spacing: 0.5px;
+}
+
+.navbar .dropdown-item {
+    font-family: 'Source Sans Pro', sans-serif !important;
+    font-weight: 600 !important;
+}
