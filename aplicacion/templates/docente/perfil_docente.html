@@ -50,6 +50,19 @@
             <div class="card shadow border-0 p-4">
 
                 <div class="text-center">
+                    
+                    {# Muestra alertas si existen #}
+                    {% if messages %}
+                        <div class="mt-3">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }}">
+                                    {{ message }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+
+
 
                     {# Muestra la foto de perfil del docente, o una imagen por defecto #}
                     {% if docente.foto_perfil_docente %}
@@ -67,6 +80,7 @@
                         <form action="{% url 'docente:subir_foto_docente' docente.id %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="file" name="foto" accept="image/png" class="form-control mb-2" required>
+                            <small class="text-danger">La imagen de perfil debe ser en formato PNG.</small>
                             <button class="btn btn-primary btn-sm">Cambiar Foto</button>
                         </form>
 

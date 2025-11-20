@@ -1,12 +1,19 @@
 from django.db import models
 #from Applications.Administrador.models import Administrador
 from django.core.exceptions import ValidationError
+from PIL import Image
 
 # Create your models here.
 
 def validacion_imagen(value):
     if not value.name.lower().endswith('.png'):
         raise ValidationError("La imagen debe ser formato PNG.")
+    try:
+        imagen = Image.open(value)
+        if imagen.format != 'PNG':
+            raise ValidationError("El archivo NO es un PNG real. Debe ser una imagen PNG.")
+    except Exception:
+        raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
     
 class Docente(models.Model):
     nombre_docente = models.CharField('Nombre Docente', max_length=150, null=False)

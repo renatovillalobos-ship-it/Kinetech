@@ -6,7 +6,10 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
 from django.db.models import Avg  
+from django.core.exceptions import ValidationError
+
 import os
+
 
 from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
@@ -152,9 +155,13 @@ def subir_foto_docente(request, id):
     if request.method == 'POST':
         foto = request.FILES.get('foto')
         if foto:
-            docente.foto_perfil_docente = foto
-            docente.save()
-            messages.success(request, 'Foto actualizada correctamente.')
+            try:
+                docente.foto_perfil_docente = foto
+                docente.full_clean()
+                docente.save()
+                messages.success(request, 'Foto actualizada correctamente.')
+            except ValidationError as e:
+                messages.error(request, e.messages[0])
 
     return redirect('docente:perfil_docente')
 
