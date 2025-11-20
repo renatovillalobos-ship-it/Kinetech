@@ -1,6 +1,14 @@
 from django.contrib import admin
+from django import forms
 from .models import *
 
+class PacientesAdminForm(forms.ModelForm): #Para mostrar lista desplegable hacia abajo :)
+    class Meta:
+        model = Pacientes
+        fields = '__all__'
+        widgets = {
+            'prevision': forms.Select(attrs={'size': 6}),
+        }
 class PacientesAdmin(admin.ModelAdmin): 
     list_display=(
         'nombre',

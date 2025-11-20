@@ -1,14 +1,34 @@
 from django.db import models
 from Applications.Docente.models import Curso
 from Applications.Docente.models import Docente
+from django.core.validators import RegexValidator #Validador de letras y números
 
-
+solo_letras = RegexValidator(
+    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$', # Patrón permitido
+    'Este campo solo puede contener letras y espacios.' # Mensaje de error
+)
 # Create your models here.
 class Estudiante(models.Model):
-    nombre_estudiante= models.CharField('Nombre Estudiante', max_length=150, null=False)
-    apellido_estudiante= models.CharField('Apellido Estudiante', max_length=150, null=False)
+
+    pais_opciones = [('Chile', 'Chile'),
+                     ('Argentina','Argentina'),
+                     ('Brasil', 'Brasil'),
+                     ('Peru','Peru'),
+                     ('Otro', 'Otro')]
+    nombre_estudiante= models.CharField('Nombre Estudiante', 
+                                        max_length=150, 
+                                        null=False,
+                                        validators=[solo_letras])
+    apellido_estudiante= models.CharField('Apellido Estudiante', 
+                                          max_length=150, 
+                                          null=False,
+                                          validators=[solo_letras])
     correo_estudiante= models.EmailField('Correo Electronico', unique=True)
-    pais_estudiante = models.CharField('País Estudiante', max_length=150, null=False)
+    pais_estudiante = models.CharField('País Estudiante', 
+                                       max_length=150, 
+                                       null=False,
+                                       choices=pais_opciones,
+                                       default='Chile')
     foto_perfil_estudiante= models.ImageField(
     'Foto perfil estudiante', 
     upload_to='perfiles/estudiantes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'

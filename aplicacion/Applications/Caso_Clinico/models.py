@@ -1,14 +1,37 @@
 from django.db import models
 from Applications.Docente.models import Curso
+from django.core.validators import RegexValidator #Validador de letras y números
 # Create your models here.
 
+solo_letras = RegexValidator(
+    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$', # Patrón permitido
+    'Este campo solo puede contener letras y espacios.' # Mensaje de error
+)
+
 class Pacientes(models.Model):
+
+    prevision_opciones = [('Fonasa','Fonasa'),
+                 ('Isapre','Isapre'),
+                 ('Particular', 'Particular/Privado'),
+                 ('Otro', 'Otro'),
+                 ('No aplica', 'No aplica')]
+    
     fecha_nacimiento=models.DateField('Fecha de Nacimiento', null=False)
     nombre=models.CharField('Nombre Paciente', max_length=100, null=False)
     edad=models.IntegerField('Edad Paciente',null=False)
-    prevision=models.CharField('Previsión',max_length=50,null=False)
-    ocupacion=models.CharField('Ocupación',max_length=100,null=False)
-
+    ocupacion = models.CharField(
+        'Ocupación',
+        max_length=100,
+        null=False,
+        validators=[solo_letras]
+    )
+    prevision = models.CharField(
+        'Previsión',
+        max_length=50,
+        null=False,
+        choices=prevision_opciones, 
+        default='FONASA' 
+    )
     #imagen
     class Meta: 
         verbose_name='Paciente'
@@ -32,7 +55,12 @@ class Caso_clinico(models.Model):
         return str(self.id)+'-'+self.caso
 
 class Partes_cuerpo(models.Model):
-    ParteCuerpo =models.CharField('Parte del cuerpo', max_length=100, null=False)
+    ParteCuerpo = models.CharField(
+        'Parte del cuerpo', 
+        max_length=100, 
+        null=False,
+        validators=[solo_letras] 
+    )
     CasoClinico = models.ForeignKey(Caso_clinico, on_delete=models.CASCADE)
     #Paciente = models.ForeignKey(Pacientes,on_delete=models.CASCADE)
 
