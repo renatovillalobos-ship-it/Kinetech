@@ -53,6 +53,7 @@
                     <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
                         <div class="course-item bg-light shadow-sm rounded">
                             <div class="position-relative overflow-hidden">
+                                <!-- Manteniendo el diseño original -->
                             </div>
                             <div class="text-center p-4">
                                 <h5 class="mb-3">{{ curso.nombre_del_Curso }}</h5>
@@ -62,7 +63,7 @@
                                     <span><i class="fa fa-users me-1"></i>{{ curso.paralelo_curso }}</span>
                                 </div>
                                 <a href="{% url 'docente:progreso_curso' curso.id %}" class="btn btn-primary btn-sm">
-                                    Ver Progreso del Curso <!-- Aqui yo pondria lo de abajo pero desplegable, osea esa tabla-->
+                                    Ver Progreso del Curso
                                 </a>
                             </div>
                         </div>
@@ -103,6 +104,7 @@
                                         <th>Estudiante</th>
                                         <th>Correo Electrónico</th>
                                         <th class="text-center">Progreso General</th>
+                                        <th class="text-center">Progreso por Casos Clínicos</th>
                                         <th class="text-center">Último Puntaje</th>
                                         <th class="text-center">Acciones</th>
                                     </tr>
@@ -140,8 +142,43 @@
                                                     {% endif %}
                                                 </div>
                                             </div>
-                                        </td>                                     
-                                       
+                                        </td>
+                                        
+                                        <!-- NUEVA COLUMNA: Progreso por Casos Clínicos -->
+                                        <td class="align-middle">
+                                            {% if item.progreso_casos %}
+                                                <div class="casos-progreso">
+                                                    {% for caso_data in item.progreso_casos %}
+                                                        <div class="mb-2">
+                                                            <small class="fw-bold text-dark d-block mb-1">
+                                                                {{ caso_data.caso.caso }}
+                                                            </small>
+                                                            {% for parte_data in caso_data.partes_cuerpo %}
+                                                                <div class="d-flex align-items-center mb-1">
+                                                                    <small class="text-muted me-2" style="min-width: 120px;">
+                                                                        {{ parte_data.parte.ParteCuerpo }}
+                                                                    </small>
+                                                                    <div class="progress flex-grow-1" style="height: 15px;">
+                                                                        <div class="progress-bar bg-{{ parte_data.color }}" 
+                                                                             style="width: {{ parte_data.porcentaje }}%">
+                                                                            <small>{{ parte_data.videos_vistos }}/{{ parte_data.total_videos }}</small>
+                                                                        </div>
+                                                                    </div>
+                                                                    <small class="text-muted ms-2" style="min-width: 40px;">
+                                                                        {{ parte_data.porcentaje }}%
+                                                                    </small>
+                                                                </div>
+                                                            {% empty %}
+                                                                <small class="text-muted">No hay partes del cuerpo</small>
+                                                            {% endfor %}
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            {% else %}
+                                                <small class="text-muted">No hay casos clínicos</small>
+                                            {% endif %}
+                                        </td>
+                                        
                                         <td class="text-center align-middle">
                                             {% with item.progresos.last as ultimo_progreso %}
                                                 {% if ultimo_progreso %}
@@ -154,7 +191,7 @@
                                             {% endwith %}
                                         </td>
                                         <td class="text-center align-middle">
-                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles">  <!-- borrar o agregar otra función -->
+                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
                                                 <i class="fa fa-chart-bar"></i>
                                             </button>
                                         </td>

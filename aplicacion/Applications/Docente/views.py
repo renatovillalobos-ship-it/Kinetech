@@ -14,6 +14,8 @@ import os
 from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
 
+from Applications.Caso_Clinico.models import Caso_clinico, Partes_cuerpo, Etapa
+
 from django.shortcuts import redirect
 
 class LoginRequeridoDocenteMixin(View):
@@ -82,36 +84,77 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                     curso_seleccionado = get_object_or_404(Curso, id=curso_id)
                     context['curso_seleccionado'] = curso_seleccionado
                     
-                    #ASIGNAR SIEMPRE ESTUDIANTES NUEVOS
-                    # Obtener estudiantes que NO están en este curso
+                    # ASIGNAR ESTUDIANTES NUEVOS
                     estudiantes_sin_este_curso = Estudiante.objects.exclude(
                         curso_estudiante=curso_seleccionado
                     )
                     
-                    # Asignar TODOS los estudiantes que no están en este curso
                     if estudiantes_sin_este_curso.exists():
                         for estudiante in estudiantes_sin_este_curso:
                             estudiante.curso_estudiante = curso_seleccionado
                             estudiante.save()
-                        print(f" Asignados {estudiantes_sin_este_curso.count()} estudiantes nuevos al curso")
                     
-                    # Obtener TODOS los estudiantes del curso (incluyendo nuevos)
+                    # Obtener estudiantes del curso
                     estudiantes_curso = Estudiante.objects.filter(
                         curso_estudiante=curso_seleccionado
                     ).order_by('apellido_estudiante', 'nombre_estudiante')
                     
-                    print(f" Total estudiantes en curso: {estudiantes_curso.count()}")
+                    # Obtener casos clínicos del curso
+                    casos_clinicos = Caso_clinico.objects.filter(Curso=curso_seleccionado)
                     
                     progreso_data = []
                     for estudiante in estudiantes_curso:
-                        progresos = Progreso.objects.filter(
+                        progreso_casos = []
+                        
+                        for caso in casos_clinicos:
+                            partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso)
+                            
+                            progreso_caso = {
+                                'caso': caso,
+                                'partes_cuerpo': []
+                            }
+                            
+                            for parte in partes_cuerpo:
+                                # Obtener etapas (videos) para esta parte del cuerpo
+                                etapas = Etapa.objects.filter(ParteCuerpo=parte)
+                                total_videos = etapas.count()
+                                
+                                if total_videos > 0:
+                                    # CONTAR VIDEOS REALMENTE VISTOS
+                                    videos_vistos = Progreso.objects.filter(
+                                        progreso_estudiante=estudiante,
+                                        progreso_curso=curso_seleccionado,
+                                        parte_cuerpo=parte,
+                                        video_visto=True
+                                    ).count()
+                                    
+                                    porcentaje = (videos_vistos / total_videos) * 100 if total_videos > 0 else 0
+                                    
+                                    if porcentaje == 0:
+                                        color = 'danger'
+                                    elif porcentaje < 100:
+                                        color = 'primary'
+                                    else:
+                                        color = 'success'
+                                    
+                                    progreso_caso['partes_cuerpo'].append({
+                                        'parte': parte,
+                                        'total_videos': total_videos,
+                                        'videos_vistos': videos_vistos,
+                                        'porcentaje': round(porcentaje, 2),
+                                        'color': color
+                                    })
+                            
+                            progreso_casos.append(progreso_caso)
+                        
+                        # Progreso general
+                        progresos_general = Progreso.objects.filter(
                             progreso_estudiante=estudiante,
                             progreso_curso=curso_seleccionado
                         )
                         
-                        # SI NO HAY PROGRESOS, PORCENTAJE = 0
-                        if progresos.exists():
-                            progreso_promedio = progresos.aggregate(
+                        if progresos_general.exists():
+                            progreso_promedio = progresos_general.aggregate(
                                 avg_progreso=Avg('porcentaje_progreso')
                             )['avg_progreso'] or 0
                         else:
@@ -119,17 +162,19 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                         
                         progreso_data.append({
                             'estudiante': estudiante,
-                            'progresos': progresos,
-                            'progreso_promedio': round(progreso_promedio, 2)
+                            'progresos': progresos_general,
+                            'progreso_promedio': round(progreso_promedio, 2),
+                            'progreso_casos': progreso_casos
                         })
                     
                     context['progreso_estudiantes'] = progreso_data
+                    context['casos_clinicos'] = casos_clinicos
                     
             except Docente.DoesNotExist:
                 pass
         
         return context
-
+    
 
 # -----------------------------------------------------------
 # PERFIL DOCENTE

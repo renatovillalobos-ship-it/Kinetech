@@ -143,6 +143,64 @@
 </div>
 
 
+<!-- SECCIÓN CONDICIONAL: Solo mostrar si hay videos -->
+{% if tiene_videos %}
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h6 class="section-title bg-white text-primary px-3">Contenido Multimedia</h6>
+            <h1 class="mb-3">Videos de Aprendizaje</h1>
+            <p class="text-secondary fs-5">
+                Tienes <strong>{{ total_videos }}</strong> videos disponibles para tu curso.
+            </p>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-6 text-center">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa fa-video fa-4x text-primary mb-4"></i>
+                        <h4 class="text-primary mb-3">Biblioteca de Videos</h4>
+                        <p class="text-muted mb-4">
+                            Explora todos los videos disponibles para tu curso. 
+                            Tu progreso se guarda automáticamente.
+                        </p>
+                        <a href="{% url 'estudiante:lista_videos' %}" class="btn btn-primary btn-lg">
+                            <i class="fa fa-play-circle me-2"></i>
+                            Ver Todos los Videos
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% else %}
+<!-- Mensaje cuando no hay videos -->
+<div class="container-xxl py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 text-center">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body py-5">
+                        <i class="fa fa-video-slash fa-4x text-muted mb-4"></i>
+                        <h4 class="text-muted mb-3">No hay videos disponibles</h4>
+                        <p class="text-muted mb-4">
+                            Actualmente no hay videos asignados a tu curso. 
+                            Contacta a tu docente para más información.
+                        </p>
+                        <div class="alert alert-info d-inline-block">
+                            <i class="fa fa-info-circle me-2"></i>
+                            Los videos se cargan a través del panel administrativo
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endif %}
+
 
 <!-- FOOTER -->
 <footer class="bg-white py-4 mt-5 shadow-sm">

@@ -8,6 +8,7 @@ import os
 
 from ..Docente.models import Curso
 from .models import Estudiante, Progreso
+from Applications.Caso_Clinico.models import Caso_clinico, Etapa 
 
 
 # -----------------------------------------------------------
@@ -25,6 +26,29 @@ class Home_estudiante(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
+        estudiante_id = self.request.session.get('usuario_id')
+        if estudiante_id:
+            try:
+                estudiante = Estudiante.objects.get(id=estudiante_id)
+                context['estudiante'] = estudiante
+                
+                # VERIFICAR SI HAY VIDEOS DISPONIBLES
+                if estudiante.curso_estudiante:
+                    # Contar videos disponibles en el curso del estudiante
+                    total_videos = Etapa.objects.filter(
+                        ParteCuerpo__CasoClinico__Curso=estudiante.curso_estudiante
+                    ).count()
+                    context['tiene_videos'] = total_videos > 0
+                    context['total_videos'] = total_videos
+                else:
+                    context['tiene_videos'] = False
+                    context['total_videos'] = 0
+                    
+            except Estudiante.DoesNotExist:
+                context['tiene_videos'] = False
+                context['total_videos'] = 0
+                
         context['cursos'] = Curso.objects.all()
         return context
 
@@ -100,6 +124,7 @@ class RegistroEstudiante(View):
         correo = request.POST.get('correo_est')
         password = request.POST.get('password_est')
 
+        # Validaciones
         if not all([nombre, apellido, pais, correo, password]):
             messages.error(request, "Todos los campos son obligatorios.")
             return render(request, self.template_name)
@@ -107,26 +132,36 @@ class RegistroEstudiante(View):
         if not correo.endswith('@alumnos.ucn.cl'):
             messages.error(request, "El correo debe terminar en @alumnos.ucn.cl.")
             return render(request, self.template_name)
+        
+         # VERIFICAR SI EL CORREO YA EXISTE
+        if Estudiante.objects.filter(correo_estudiante=correo).exists():
+            messages.error(request, f"El correo {correo} ya está registrado.")
+            return render(request, self.template_name)
 
         try:
             hashed_password = make_password(password)
 
+           # CREAR ESTUDIANTE SIN curso_estudiante_id fijo
             Estudiante.objects.create(
                 nombre_estudiante=nombre,
                 apellido_estudiante=apellido,
                 pais_estudiante=pais,
                 correo_estudiante=correo,
                 contrasena_estudiante=hashed_password,
-                curso_estudiante_id=2,
+                #curso_estudiante_id=2,
                 foto_perfil_estudiante=None
             )
 
             messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
             return redirect(self.success_url_name)
-
-        except IntegrityError:
-            messages.error(request, "Este correo ya está registrado.")
+        
+        except Exception as e:
+            messages.error(request, f"Error en el registro: {str(e)}")
             return render(request, self.template_name)
+
+       # except IntegrityError:
+        #    messages.error(request, "Este correo ya está registrado.")
+        #    return render(request, self.template_name)
 
 
 # -----------------------------------------------------------

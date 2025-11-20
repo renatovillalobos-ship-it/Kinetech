@@ -1,6 +1,7 @@
 from django.db import models
 from Applications.Docente.models import Curso
 from Applications.Docente.models import Docente
+from Applications.Caso_Clinico.models import Partes_cuerpo, Etapa  
 from django.core.validators import RegexValidator #Validador de letras y números
 
 solo_letras = RegexValidator(
@@ -56,8 +57,15 @@ class Progreso(models.Model):
     progreso_curso= models.ForeignKey(Curso, on_delete=models.CASCADE)
     progreso_estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     docente_Correspondiente_progreso = models.ForeignKey(Docente, on_delete=models.CASCADE)
+    
+    # NUEVOS CAMPOS para tracking de videos
+    parte_cuerpo = models.ForeignKey(Partes_cuerpo, on_delete=models.CASCADE, null=True, blank=True)
+    etapa_completada = models.ForeignKey(Etapa, on_delete=models.CASCADE, null=True, blank=True)
+    video_visto = models.BooleanField(default=False)
+    
+    class Meta:
+        verbose_name = 'Progreso'
+        verbose_name_plural = 'Progresos'
 
     def __str__(self):
-         return str(self.id) + '-' + self.porcentaje_progreso  + '-' +  self.progreso_estudiante
-    
-
+        return f"{self.id} - {self.porcentaje_progreso}% - {self.progreso_estudiante}"
