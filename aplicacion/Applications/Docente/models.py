@@ -24,11 +24,11 @@ def validacion_imagen(value):
         raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
     
 class Docente(models.Model):
-    pais_opciones = [('Chile', 'Chile'),
-                     ('Argentina','Argentina'),
-                     ('Brasil', 'Brasil'),
-                     ('Peru','Peru'),
-                     ('Otro', 'Otro')]
+    pais_opciones = [('CL', 'Chile'),
+                     ('AR','Argentina'),
+                     ('BR', 'Brasil'),
+                     ('PE','Peru'),
+                     ('OTRO', 'Otro')]
     
     nombre_docente = models.CharField('Nombre Docente', 
                                       max_length=150, 
