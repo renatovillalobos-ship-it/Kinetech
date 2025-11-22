@@ -1,9 +1,12 @@
 from django.db import models
-#from Applications.Administrador.models import Administrador
+#from Applications.Administrador.models import Administrador --> no se usa
 from django.core.exceptions import ValidationError
 from PIL import Image
 
 from django.core.validators import RegexValidator #Validador de letras y números
+
+from django.contrib.auth import get_user_model
+
 
 # Create your models here.
 
@@ -23,7 +26,11 @@ def validacion_imagen(value):
     except Exception:
         raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
     
+User = get_user_model()
+
 class Docente(models.Model):
+
+    user = models.OneToOneField(User, on_delete=models.CASCADE) #correo y contraseña
     pais_opciones = [('CL', 'Chile'),
                      ('AR','Argentina'),
                      ('BR', 'Brasil'),
@@ -50,8 +57,6 @@ class Docente(models.Model):
     validators=[validacion_imagen],
     null=True, blank=True
 )
-    correo_docente = models.EmailField('Correo electronico', unique=True)
-    contrasena_docente = models.CharField('Contraseña', max_length=150)
 
     class Meta:
         verbose_name='Docente'

@@ -1,12 +1,19 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin
+#from django.contrib.auth.mixins import LoginRequiredMixin --> no se está utilizando
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
-from django.db.models import Avg  
+#from django.db.models import Avg  --> no se está utilizando
 from django.core.exceptions import ValidationError
+
+from django.contrib.auth import get_user_model
+from django.db import transaction
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import Group
+from django.db import transaction
+
 
 import os
 
@@ -230,6 +237,9 @@ def eliminar_foto_docente(request, id):
 # -----------------------------------------------------------
 # REGISTRO DOCENTE
 # -----------------------------------------------------------
+
+User = get_user_model()
+
 class RegistroDocente(View):
     template_name = 'login/login.html'
     success_url_name = 'login'
@@ -250,17 +260,40 @@ class RegistroDocente(View):
         if not any(correo.endswith(d) for d in dominios_permitidos):
             messages.error(request, f"El correo debe pertenecer a uno de estos dominios: {dominios_permitidos}")
             return render(request, self.template_name)
-
+        
         try:
-            hashed_password = make_password(password)
+            with transaction.atomic():
+                
+                # Crear el objeto User de Django (is_staff=True)
+                user_django = User.objects.create_user(
+                    username=correo,
+                    email=correo,
+                    password=password,
+                    first_name=nombre,
+                    last_name=apellido,
+                    is_staff=True # Le da acceso al panel /admin/
+                )
+
             Docente.objects.create(
+                user=user_django,
                 nombre_docente=nombre,
                 apellido_docente=apellido,
                 asignatura_docente=asignatura,
-                pais_docente=pais,
-                correo_docente=correo,
-                contrasena_docente=hashed_password
+                pais_docente=pais
             )
+
+            try:
+                # Buscamos el grupo por su nombre
+                docente_group = Group.objects.get(name='Docentes')
+                
+                # Asignamos el usuario recién creado al grupo
+                user_django.groups.add(docente_group) 
+                
+            except Group.DoesNotExist:
+                # Si el grupo no existe (por ejemplo, en un entorno de desarrollo nuevo)
+                # Simplemente lo reportamos pero permitimos que el registro continúe.
+                print("ADVERTENCIA: El grupo 'Docentes' no existe. Créalo en el Admin.")
+            
             messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
             return redirect(self.success_url_name)
 
@@ -272,6 +305,7 @@ class RegistroDocente(View):
 # -----------------------------------------------------------
 # AUTENTICAR USUARIO (ESTUDIANTE O DOCENTE)
 # -----------------------------------------------------------
+
 class AutenticarUsuario(View):
     template_name = 'login/login.html'
 
@@ -287,11 +321,26 @@ class AutenticarUsuario(View):
             return redirect('estudiante:home_estudiante')
 
         # Verificar docente
-        docente = Docente.objects.filter(correo_docente=correo).first()
-        if docente and check_password(password, docente.contrasena_docente):
-            request.session['usuario_tipo'] = 'docente'
-            request.session['usuario_id'] = docente.id
-            return redirect('docente:home_docente')
+        user_django = authenticate(request, username=correo, password=password)
+        if user_django is not None:
+            try:
+                docente = Docente.objects.get(user=user_django)
+                
+                # Inicia la sesión de Django
+                login(request, user_django) 
+                
+                request.session['usuario_tipo'] = 'docente'
+                request.session['usuario_id'] = docente.pk 
+                
+                return redirect('docente:home_docente')
+            except Docente.DoesNotExist:
+                pass
+        #Código anterior (por si acaso)
+        #docente = Docente.objects.filter(correo_docente=correo).first()
+        #if docente and check_password(password, docente.contrasena_docente):
+            #request.session['usuario_tipo'] = 'docente'
+            #request.session['usuario_id'] = docente.id
+            #return redirect('docente:home_docente')
 
         messages.error(request, "Correo o contraseña incorrectos.")
         return render(request, self.template_name)
@@ -305,4 +354,19 @@ class CerrarSesion(View):
         request.session.flush()
         messages.info(request, "Sesión cerrada correctamente.")
         return redirect('login')
+
+
+# -----------------------------------------------------------
+# PÁGINA PRINCIPAL DE CURSOS
+# -----------------------------------------------------------
+
+def pagina_principal_docente(request, curso_id):
+
+    curso = get_object_or_404(Curso, pk=curso_id)
+
+    contexto = {
+        'curso_actual': curso 
+    }
+
+    return render(request, 'docente/docente_pagina_principal.html', contexto)
 

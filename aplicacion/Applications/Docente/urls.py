@@ -27,4 +27,6 @@ urlpatterns = [
 
     path('progreso/', views.ProgresoDocenteView.as_view(), name='progreso_docente'),
     path('progreso/<int:curso_id>/', views.ProgresoDocenteView.as_view(), name='progreso_curso'),
+
+    path('principal/<int:curso_id>/', views.pagina_principal_docente, name='pagina_principal_docente'),
 ]

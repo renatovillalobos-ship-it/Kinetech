@@ -7,7 +7,7 @@ class DocenteAdmin(admin.ModelAdmin):
     list_display=(
         'nombre_docente',
         'apellido_docente',
-        'correo_docente',
+        'obtener_correo',
         'foto_preview',
         'pais_docente',
     )
@@ -18,13 +18,20 @@ class DocenteAdmin(admin.ModelAdmin):
             'fields': (
                 'nombre_docente',
                 'apellido_docente',
-                'correo_docente',
+                'obtener_correo',
                 'pais_docente', 
                 'foto_perfil_docente',          
                 'foto_preview',   
             )
         }),
     )
+
+    def obtener_correo(self, obj):
+        # Accede al campo email del objeto User vinculado
+        return obj.user.email 
+
+    obtener_correo.short_description = 'Correo Electrónico'
+
     def foto_preview(self, obj): 
         if obj.foto_perfil_docente:
             return format_html(
