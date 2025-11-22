@@ -70,7 +70,8 @@ class Docente(models.Model):
 
 class Curso(models.Model):
     nombre_del_Curso = models.CharField('Nombre del Curso', max_length=150, null=False)
-    Descripcion_del_curso = models.TextField('Descripción del Curso', max_length=150, null=False)
+    Descripcion_del_curso = models.TextField('Descripción del Curso', max_length=1000, null=False)
+    Descripcion_breve_del_curso=models.TextField('Breve Descripción', max_length=150, null=False)
     fecha_realización_curso = models.DateField('Fecha Realización Curso')
     paralelo_curso= models.IntegerField('Paralelo Curso', null=False)
     curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)

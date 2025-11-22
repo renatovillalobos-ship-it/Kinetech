@@ -207,9 +207,10 @@ def subir_foto_docente(request, id):
     if request.method == 'POST':
         foto = request.FILES.get('foto')
         if foto:
+            docente.foto_perfil_docente = foto
             try:
-                docente.foto_perfil_docente = foto
-                docente.full_clean()
+                # Validar solo la imagen
+                docente.foto_perfil_docente.field.clean(foto, docente)
                 docente.save()
                 messages.success(request, 'Foto actualizada correctamente.')
             except ValidationError as e:

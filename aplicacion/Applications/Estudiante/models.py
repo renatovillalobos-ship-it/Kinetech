@@ -3,11 +3,26 @@ from Applications.Docente.models import Curso
 from Applications.Docente.models import Docente
 from Applications.Caso_Clinico.models import Partes_cuerpo, Etapa  
 from django.core.validators import RegexValidator #Validador de letras y números
+from django.core.exceptions import ValidationError
+from PIL import Image
+
+
 
 solo_letras = RegexValidator(
     r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$', # Patrón permitido
     'Este campo solo puede contener letras y espacios.' # Mensaje de error
 )
+
+def validacion_imagen(value):
+    if not value.name.lower().endswith('.png'):
+        raise ValidationError("La imagen debe ser formato PNG.")
+    try:
+        imagen = Image.open(value)
+        if imagen.format != 'PNG':
+            raise ValidationError("El archivo NO es un PNG real. Debe ser una imagen PNG.")
+    except Exception:
+        raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
+    
 # Create your models here.
 class Estudiante(models.Model):
 
@@ -33,6 +48,7 @@ class Estudiante(models.Model):
     foto_perfil_estudiante= models.ImageField(
     'Foto perfil estudiante', 
     upload_to='perfiles/estudiantes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    validators=[validacion_imagen],
     null=True, blank=True
 )
     contrasena_estudiante = models.CharField('Contraseña Estudiante', max_length=150)

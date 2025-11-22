@@ -4,6 +4,7 @@ from django.views.generic import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
+from django.core.exceptions import ValidationError
 import os
 
 from ..Docente.models import Curso
@@ -96,8 +97,13 @@ def subir_foto_estudiante(request, id):
         foto = request.FILES.get('foto')
         if foto:
             estudiante.foto_perfil_estudiante = foto
-            estudiante.save()
-            messages.success(request, "Foto actualizada correctamente.")
+            try:
+                # Validar solo la imagen
+                estudiante.foto_perfil_estudiante.field.clean(foto, estudiante)
+                estudiante.save()
+                messages.success(request, 'Foto actualizada correctamente.')
+            except ValidationError as e:
+                messages.error(request, e.messages[0])
 
     return redirect('estudiante:perfil_estudiante')
 

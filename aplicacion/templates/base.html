@@ -112,6 +112,7 @@
 </head>
 
 <body>
+
     <!-- Spinner Start -->
     <div id="spinner" class="show bg-white position-fixed translate-middle w-100 vh-100 top-50 start-50 d-flex align-items-center justify-content-center">
         <div class="spinner-border text-primary" style="width: 3rem; height: 3rem;" role="status">
@@ -128,6 +129,7 @@
             <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN Kinesiologia" style="height: 70px; margin-right: 10px;">
             <h2 class="navbar-title">UCN Kinesiologia</h2>
         </a>
+        
         <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -159,11 +161,11 @@
     <footer class="footer">
         <div class="footer-container">
             <!-- Logos Section -->
-            <div class="logos-section">
-                <div class="logo-placeholder">UCN Logo</div>
-                <div class="logo-placeholder">CNA</div>
-                <div class="logo-placeholder">G9</div>
-                <div class="logo-placeholder">AUR</div>
+            <div style="margin-bottom: 60px;">
+                <img src="{% static 'img/ucn_isologo.png' %}" alt="UCN isologo" style="height: 60px; margin-right: 370px;">
+                <img src="{% static 'img/Acreditacion.png' %}" alt="Acreditacion UCN" style="height: 60px; margin-right: 20px;">   
+                <img src="{% static 'img/logo-g9.png' %}" alt="G9 logo" style="height: 60px; margin-right: 20px;">   
+                <img src="{% static 'img/AUR-Logo.png' %}" alt="AUR logo" style="height: 60px;">   
             </div>
 
             <!-- Footer Main Content -->
@@ -270,5 +272,35 @@
 
     <!-- Template Javascript -->
     <script src="{%static 'js/main.js'%}"></script>
+
+    <!-- Template Javascript -->
+    <script src="{%static 'js/main.js'%}"></script>
+    
+    <!-- Script de Modo Oscuro -->
+    <script>
+        // Toggle modo oscuro
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Verificar si hay preferencia guardada
+        const currentTheme = localStorage.getItem('theme');
+        if (currentTheme === 'dark') {
+            body.classList.add('dark-mode');
+            themeToggle.checked = true;
+        }
+
+        // Evento cuando cambia el checkbox
+        themeToggle.addEventListener('change', function() {
+            if (this.checked) {
+                body.classList.add('dark-mode');
+                localStorage.setItem('theme', 'dark');
+            } else {
+                body.classList.remove('dark-mode');
+                localStorage.setItem('theme', 'light');
+            }
+        });
+    </script>
+</body>
+</html>
 </body>
 </html>

@@ -24,7 +24,75 @@
 </nav>
 {% endblock %}
 
+
 {% block content %}
+<!-- HERO AREA -->
+<div class="container-xxl py-5 bg-light mb-5 rounded-4 shadow-sm">
+    <div class="container py-4">
+        <div class="row align-items-center">
+
+            <div class="col-lg-7">
+                <h1 class="fw-bold text-primary mb-3">Curso: {{ curso_actual.nombre_del_Curso }}</h1>
+                <p class="text-muted">
+                    Facultad de Medicina • Escuela de Kinesiología • Universidad Católica del Norte
+                </p>
+            </div>
+
+            <div class="col-lg-5 text-center">
+                <img src="{% static 'img/ucn_escudo.png' %}" class="img-fluid" style="max-height: 180px;">
+            </div>
+
+        </div>
+    </div>
+</div>
+
+
+<!-- Menu principal --> 
+<div class="menu-curso-nav mt-5 mb-5">
+    </div>
+
+<div class="accordion" id="accordionCursoContent">
+    
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingOne">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <i class="fas fa-plus-circle text-dark me-2"></i> Conocimientos previos 
+                </button>
+        </h2>
+        <div id="collapseOne" class="accordion-collapse collapse show" aria-labelledby="headingOne" data-bs-parent="#accordionCursoContent">
+            <div class="accordion-body">
+                <a href= "#">Ingresar Contenido realizado</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingTwo">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                <i class="fas fa-plus-circle text-dark me-2"></i> Ingresar Caso clinico automatico
+                </button>
+        </h2>
+        <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo" data-bs-parent="#accordionCursoContent">
+            <div class="accordion-body">
+                <a href= "#">contenido del caso clinico</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingThree">
+            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
+                <i class="fas fa-plus-circle text-dark me-2"></i> Evaluaciones?
+                </button>
+        </h2>
+        <div id="collapseThree" class="accordion-collapse collapse" aria-labelledby="headingThree" data-bs-parent="#accordionCursoContent">
+            <div class="accordion-body">
+                <a href= "#">Contenido de evaluaciones?</a>
+            </div>
+        </div>
+    </div>
+
+    </div>
 <div class="container-xxl py-5">
     <div class="container">
         <div class="text-center wow fadeInUp" data-wow-delay="0.1s">

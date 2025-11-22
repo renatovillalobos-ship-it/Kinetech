@@ -44,13 +44,23 @@
                     Facultad de Medicina • Escuela de Kinesiología • Universidad Católica del Norte
                 </p>
             </div>
-
+            
             <div class="col-lg-5 text-center">
                 <img src="{% static 'img/ucn_escudo.png' %}" class="img-fluid" style="max-height: 180px;">
             </div>
 
         </div>
     </div>
+    <div class="dark-mode-toggle-wrapper">
+    <label class="theme-switch mb-0">
+        <input type="checkbox" id="theme-toggle">
+        <span class="slider">
+            <span class="slider-icon sun">☀️</span>
+            <span class="slider-icon moon">🌙</span>
+        </span>
+    </label>
+</div>
+
 </div>
 
 
@@ -100,7 +110,9 @@
 
                     <div class="text-center p-4 pb-2">
                         <h5 class="mb-4">{{ curso.nombre_del_Curso }}</h5>
+                        <h7>{{ curso.Descripcion_breve_del_curso }}</h7>
                     </div>
+                    
 
                     <div class="d-flex border-top mt-auto" style="width: 100%;">
                         <small class="flex-fill text-center border-end py-2">
@@ -118,19 +130,46 @@
 
                 </div>
             </div>
-            <div class="modal fade" id="modal-curso-{{ curso.id }}" tabindex="-1" aria-labelledby="modalLabel{{ curso.id }}" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalLabel{{ curso.id }}">
-                    {{ curso.nombre_del_Curso }}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+<div class="modal fade" id="modal-curso-{{ curso.id }}" tabindex="-1" aria-labelledby="modalLabel{{ curso.id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg modal-dialog-scrollable">
+        <div class="modal-content curso-modal-mejorado">
+            
+            <!-- Header -->
+            <div class="modal-header curso-modal-header">
+                <div>
+                    <span class="curso-badge">UCN · KINESIOLOGÍA</span>
+                    <h2 class="modal-title curso-modal-titulo" id="modalLabel{{ curso.id }}">
+                        {{ curso.nombre_del_Curso }}
+                    </h2>
+                    <p class="curso-subtitulo">{{ curso.Descripcion_breve_del_curso|default:"Curso de Kinesiología" }}</p>
+                </div>
+                <button type="button" class="btn-close curso-btn-cerrar" data-bs-dismiss="modal" aria-label="Cerrar"></button>
             </div>
+            
+            <!-- Body -->
+            <div class="modal-body p-0">
+                
+                <!-- Descripción -->
+                <div class="curso-seccion">
+                    <h3 class="curso-seccion-titulo">Sobre este Curso</h3>
+                    <p class="curso-texto">{{ curso.Descripcion_del_curso|default:"Este curso no cuenta con una descripción disponible." }}</p>
+                </div>
 
-            <div class="modal-body">
-                {{ curso.Descripcion_del_curso|default:"Este curso no cuenta con una descripción disponible." }}
+                <!-- Actividades del Curso -->
+                <div class="curso-seccion">
+                    <h3 class="curso-seccion-titulo">Actividades del Curso</h3>
+                    <ul class="curso-lista">
+                        <li>Videos educativos interactivos</li>
+                        <li>Cuestionarios y formularios de práctica</li>
+                        <li>Evaluaciones para medir tu aprendizaje</li>
+                    </ul>
+                </div>
+
+                <!-- Destacado -->
+                <div class="curso-destacado">
+                    <p>🎓 Ingresa al curso para comenzar con las actividades y evaluar tu progreso.</p>
+                </div>
+
             </div>
 
         </div>

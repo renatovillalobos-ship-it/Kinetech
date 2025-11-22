@@ -80,14 +80,13 @@
                         <form action="{% url 'docente:subir_foto_docente' docente.id %}" method="POST" enctype="multipart/form-data">
                             {% csrf_token %}
                             <input type="file" name="foto" accept="image/png" class="form-control mb-2" required>
-                            <small class="text-danger">La imagen de perfil debe ser en formato PNG.</small>
-                            <button class="btn btn-primary btn-sm">Cambiar Foto</button>
+                            <button class="btn btn-primary w-100">Cambiar foto</button>
                         </form>
 
                         {% if docente.foto_perfil_docente %}
                             <form action="{% url 'docente:eliminar_foto_docente' docente.id %}" method="POST" class="mt-2">
                                 {% csrf_token %}
-                                <button class="btn btn-danger btn-sm">Eliminar Foto</button>
+                                <button class="btn btn-danger w-100">Eliminar foto</button>
                             </form>
                         {% endif %}
                     </div>
