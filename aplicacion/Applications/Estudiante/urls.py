@@ -18,6 +18,8 @@ urlpatterns = [
     path('logout/', views.CerrarSesion.as_view(), name='logout'),
     path('videos/', views_videos.lista_videos_estudiante, name='lista_videos'),
     path('ver-video/<int:etapa_id>/', views_videos.ver_video, name='ver_video'),
+    path('videos-curso/<int:curso_id>/', views_videos.lista_videos_curso, name='lista_videos_curso'),
+    
 
 
 

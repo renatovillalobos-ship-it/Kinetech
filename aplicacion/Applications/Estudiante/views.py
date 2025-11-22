@@ -33,21 +33,30 @@ class Home_estudiante(TemplateView):
                 estudiante = Estudiante.objects.get(id=estudiante_id)
                 context['estudiante'] = estudiante
                 
-                # VERIFICAR SI HAY VIDEOS DISPONIBLES
+                # VERIFICACIÓN MEJORADA DE VIDEOS
                 if estudiante.curso_estudiante:
-                    # Contar videos disponibles en el curso del estudiante
+                    # Verificar videos por curso específico del estudiante
                     total_videos = Etapa.objects.filter(
                         ParteCuerpo__CasoClinico__Curso=estudiante.curso_estudiante
                     ).count()
+                    
+                    # DEBUG: Log para verificar
+                    print(f"DEBUG - Estudiante: {estudiante.nombre_estudiante}")
+                    print(f"DEBUG - Curso: {estudiante.curso_estudiante}")
+                    print(f"DEBUG - Total videos: {total_videos}")
+                    
                     context['tiene_videos'] = total_videos > 0
                     context['total_videos'] = total_videos
+                    context['curso_actual'] = estudiante.curso_estudiante
                 else:
                     context['tiene_videos'] = False
                     context['total_videos'] = 0
+                    print("DEBUG - Estudiante sin curso asignado")
                     
             except Estudiante.DoesNotExist:
                 context['tiene_videos'] = False
                 context['total_videos'] = 0
+                print("DEBUG - Estudiante no encontrado")
                 
         context['cursos'] = Curso.objects.all()
         return context

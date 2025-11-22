@@ -32,40 +32,45 @@
                 <div class="card shadow border-0">
                     <div class="card-header bg-primary text-white py-3">
                         <h4 class="mb-0">
-                            <i class="fa fa-play-circle me-2"></i>
+                            <i class="fas fa-play-circle me-2"></i>
                             {{ etapa.nombre }}
                         </h4>
                     </div>
-                    <div class="card-body p-4">
                         <div class="mb-4">
-                            <p class="mb-1"><strong>Parte del cuerpo:</strong> {{ etapa.ParteCuerpo.ParteCuerpo }}</p>
-                            <p class="mb-1"><strong>Caso clínico:</strong> {{ etapa.ParteCuerpo.CasoClinico.caso }}</p>
+                            <p class="mb-2"><strong class="subtitle">Curso:</strong> {{ etapa.ParteCuerpo.CasoClinico.Curso.nombre_del_Curso }}</p>
+                            <p class="mb-2"><strong class="subtitle">Caso clínico:</strong> {{ etapa.ParteCuerpo.CasoClinico.caso }}</p>
+                            <p class="mb-0"><strong class="subtitle">Parte del cuerpo:</strong> {{ etapa.ParteCuerpo.ParteCuerpo }}</p>
                         </div>
                         
-                        {% if etapa.video %}
-                            <div class="video-container mb-4">
-                                <video controls width="100%" height="auto" class="rounded shadow-sm">
-                                    <source src="{{ etapa.video.url }}" type="video/mp4">
-                                    Tu navegador no soporta el elemento video.
-                                </video>
-                            </div>
-                            <div class="alert alert-success">
-                                <i class="fa fa-check-circle me-2"></i>
-                                Este video ha sido marcado como visto en tu progreso.
-                            </div>
-                        {% else %}
-                            <div class="alert alert-warning">
-                                <i class="fa fa-exclamation-triangle me-2"></i>
-                                Este video no está disponible actualmente.
-                            </div>
-                        {% endif %}
+                        <div class="alert alert-success">
+                            <i class="fas fa-check-circle me-2"></i>
+                            Este video ha sido marcado como visto en tu progreso.
+                        </div>
+                        
+                        <div class="text-center my-4 p-4 border rounded bg-light">
+                            <h5 class="subtitle mb-3">Enlace del Video</h5>
+                            {% if etapa.video %}
+                                <a href="{{ etapa.video }}" target="_blank" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-external-link-alt me-2"></i> Abrir Video Externo
+                                </a>
+                                <p class="text-muted mt-3">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    El video se abrirá en una nueva pestaña (YouTube, Drive, etc.)
+                                </p>
+                            {% else %}
+                                <div class="alert alert-warning">
+                                    <i class="fas fa-exclamation-triangle me-2"></i>
+                                    Enlace de video no disponible
+                                </div>
+                            {% endif %}
+                        </div>
                         
                         <div class="d-flex justify-content-between mt-4">
                             <a href="{% url 'estudiante:lista_videos' %}" class="btn btn-secondary">
-                                <i class="fa fa-arrow-left me-2"></i>Volver a la lista
+                                <i class="fas fa-arrow-left me-2"></i>Volver a Biblioteca de Videos
                             </a>
                             <a href="{% url 'estudiante:home_estudiante' %}" class="btn btn-outline-primary">
-                                <i class="fa fa-home me-2"></i>Ir al Inicio
+                                <i class="fas fa-home me-2"></i>Ir al Inicio
                             </a>
                         </div>
                     </div>

@@ -15,7 +15,7 @@
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;500;600&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 
     <!-- Icon Font Stylesheet -->
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -32,6 +32,83 @@
     <link href="{%static 'css/style.css'%}" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/footer.css' %}">
 
+    <!-- Estilos UCN - Fuentes y Colores Institucionales -->
+    <style>
+        :root {
+            --color-primary: #AC6D33;    /* Pantone 471 C - R172, G109, B51 */
+            --color-secondary: #7E9BC0;  /* Pantone 652 - R126, G155, B192 */
+            --color-white: #FFFFFF;      /* Blanco - R255, G255, B255 */
+            --color-dark-blue: #1E3A5F;  /* Pantone 540 C */
+        }
+        
+        /* Tipografías Source Sans Pro */
+        body {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 400; /* Regular para contenido */
+        }
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 700; /* Bold para títulos */
+        }
+        
+        .subtitle, .section-title, .navbar-brand, .nav-link {
+            font-family: 'Source Sans Pro', sans-serif;
+            font-weight: 600; /* Semibold para subtítulos y navegación */
+        }
+        
+        /* Colores institucionales */
+        .bg-primary {
+            background-color: var(--color-primary) !important;
+        }
+        
+        .btn-primary {
+            background-color: var(--color-primary);
+            border-color: var(--color-primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #9b612d;
+            border-color: #9b612d;
+        }
+        
+        .btn-secondary {
+            background-color: var(--color-secondary);
+            border-color: var(--color-secondary);
+        }
+        
+        .text-primary {
+            color: var(--color-primary) !important;
+        }
+        
+        .text-secondary {
+            color: var(--color-secondary) !important;
+        }
+        
+        /* Navbar estático mejorado */
+        .navbar {
+            background-color: var(--color-white) !important;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        
+        .progress-bar {
+            transition: width 0.6s ease;
+        }
+        
+        /* Mejora de contraste y legibilidad */
+        .card {
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        
+        .table th {
+            background-color: var(--color-secondary);
+            color: white;
+            font-weight: 600;
+        }
+    </style>
 </head>
 
 <body>
@@ -45,7 +122,7 @@
 
 
     <!-- Navbar Start -->
-     {% block navbar %}
+    {% block navbar %}
     <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
         <a href="index.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
             <img src="{% static 'img/logo_ucn.jpg' %}" alt="Logo UCN Kinesiologia" style="height: 70px; margin-right: 10px;">
@@ -71,16 +148,14 @@
             </div>
             <a href="" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Join Now<i class="fa fa-arrow-right ms-3"></i></a>
         </div>
-
     </nav>
     {% endblock navbar %}
     <!-- Navbar End -->
-{%block content%}
 
+    {%block content%}
+    {%endblock content%}
 
-{%endblock content%}
-
-<!-- Footer Start -->
+    <!-- Footer Start -->
     <footer class="footer">
         <div class="footer-container">
             <!-- Logos Section -->
@@ -180,12 +255,10 @@
             </div>
         </div>
     </footer>
-<!-- Footer End -->
+    <!-- Footer End -->
 
     <!-- Back to Top -->
-     
     <a href="#" class="btn btn-lg btn-primary btn-lg-square back-to-top"><i class="bi bi-arrow-up"></i></a>
-
 
     <!-- JavaScript Libraries -->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -198,5 +271,4 @@
     <!-- Template Javascript -->
     <script src="{%static 'js/main.js'%}"></script>
 </body>
-
 </html>

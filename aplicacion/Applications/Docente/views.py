@@ -81,23 +81,16 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                 context['cursos'] = Curso.objects.filter(curso_docente=docente)
                 
                 if curso_id:
-                    curso_seleccionado = get_object_or_404(Curso, id=curso_id)
+                    curso_seleccionado = get_object_or_404(Curso, id=curso_id, curso_docente=docente)
                     context['curso_seleccionado'] = curso_seleccionado
                     
-                    # ASIGNAR ESTUDIANTES NUEVOS
-                    estudiantes_sin_este_curso = Estudiante.objects.exclude(
-                        curso_estudiante=curso_seleccionado
-                    )
-                    
-                    if estudiantes_sin_este_curso.exists():
-                        for estudiante in estudiantes_sin_este_curso:
-                            estudiante.curso_estudiante = curso_seleccionado
-                            estudiante.save()
-                    
-                    # Obtener estudiantes del curso
-                    estudiantes_curso = Estudiante.objects.filter(
-                        curso_estudiante=curso_seleccionado
-                    ).order_by('apellido_estudiante', 'nombre_estudiante')
+                    # Obtener estudiantes del curso (si vas a ocupar este codigo, hay que borrar el de abajo, el que dice "este", pero lo ideal seria trabajar con el otro)
+                    #estudiantes_curso = Estudiante.objects.filter(
+                    #    curso_estudiante=curso_seleccionado
+                    #).order_by('apellido_estudiante', 'nombre_estudiante')
+
+                    # Obtener TODOS los estudiantes (mostrar en todos los cursos) (este)
+                    estudiantes_curso = Estudiante.objects.all().order_by('apellido_estudiante', 'nombre_estudiante')
                     
                     # Obtener casos clínicos del curso
                     casos_clinicos = Caso_clinico.objects.filter(Curso=curso_seleccionado)
@@ -105,6 +98,8 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                     progreso_data = []
                     for estudiante in estudiantes_curso:
                         progreso_casos = []
+                        total_videos_curso = 0
+                        total_vistos_estudiante = 0
                         
                         for caso in casos_clinicos:
                             partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso)
@@ -115,12 +110,11 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                             }
                             
                             for parte in partes_cuerpo:
-                                # Obtener etapas (videos) para esta parte del cuerpo
                                 etapas = Etapa.objects.filter(ParteCuerpo=parte)
-                                total_videos = etapas.count()
+                                total_videos_parte = etapas.count()
+                                total_videos_curso += total_videos_parte
                                 
-                                if total_videos > 0:
-                                    # CONTAR VIDEOS REALMENTE VISTOS
+                                if total_videos_parte > 0:
                                     videos_vistos = Progreso.objects.filter(
                                         progreso_estudiante=estudiante,
                                         progreso_curso=curso_seleccionado,
@@ -128,42 +122,47 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                                         video_visto=True
                                     ).count()
                                     
-                                    porcentaje = (videos_vistos / total_videos) * 100 if total_videos > 0 else 0
+                                    total_vistos_estudiante += videos_vistos
+                                    porcentaje = (videos_vistos / total_videos_parte) * 100
                                     
+                                    # COLORES MEJORADOS: Rojo < 70% Amarillo >= 70% Verde
                                     if porcentaje == 0:
-                                        color = 'danger'
-                                    elif porcentaje < 100:
-                                        color = 'primary'
+                                        color = 'danger'  # Rojo
+                                    elif porcentaje < 70:
+                                        color = 'warning' # Amarillo
                                     else:
-                                        color = 'success'
+                                        color = 'success' # Verde
                                     
                                     progreso_caso['partes_cuerpo'].append({
                                         'parte': parte,
-                                        'total_videos': total_videos,
+                                        'total_videos': total_videos_parte,
                                         'videos_vistos': videos_vistos,
-                                        'porcentaje': round(porcentaje, 2),
+                                        'porcentaje': round(porcentaje, 1),
                                         'color': color
                                     })
                             
                             progreso_casos.append(progreso_caso)
                         
-                        # Progreso general
-                        progresos_general = Progreso.objects.filter(
-                            progreso_estudiante=estudiante,
-                            progreso_curso=curso_seleccionado
-                        )
-                        
-                        if progresos_general.exists():
-                            progreso_promedio = progresos_general.aggregate(
-                                avg_progreso=Avg('porcentaje_progreso')
-                            )['avg_progreso'] or 0
+                        # PROGRESO GENERAL MEJORADO - basado en videos reales
+                        if total_videos_curso > 0:
+                            progreso_promedio = (total_vistos_estudiante / total_videos_curso) * 100
                         else:
                             progreso_promedio = 0
                         
+                        # COLOR DEL PROGRESO GENERAL
+                        if progreso_promedio == 0:
+                            color_general = 'danger'
+                        elif progreso_promedio < 70:
+                            color_general = 'warning'
+                        else:
+                            color_general = 'success'
+                        
                         progreso_data.append({
                             'estudiante': estudiante,
-                            'progresos': progresos_general,
-                            'progreso_promedio': round(progreso_promedio, 2),
+                            'progreso_promedio': round(progreso_promedio, 1),
+                            'color_general': color_general,
+                            'total_videos_curso': total_videos_curso,
+                            'total_vistos_estudiante': total_vistos_estudiante,
                             'progreso_casos': progreso_casos
                         })
                     
@@ -174,6 +173,7 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                 pass
         
         return context
+    
     
 
 # -----------------------------------------------------------
