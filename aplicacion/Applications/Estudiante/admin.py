@@ -14,13 +14,17 @@ class EstudianteAdmin(admin.ModelAdmin):
     search_fields=('nombre_estudiante',)
 
     readonly_fields = ('foto_preview',) 
+
+    filter_horizontal = ('cursos',)
+
     fieldsets = (
         (None, {
             'fields': (
                 'nombre_estudiante',
                 'apellido_estudiante',
                 'correo_estudiante',
-                'pais_estudiante', 
+                'pais_estudiante',
+                'cursos',
                 'foto_perfil_estudiante',          
                 'foto_preview',   
             )

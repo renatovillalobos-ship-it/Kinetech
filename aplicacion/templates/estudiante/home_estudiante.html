@@ -176,6 +176,31 @@
     </div>
 </div>
             {% endfor %}
+            {% if cursos_disponibles %}
+<div class="container mt-5">
+    <h2 class="text-center text-secondary">Otros Cursos Disponibles</h2>
+    <p class="text-muted text-center mb-4">Estos cursos no están aún asignados a tu perfil.</p>
+
+    <div class="row">
+        {% for curso in cursos_disponibles %}
+        <div class="col-lg-4 col-md-6 mb-4">
+                                <div class="position-relative overflow-hidden rounded-top">
+                        <img class="img-fluid"
+                             src="{% static 'img/carousel-2.jpg' %}"
+                             alt="Curso Default"
+                             style="width: 100%; height: 190px; object-fit: cover;">
+            <div class="course-item bg-light shadow-sm rounded-3 p-3 text-center">
+                <h5 class="mb-2">{{ curso.nombre_del_Curso }}</h5>
+                <p class="mb-3">{{ curso.Descripcion_breve_del_curso|truncatewords:150 }}</p>
+                <button class="btn btn-outline-primary btn-sm" disabled>
+                    Próximamente disponible
+                </button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
 
         </div>
     </div>

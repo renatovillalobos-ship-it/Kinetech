@@ -22,45 +22,44 @@ class Home_estudiante(TemplateView):
         # Bloquea acceso si no está logueado
         if request.session.get('usuario_tipo') != 'estudiante':
             return redirect('login')
-
         return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        
+
         estudiante_id = self.request.session.get('usuario_id')
         if estudiante_id:
             try:
                 estudiante = Estudiante.objects.get(id=estudiante_id)
                 context['estudiante'] = estudiante
+
+                # Obtener cursos asignados
+                cursos_asignados = estudiante.cursos.all()
+                context['cursos'] = cursos_asignados  # ← CAMBIÉ 'cursos_asignados' a 'cursos'
                 
-                # VERIFICACIÓN MEJORADA DE VIDEOS
-                if estudiante.curso_estudiante:
-                    # Verificar videos por curso específico del estudiante
+                # Cursos NO asignados al estudiante
+                cursos_disponibles = Curso.objects.exclude(id__in=cursos_asignados)
+                context['cursos_disponibles'] = cursos_disponibles
+
+                if cursos_asignados.exists():
+                    # Contar videos de todos los cursos asignados
                     total_videos = Etapa.objects.filter(
-                        ParteCuerpo__CasoClinico__Curso=estudiante.curso_estudiante
+                        ParteCuerpo__CasoClinico__Curso__in=cursos_asignados
                     ).count()
-                    
-                    # DEBUG: Log para verificar
-                    print(f"DEBUG - Estudiante: {estudiante.nombre_estudiante}")
-                    print(f"DEBUG - Curso: {estudiante.curso_estudiante}")
-                    print(f"DEBUG - Total videos: {total_videos}")
-                    
+
                     context['tiene_videos'] = total_videos > 0
                     context['total_videos'] = total_videos
-                    context['curso_actual'] = estudiante.curso_estudiante
                 else:
                     context['tiene_videos'] = False
                     context['total_videos'] = 0
-                    print("DEBUG - Estudiante sin curso asignado")
-                    
+
             except Estudiante.DoesNotExist:
                 context['tiene_videos'] = False
                 context['total_videos'] = 0
-                print("DEBUG - Estudiante no encontrado")
-                
-        context['cursos'] = Curso.objects.all()
+                context['cursos'] = []
+
         return context
+
 
 class CerrarSesion(View):
     def get(self, request):

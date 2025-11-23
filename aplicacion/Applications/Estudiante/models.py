@@ -52,7 +52,7 @@ class Estudiante(models.Model):
     null=True, blank=True
 )
     contrasena_estudiante = models.CharField('Contraseña Estudiante', max_length=150)
-    curso_estudiante= models.ForeignKey(Curso, on_delete=models.SET_NULL, null=True, blank=True)
+    cursos = models.ManyToManyField(Curso, related_name="cursos_estudiantes", blank=True)
 
     class Meta:
         verbose_name='Estudiante'
