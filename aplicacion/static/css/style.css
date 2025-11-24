@@ -913,3 +913,34 @@ body.dark-mode textarea {
         transform: translateX(24px);
     }
 }
+
+.disabled-course {
+    filter: grayscale(100%);  /* hace que todo se vea gris */
+    opacity: 0.6;             /* más efecto de deshabilitado */
+    pointer-events: none;     /* evita interacción */
+    transition: 0.3s;
+}
+
+.disabled-course:hover {
+    opacity: 0.6;             /* evita que cambie al pasar el mouse */
+}
+
+.pregunta-card {
+    background-color: var(--bg-card); /* usa la variable en vez de blanco fijo */
+    color: var(--text-primary);       /* asegura que el texto se vea */
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    transition: transform 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+}
+
+.pregunta-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+}
+
+
+.btn-lg {
+    min-width: 150px;
+}
+

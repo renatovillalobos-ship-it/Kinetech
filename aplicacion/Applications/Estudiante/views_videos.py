@@ -122,6 +122,7 @@ def lista_videos_curso(request, curso_id):
                 })
     
     return render(request, 'estudiante/lista_videos.html', {
-        'videos_data': videos_data,
-        'curso_actual': curso
-    })
+    'videos_data': videos_data,
+    'curso_actual': curso,
+    'curso_id': curso.id  # <-- Agregamos curso_id
+})
