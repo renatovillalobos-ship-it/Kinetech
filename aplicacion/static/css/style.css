@@ -568,11 +568,19 @@ a:hover {
     color: white !important;
     opacity: 0.9 !important;
     margin: 0 !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    max-width: 100%;
 }
+
 
 .curso-btn-cerrar {
     filter: brightness(0) invert(1) !important;
     opacity: 0.8 !important;
+    position: absolute;
+    top: 30px;
+    right: 30px;
 }
 
 .curso-btn-cerrar:hover {
@@ -598,7 +606,12 @@ a:hover {
     color: #4a4a4a !important;
     line-height: 1.75 !important;
     font-size: 15px !important;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: pre-line;
+    max-width: 100%;
 }
+
 
 .curso-lista {
     list-style: none !important;
@@ -942,5 +955,35 @@ body.dark-mode textarea {
 
 .btn-lg {
     min-width: 150px;
+}
+
+.descripcion {
+  word-break: break-word;
+  overflow-wrap: break-word;
+  white-space: pre-line;
+  max-width: 100%;
+}
+
+body.dark-mode .curso-seccion {
+    background: #232e3e !important; /* O el color oscuro que prefieras */
+    /* Puedes cambiar los bordes o texto si es necesario */
+}
+
+body.dark-mode .curso-seccion-titulo {
+    color: #F0F6FC !important; /* Asegura contraste sobre fondo oscuro */
+}
+
+body.dark-mode .curso-seccion,
+body.dark-mode .curso-texto,
+body.dark-mode .curso-lista li {
+    color: #f1f5f9 !important;      /* Blanco suave para buen contraste */
+}
+
+body.dark-mode .curso-lista li::before {
+    color: #06BBCC !important;      /* Turquesa para los bullets, si quieres mantenerlo */
+}
+
+body.dark-mode .curso-lista li strong {
+    color: #FFF !important;         /* Texto destacado en blanco puro */
 }
 

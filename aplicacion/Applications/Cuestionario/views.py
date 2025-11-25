@@ -1,6 +1,8 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from .models import cuestionario as CuestionarioModelo, Preguntas, Respuesta
 from Applications.Docente.models import Curso
+from django.shortcuts import redirect
+
 
 def ver_cuestionario(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)

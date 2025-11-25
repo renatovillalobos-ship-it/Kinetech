@@ -25,7 +25,8 @@ urlpatterns = [
     path('', Login.as_view(), name='login'),  # Ruta raiz para la vista login
     path('estudiante/', include(('Applications.Estudiante.urls','estudiante'), namespace='estudiante')),
     path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
-    path('', include('Applications.Cuestionario.urls')),
+    path('cuestionario/', include(('Applications.Cuestionario.urls', 'cuestionario'), namespace='cuestionario')),
+
 
 ]
 
