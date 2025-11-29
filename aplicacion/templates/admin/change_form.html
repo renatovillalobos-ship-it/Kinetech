@@ -1,0 +1,83 @@
+{% extends "admin/change_form.html" %}
+
+{% block extrahead %}
+    {{ block.super }}
+
+    <style>
+        .custom-modal-backdrop {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); z-index: 9999;
+            display: none; 
+            justify-content: center; align-items: center;
+        }
+        .custom-modal-content {
+            background: white; padding: 25px; border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); text-align: center;
+            width: 90%; max-width: 450px;
+        }
+        .modal-btn { padding: 10px 20px; margin: 8px; cursor: pointer; border: none; border-radius: 5px; font-weight: bold; }
+        .btn-accept { background-color: #7E9BC0; color: white; } /* Aceptar */
+        .btn-cancel { background-color: #1E3A5F; color: white; } /* Cancelar */
+    </style>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const modalBackdrop = document.getElementById('globalCustomModal');
+        let submitButton = null; 
+
+        if (!modalBackdrop) return;
+
+        function showModal(button) {
+            submitButton = button;
+            modalBackdrop.style.display = 'flex';
+        }
+
+        document.querySelectorAll('input[type="submit"]').forEach(function(button) {
+
+            if (button.name === '_delete') return; 
+
+            button.addEventListener('click', function(event) {
+                event.preventDefault(); 
+                
+                const action = button.name === '_addanother' ? 'crear otro' : (button.name === '_continue' ? 'continuar editando' : 'guardar');
+                document.getElementById('modalMessage').textContent = `¿Confirmas que deseas ${action} este registro?`;
+                
+                showModal(button); 
+            });
+        });
+
+        document.getElementById('modalAccept').addEventListener('click', function() {
+            modalBackdrop.style.display = 'none';
+            if (submitButton) {
+
+                const tempButton = submitButton.cloneNode();
+                tempButton.style.display = 'none';
+                tempButton.removeEventListener('click', null); 
+                
+
+                submitButton.form.appendChild(tempButton);
+                tempButton.click(); 
+            }
+        });
+
+        document.getElementById('modalCancel').addEventListener('click', function() {
+            modalBackdrop.style.display = 'none';
+            submitButton = null;
+        });
+    });
+    </script>
+{% endblock %}
+
+
+{% block content %}
+    {{ block.super }}
+
+    <div id="globalCustomModal" class="custom-modal-backdrop">
+        <div class="custom-modal-content">
+            <h3>Confirmación Requerida</h3>
+            <p id="modalMessage">¿Desea guardar este registro?</p>
+            <button id="modalAccept" class="modal-btn btn-accept">Sí, estoy seguro</button>
+            <button id="modalCancel" class="modal-btn btn-cancel">Cancelar</button>
+        </div>
+    </div>
+{% endblock %}

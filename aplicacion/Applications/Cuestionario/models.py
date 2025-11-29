@@ -7,7 +7,15 @@ from Applications.Docente.models import Curso
 # Create your models here.
 class cuestionario(models.Model):
     Curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
-    nombre=models.CharField('Nombre Cuestionario',max_length=100, null=False)
+
+    nombre_opciones = [('Inicial', 'Cuestionario inicial'),
+                       ('Final','Cuestionario final')]
+    
+    nombre=models.CharField('Nombre Cuestionario',
+                            max_length=100, 
+                            null=False,
+                            choices=nombre_opciones,
+                            default='Cuestionario inicial')
 
     class Meta:
         verbose_name='Cuestionario'
