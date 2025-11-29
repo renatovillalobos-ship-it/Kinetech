@@ -987,3 +987,63 @@ body.dark-mode .curso-lista li strong {
     color: #FFF !important;         /* Texto destacado en blanco puro */
 }
 
+/* Evita que el scroll se propague al body */
+#panel-dinamico {
+    overscroll-behavior: contain;
+}
+
+.descripcion-curso {
+    font-size: 1.05rem;
+    max-width: 90%; /* evita que ocupe todo el ancho */
+    word-break: break-word; /* fuerza corte aunque no existan espacios */
+    overflow-wrap: break-word; /* soporte ampliado */
+    white-space: normal; /* evita que el texto se mantenga en una sola línea */
+}
+
+
+/* ============================
+   SCROLLBAR MODERNA Y MINIMALISTA
+   ============================ */
+
+/* ----- Scrollbar base ----- */
+#panel-dinamico::-webkit-scrollbar {
+    width: 6px;        /* ancho MUY delgado */
+}
+
+/* Track (fondo) */
+#panel-dinamico::-webkit-scrollbar-track {
+    background: transparent;   /* invisible */
+}
+
+/* Thumb (barra que se mueve) */
+#panel-dinamico::-webkit-scrollbar-thumb {
+    background: rgba(120, 120, 120, 0.45);
+    border-radius: 10px;
+    transition: background 0.3s;
+}
+
+#panel-dinamico::-webkit-scrollbar-thumb:hover {
+    background: rgba(120, 120, 120, 0.75);
+}
+
+/* Para Firefox */
+#panel-dinamico {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(120,120,120,0.45) transparent;
+}
+
+/* ============================
+   MODO OSCURO
+   ============================ */
+body.dark-mode #panel-dinamico::-webkit-scrollbar-thumb {
+    background: rgba(200, 200, 200, 0.35);
+}
+
+body.dark-mode #panel-dinamico::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 200, 200, 0.55);
+}
+
+body.dark-mode #panel-dinamico {
+    scrollbar-color: rgba(200,200,200,0.35) transparent;
+}
+

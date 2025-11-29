@@ -1,0 +1,154 @@
+{% load static %}
+
+<style>
+.instrucciones-container {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* === TITULO === */
+.instrucciones-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);  /* antes #0d47a1 */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.instrucciones-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-secondary); /* antes #666 */
+    margin-bottom: 25px;
+}
+
+/* === CARD === */
+.instrucciones-card {
+    background: var(--bg-card); /* antes #f8faff */
+    border-left: 4px solid #0d47a1;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.instrucciones-card h5 {
+    font-weight: 600;
+    color: #0d47a1;
+    margin-bottom: 8px;
+}
+
+.instrucciones-list li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* === DIVIDER === */
+.instrucciones-divider {
+    margin: 20px 0;
+    border-top: 1px solid #ddd;
+}
+
+/* === TIP === */
+.instrucciones-tip {
+    background: var(--bg-card); /* antes #e8f3ff */
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #1565c0;
+    font-size: 0.95rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text-primary);
+}
+
+/* =============================== */
+/*        MODO OSCURO REAL         */
+/* =============================== */
+
+body.dark-mode .instrucciones-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .instrucciones-card {
+    background-color: var(--bg-card) !important;
+    border-left-color: #3b82f6 !important; /* azul claro */
+    box-shadow: none !important;
+}
+
+body.dark-mode .instrucciones-card h5 {
+    color: #60a5fa !important; /* azul claro */
+}
+
+body.dark-mode .instrucciones-list li {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .instrucciones-tip {
+    background-color: #1e293b !important;
+    border-left-color: #3b82f6 !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .instrucciones-divider {
+    border-color: #334155 !important;
+}
+</style>
+<div class="instrucciones-container">
+
+    <!-- Imagen UCN arriba -->
+    <div class="text-center mb-3">
+        <img src="{% static 'img/ucn_escudo.png' %}"
+             style="height: 90px;"
+             alt="UCN Escudo">
+    </div>
+
+    <h2 class="instrucciones-title">Bienvenido al Panel del Curso</h2>
+    <p class="instrucciones-subtitle">
+        Usa este panel para navegar de forma clara entre todos los contenidos del curso.
+    </p>
+
+    <!-- CARD 1 – Cómo funciona el panel -->
+    <div class="instrucciones-card">
+        <h5><i class="fa-solid fa-compass me-2"></i>Navegación por el curso</h5>
+        <ul class="instrucciones-list">
+            <li>Usa el menú lateral izquierdo para abrir las distintas secciones del curso.</li>
+            <li>Haz clic en <strong>Conocimientos Previos</strong> para acceder a los cuestionarios iniciales.</li>
+            <li>En <strong>Caso Clínico</strong>, podrás revisar videos y material aplicado.</li>
+            <li>En <strong>Evaluaciones</strong> encontrarás actividades sumativas cuando estén disponibles.</li>
+        </ul>
+    </div>
+
+    <!-- CARD 2 – Cómo leer el contenido -->
+    <div class="instrucciones-card">
+        <h5><i class="fa-solid fa-book-open me-2"></i>Carga dinámica de contenido</h5>
+        <ul class="instrucciones-list">
+            <li>Al seleccionar una opción del menú, el contenido aparecerá automáticamente a la derecha.</li>
+            <li>No se recarga la página; todo ocurre en tiempo real para una experiencia fluida.</li>
+            <li>Desplázate dentro del panel derecho para leer o responder completamente.</li>
+        </ul>
+    </div>
+
+    <!-- CARD 3 – Uso del cuestionario -->
+    <div class="instrucciones-card">
+        <h5><i class="fa-solid fa-clipboard-list me-2"></i>Cuestionarios</h5>
+        <ul class="instrucciones-list">
+            <li>Cada cuestionario contiene preguntas con alternativas.</li>
+            <li>Selecciona tu respuesta y presiona <strong>Enviar</strong> para registrar tu intento.</li>
+            <li>Algunos cursos pueden permitir retroalimentación inmediata.</li>
+        </ul>
+    </div>
+
+    <div class="instrucciones-divider"></div>
+
+    <!-- TIP BOX -->
+    <div class="instrucciones-tip">
+        <i class="fa-solid fa-lightbulb text-warning fa-lg"></i>
+        <div>
+            <strong>Consejo:</strong><br>
+            Te recomendamos completar primero los <strong>Conocimientos Previos</strong> antes de avanzar al caso clínico o a las evaluaciones. Esto garantiza un progreso más sólido.
+        </div>
+    </div>
+
+</div>

@@ -5,6 +5,7 @@ from .models import Progreso, Estudiante
 from Applications.Caso_Clinico.models import Etapa, Partes_cuerpo, Caso_clinico  
 from Applications.Docente.models import Curso
 
+
 def lista_videos_estudiante(request):
     """Vista para que estudiantes vean la lista de videos disponibles"""
     estudiante_id = request.session.get('usuario_id')
@@ -121,8 +122,8 @@ def lista_videos_curso(request, curso_id):
                     'video_visto': video_visto
                 })
     
-    return render(request, 'estudiante/lista_videos.html', {
-    'videos_data': videos_data,
+    return render(request, 'estudiante/curso.html', {
     'curso_actual': curso,
     'curso_id': curso.id  # <-- Agregamos curso_id
 })
+

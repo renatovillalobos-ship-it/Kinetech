@@ -1,0 +1,141 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'css/sidebar_curso.css' %}">
+
+<div class="accordion sidebar-modern" id="sidebarAccordion">
+
+    <!-- 🟦 INSTRUCCIONES -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingInstr">
+            <button class="accordion-button collapsed sidebar-section"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseInstr">
+                📘 Instrucciones del Curso
+                <span class="estado-item" id="estado-instrucciones"></span>
+            </button>
+        </h2>
+
+        <div id="collapseInstr" class="accordion-collapse collapse show"
+             aria-labelledby="headingInstr"
+             data-bs-parent="#sidebarAccordion">
+
+            <div class="list-group sidebar-list">
+
+                <a href="#"
+                   class="list-group-item sidebar-link cargar-contenido active-link"
+                   data-url="{% url 'estudiante:ajax_instrucciones' curso_id %}"
+                   data-section="instrucciones">
+                    Ver instrucciones
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- 🟩 CONOCIMIENTOS PREVIOS -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingPrevios">
+            <button class="accordion-button collapsed sidebar-section"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapsePrevios">
+                🧠 Conocimientos Previos
+                <span class="estado-item" id="estado-previos"></span>
+            </button>
+        </h2>
+
+        <div id="collapsePrevios" class="accordion-collapse collapse"
+             aria-labelledby="headingPrevios"
+             data-bs-parent="#sidebarAccordion">
+
+            <div class="list-group sidebar-list">
+
+                {% if cuestionarios %}
+                    {% for c in cuestionarios %}
+                    <a href="#"
+                    class="list-group-item sidebar-link cargar-contenido"
+                    data-url="{% url 'estudiante:ajax_cuestionario' curso_id c.id %}"
+                    data-section="cuest-{{ c.id }}">
+                        {{ c.nombre }}
+                        <span class="estado-item small 
+                                    {% if c.id in cuestionarios_respondidos %}completado{% endif %}"
+                            id="estado-cuest-{{ c.id }}"></span>
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <div class="p-3 text-muted small">No hay cuestionarios disponibles.</div>
+                {% endif %}
+
+            </div>
+
+
+
+        </div>
+    </div>
+
+
+    <!-- 🟥 CASO CLÍNICO -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingCaso">
+            <button class="accordion-button collapsed sidebar-section"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseCaso">
+                🩺 Caso Clínico
+                <span class="estado-item" id="estado-caso"></span>
+            </button>
+        </h2>
+
+        <div id="collapseCaso" class="accordion-collapse collapse"
+             aria-labelledby="headingCaso"
+             data-bs-parent="#sidebarAccordion">
+
+            <div class="list-group sidebar-list">
+
+                <a href="#"
+                   class="list-group-item sidebar-link cargar-contenido"
+                   data-url="{% url 'estudiante:ajax_caso_clinico' curso_id %}"
+                   data-section="caso">
+                    Ver Caso Clínico
+                    <span class="estado-item small" id="estado-caso-detalle"></span>
+                </a>
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- 🟨 EVALUACIONES -->
+    <div class="accordion-item">
+        <h2 class="accordion-header" id="headingEval">
+            <button class="accordion-button collapsed sidebar-section"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseEval">
+                📝 Evaluaciones
+                <span class="estado-item" id="estado-evaluaciones"></span>
+            </button>
+        </h2>
+
+        <div id="collapseEval" class="accordion-collapse collapse"
+             aria-labelledby="headingEval"
+             data-bs-parent="#sidebarAccordion">
+
+            <div class="list-group sidebar-list">
+
+                <a href="#"
+                   class="list-group-item sidebar-link cargar-contenido"
+                   data-url="{% url 'estudiante:ajax_evaluaciones' curso_id %}"
+                   data-section="evaluaciones">
+                    Ver Evaluaciones
+                    <span class="estado-item small" id="estado-evaluaciones-detalle"></span>
+                </a>
+
+            </div>
+        </div>
+    </div>
+
+</div>

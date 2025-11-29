@@ -4,6 +4,7 @@ from Applications.Docente.models import Docente
 from Applications.Caso_Clinico.models import Partes_cuerpo, Etapa  
 from django.core.validators import RegexValidator #Validador de letras y números
 from django.core.exceptions import ValidationError
+from Applications.Cuestionario.models import cuestionario, Preguntas, Respuesta
 from PIL import Image
 
 
@@ -85,3 +86,31 @@ class Progreso(models.Model):
 
     def __str__(self):
         return f"{self.id} - {self.porcentaje_progreso}% - {self.progreso_estudiante}"
+    
+class RespuestaEstudiante(models.Model):
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    cuestionario = models.ForeignKey(cuestionario, on_delete=models.CASCADE)
+    pregunta = models.ForeignKey(Preguntas, on_delete=models.CASCADE)
+    respuesta = models.ForeignKey(Respuesta, on_delete=models.CASCADE)
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Respuesta Estudiante"
+        verbose_name_plural = "Respuestas Estudiantes"
+        unique_together = ('estudiante', 'pregunta')  # Evita duplicados
+
+    def __str__(self):
+        return f"{self.estudiante} - Pregunta {self.pregunta.id}"
+    
+class ResultadoCuestionario(models.Model):
+    estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
+    cuestionario = models.ForeignKey(cuestionario, on_delete=models.CASCADE)
+    puntaje = models.FloatField()
+    porcentaje = models.FloatField()
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Resultado Cuestionario"
+        verbose_name_plural = "Resultados Cuestionarios"
+        unique_together = ('estudiante', 'cuestionario')
+

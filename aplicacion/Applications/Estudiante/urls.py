@@ -1,6 +1,7 @@
 from django.urls import path
 from . import views
 from . import views_videos
+from . import views_ajax
 
 
 
@@ -18,8 +19,13 @@ urlpatterns = [
     path('logout/', views.CerrarSesion.as_view(), name='logout'),
     path('videos/', views_videos.lista_videos_estudiante, name='lista_videos'),
     path('ver-video/<int:etapa_id>/', views_videos.ver_video, name='ver_video'),
-    path('videos-curso/<int:curso_id>/', views_videos.lista_videos_curso, name='lista_videos_curso'),
-    
+    path('cursos/<int:curso_id>/', views_videos.lista_videos_curso, name='curso'),
+    path('curso/<int:curso_id>/', views_ajax.curso_panel, name='curso'),
+    path('curso/<int:curso_id>/ajax/instrucciones/',views_ajax.ajax_instrucciones,name='ajax_instrucciones'),
+    path('curso/<int:curso_id>/ajax/cuestionario/<int:cuest_id>/',views_ajax.ajax_cuestionario,name='ajax_cuestionario'),
+    path('curso/<int:curso_id>/ajax/caso/',views_ajax.ajax_caso_clinico,name='ajax_caso_clinico'),
+    path('curso/<int:curso_id>/ajax/evaluaciones/',views_ajax.ajax_evaluaciones,name='ajax_evaluaciones'),
+    path('curso/<int:curso_id>/ajax/cuestionario/<int:cuest_id>/guardar/',views_ajax.ajax_guardar_respuestas,name='ajax_guardar_respuestas'),
 
 
 
