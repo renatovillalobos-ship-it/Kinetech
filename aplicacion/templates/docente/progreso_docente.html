@@ -41,39 +41,42 @@
 {% block content %}
 <div class="container-xxl py-5">
     <div class="container">
-        <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-            <h6 class="section-title bg-white text-center text-primary px-3">Seguimiento del Aprendizaje</h6>
-            <h1 class="mb-5">Progreso de Estudiantes</h1>
-        </div>
-
+        
+        <!-- ============================================= -->
+        <!-- SECCIÓN 1: CATÁLOGO DE CURSOS (SIEMPRE VISIBLE) -->
+        <!-- ============================================= -->
         <div class="row mb-5">
             <div class="col-12">
-                <h4 class="mb-4 text-primary">Mis Cursos</h4>
+                <h2 class="mb-4 text-primary">Mis Cursos</h2>
+                <p class="text-muted mb-4">Selecciona un curso para ver el progreso de sus estudiantes</p>
                 <div class="row g-4">
                     {% for curso in cursos %}
-                    <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.2s">
-                        <div class="course-item bg-light shadow-sm rounded">
-                            <div class="position-relative overflow-hidden">
-                                <!-- Manteniendo el diseño original -->
-                            </div>
-                            <div class="text-center p-4">
-                                <h5 class="mb-3">{{ curso.nombre_del_Curso }}</h5>
-                                <p class="text-muted small">{{ curso.Descripcion_del_curso }}</p>
-                                <div class="d-flex justify-content-between small text-muted mb-3">
-                                    <span><i class="fa fa-calendar me-1"></i>{{ curso.fecha_realización_curso }}</span>
-                                    <span><i class="fa fa-users me-1"></i>{{ curso.paralelo_curso }}</span>
+                    <div class="col-lg-4 col-md-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-body">
+                                <h5 class="card-title text-primary">{{ curso.nombre_del_Curso }}</h5>
+                                <p class="card-text text-muted small">{{ curso.Descripcion_breve_del_curso }}</p>
+                                <div class="mt-3">
+                                    <a href="{% url 'docente:progreso_curso' curso.id %}" 
+                                       class="btn btn-primary w-100">
+                                        Ver Progreso de Este Curso
+                                    </a>
                                 </div>
-                                <a href="{% url 'docente:progreso_curso' curso.id %}" class="btn btn-primary btn-sm">
-                                    Ver Progreso del Curso
-                                </a>
+                            </div>
+                            <div class="card-footer bg-transparent border-top">
+                                <small class="text-muted">
+                                    <i class="far fa-calendar me-1"></i>
+                                    {{ curso.fecha_realización_curso }} | 
+                                    Paralelo: {{ curso.paralelo_curso }}
+                                </small>
                             </div>
                         </div>
                     </div>
                     {% empty %}
-                    <div class="col-12 text-center">
+                    <div class="col-12">
                         <div class="alert alert-info">
-                            <i class="fa fa-info-circle me-2"></i>
-                            No tienes cursos asignados.
+                            <i class="fas fa-info-circle me-2"></i>
+                            No tienes cursos asignados. Contacta al administrador.
                         </div>
                     </div>
                     {% endfor %}
@@ -81,120 +84,86 @@
             </div>
         </div>
 
+        <!-- ==================================================== -->
+        <!-- SECCIÓN 2: PROGRESO DEL CURSO SELECCIONADO (SI HAY) -->
+        <!-- ==================================================== -->
         {% if curso_seleccionado %}
-        <div class="row wow fadeInUp" data-wow-delay="0.3s">
+        <div class="row">
             <div class="col-12">
                 <div class="card shadow border-0">
                     <div class="card-header bg-primary text-white py-3">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h4 class="mb-0">
-                                <i class="fa fa-chart-line me-2"></i>
-                                Progreso - {{ curso_seleccionado.nombre_del_Curso }}
-                            </h4>
-                            <span class="badge bg-light text-primary">Paralelo: {{ curso_seleccionado.paralelo_curso }}</span>
-                        </div>
+                        <h4 class="mb-0">
+                            <i class="fas fa-chart-line me-2"></i>
+                            Progreso - {{ curso_seleccionado.nombre_del_Curso }}
+                        </h4>
                     </div>
-                    <div class="card-body p-0">
-
+                    
+                    <div class="card-body p-4">
                         {% if progreso_estudiantes %}
                         <div class="table-responsive">
-                            <table class="table table-hover mb-0">
+                            <table class="table table-hover align-middle">
                                 <thead class="table-light">
                                     <tr>
-                                        <th class="text-center">#</th>
-                                        <th>Estudiante</th>
-                                        <th>Correo Electrónico</th>
-                                        <th class="text-center">Progreso General</th>
-                                        <th class="text-center">Progreso por Casos Clínicos</th>
-                                        <th class="text-center">Último Puntaje</th>
-                                        <th class="text-center">Acciones</th>
+                                        <th width="25%">Estudiante</th>
+                                        <th width="20%">Progreso General</th>
+                                        <th width="55%">Detalle por Casos Clínicos</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {% for item in progreso_estudiantes %}
                                     <tr>
-                                        <td class="text-center align-middle">{{ forloop.counter }}</td>
-                                        <td class="align-middle">
-                                            <strong>{{ item.estudiante.apellido_estudiante }}, {{ item.estudiante.nombre_estudiante }}</strong>
+                                        <td>
+                                            <strong>{{ item.estudiante.apellido_estudiante }}, {{ item.estudiante.nombre_estudiante }}</strong><br>
+                                            <small class="text-muted">{{ item.estudiante.correo_estudiante }}</small>
                                         </td>
-                                        <td class="align-middle">
-                                            <small>{{ item.estudiante.correo_estudiante }}</small>
-                                        </td>
-
-                                        <td class="align-middle">
-                                            <div class="d-flex align-items-center">
-                                                <div class="progress flex-grow-1" style="height: 20px;">
-                                                    {% if item.progreso_promedio >= 80 %}
-                                                    <div class="progress-bar bg-success w-100">
-                                                        {{ item.progreso_promedio }}%
-                                                    </div>
-                                                    {% elif item.progreso_promedio >= 60 %}
-                                                    <div class="progress-bar bg-primary w-75">
-                                                        {{ item.progreso_promedio }}%
-                                                    </div>
-                                                    {% elif item.progreso_promedio >= 40 %}
-                                                    <div class="progress-bar bg-warning w-50">
-                                                        {{ item.progreso_promedio }}%
-                                                    </div>
-                                                    {% else %}
-                                                    <div class="progress-bar bg-danger w-25">
-                                                        {{ item.progreso_promedio }}%
-                                                    </div>
-                                                    {% endif %}
+                                        
+                                        <td>
+                                            <div class="mb-2">
+                                                <span class="badge bg-{{ item.color_general }} fs-6">
+                                                    {{ item.progreso_promedio }}%
+                                                </span>
+                                            </div>
+                                            <div class="progress" style="height: 20px;">
+                                                <div class="progress-bar bg-{{ item.color_general }}" 
+                                                     style="width: {{ item.progreso_promedio }}%">
                                                 </div>
                                             </div>
+                                            <small class="text-muted d-block mt-1">
+                                                {{ item.total_vistos_estudiante }}/{{ item.total_videos_curso }} videos
+                                            </small>
                                         </td>
                                         
-                                        <!-- NUEVA COLUMNA: Progreso por Casos Clínicos -->
-                                        <td class="align-middle">
+                                        <td>
                                             {% if item.progreso_casos %}
-                                                <div class="casos-progreso">
-                                                    {% for caso_data in item.progreso_casos %}
-                                                        <div class="mb-2">
-                                                            <small class="fw-bold text-dark d-block mb-1">
-                                                                {{ caso_data.caso.caso }}
-                                                            </small>
-                                                            {% for parte_data in caso_data.partes_cuerpo %}
-                                                                <div class="d-flex align-items-center mb-1">
-                                                                    <small class="text-muted me-2" style="min-width: 120px;">
-                                                                        {{ parte_data.parte.ParteCuerpo }}
-                                                                    </small>
-                                                                    <div class="progress flex-grow-1" style="height: 15px;">
-                                                                        <div class="progress-bar bg-{{ parte_data.color }}" 
-                                                                             style="width: {{ parte_data.porcentaje }}%">
-                                                                            <small>{{ parte_data.videos_vistos }}/{{ parte_data.total_videos }}</small>
-                                                                        </div>
-                                                                    </div>
-                                                                    <small class="text-muted ms-2" style="min-width: 40px;">
-                                                                        {{ parte_data.porcentaje }}%
-                                                                    </small>
-                                                                </div>
-                                                            {% empty %}
-                                                                <small class="text-muted">No hay partes del cuerpo</small>
-                                                            {% endfor %}
+                                                {% for caso_data in item.progreso_casos %}
+                                                <div class="mb-3 p-3 border rounded">
+                                                    <h6 class="text-dark mb-2">
+                                                        <i class="fas fa-file-medical me-1"></i>
+                                                        {{ caso_data.caso.caso }}
+                                                    </h6>
+                                                    {% for parte_data in caso_data.partes_cuerpo %}
+                                                    <div class="d-flex align-items-center mb-2">
+                                                        <small class="text-muted me-3" style="width: 150px;">
+                                                            {{ parte_data.parte.ParteCuerpo }}
+                                                        </small>
+                                                        <div class="progress flex-grow-1" style="height: 15px;">
+                                                            <div class="progress-bar bg-{{ parte_data.color }}" 
+                                                                 style="width: {{ parte_data.porcentaje }}%">
+                                                            </div>
                                                         </div>
+                                                        <small class="ms-3" style="width: 60px;">
+                                                            {{ parte_data.porcentaje }}%
+                                                        </small>
+                                                        <small class="text-muted ms-2">
+                                                            ({{ parte_data.videos_vistos }}/{{ parte_data.total_videos }})
+                                                        </small>
+                                                    </div>
                                                     {% endfor %}
                                                 </div>
+                                                {% endfor %}
                                             {% else %}
-                                                <small class="text-muted">No hay casos clínicos</small>
+                                                <span class="text-muted">No hay casos clínicos asignados</span>
                                             {% endif %}
-                                        </td>
-                                        
-                                        <td class="text-center align-middle">
-                                            {% with item.progresos.last as ultimo_progreso %}
-                                                {% if ultimo_progreso %}
-                                                <span class="badge bg-primary rounded-pill">
-                                                    {{ ultimo_progreso.puntaje_obtenido_final }}
-                                                </span>
-                                                {% else %}
-                                                <span class="text-muted">N/A</span>
-                                                {% endif %}
-                                            {% endwith %}
-                                        </td>
-                                        <td class="text-center align-middle">
-                                            <button class="btn btn-sm btn-outline-primary" title="Ver detalles">
-                                                <i class="fa fa-chart-bar"></i>
-                                            </button>
                                         </td>
                                     </tr>
                                     {% endfor %}
@@ -203,40 +172,48 @@
                         </div>
                         {% else %}
                         <div class="text-center py-5">
-                            <i class="fa fa-users fa-3x text-muted mb-3"></i>
-                            <h5 class="text-muted">No hay datos de progreso disponibles</h5>
-                            <p class="text-muted">No hay estudiantes inscritos o no se han registrado progresos en este curso.</p>
+                            <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+                            <h5 class="text-muted">No hay estudiantes en este curso</h5>
+                            <p class="text-muted">Agrega estudiantes al curso para ver su progreso.</p>
                         </div>
                         {% endif %}
-
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% else %}
-        <div class="row">
-            <div class="col-12 text-center">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body py-5">
-                        <i class="fa fa-line-chart fa-4x text-primary mb-4"></i>
-                        <h4 class="text-primary">Selecciona un Curso</h4>
-                        <p class="text-muted mb-4">Elige uno de tus cursos del catálogo superior para visualizar el progreso detallado de tus estudiantes.</p>
-                        <div class="alert alert-info d-inline-block">
-                            <i class="fa fa-lightbulb me-2"></i>
-                            Los estudiantes están ordenados alfabéticamente por apellido
-                        </div>
                     </div>
                 </div>
             </div>
         </div>
         {% endif %}
+        
     </div>
 </div>
 
 <footer class="bg-white py-4 mt-5 shadow-sm">
     <div class="container text-center">
         <p class="mb-1 text-secondary">© 2025 Facultad de Medicina - Universidad Católica del Norte</p>
-        <small class="text-muted">Escuela de Kinesiología | Portal Estudiantes</small>
+        <small class="text-muted">Escuela de Kinesiología | Portal Docentes</small>
     </div>
 </footer>
+
+<!-- Estilo para mejorar la tabla -->
+<style>
+    .table th {
+        background-color: #7E9BC0; /* Pantone 652 */
+        color: white;
+        font-family: 'Source Sans Pro', sans-serif;
+        font-weight: 600;
+    }
+    
+    .progress-bar {
+        transition: width 0.6s ease;
+    }
+    
+    .card {
+        border: 1px solid rgba(0,0,0,0.1);
+    }
+    
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.9rem;
+        }
+    }
+</style>
 {% endblock %}

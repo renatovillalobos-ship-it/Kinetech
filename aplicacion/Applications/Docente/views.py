@@ -20,6 +20,7 @@ import re
 import time
 from django.http import JsonResponse
 
+from django.db.models import Count, Prefetch
 
 from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
@@ -128,60 +129,71 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
         if docente_id:
             try:
                 docente = Docente.objects.get(id=docente_id)
-                context['cursos'] = Curso.objects.filter(curso_docente=docente)
+                context['cursos'] = Curso.objects.filter(curso_docente=docente).select_related('curso_docente')
                 
                 if curso_id:
-                    curso_seleccionado = get_object_or_404(Curso, id=curso_id, curso_docente=docente)
+                    curso_seleccionado = get_object_or_404(
+                        Curso, 
+                        id=curso_id, 
+                        curso_docente=docente
+                    )
                     context['curso_seleccionado'] = curso_seleccionado
                     
-                    # Obtener estudiantes del curso (si vas a ocupar este codigo, hay que borrar el de abajo, el que dice "este", pero lo ideal seria trabajar con el otro)
-                    #estudiantes_curso = Estudiante.objects.filter(
-                    #    curso_estudiante=curso_seleccionado
-                    #).order_by('apellido_estudiante', 'nombre_estudiante')
-
-                    # Obtener TODOS los estudiantes (mostrar en todos los cursos) (este)
-                    estudiantes_curso = Estudiante.objects.all().order_by('apellido_estudiante', 'nombre_estudiante')
+                    # SOLO estudiantes de ESTE curso (NO "all()")
+                    estudiantes_curso = Estudiante.objects.filter(
+                        cursos=curso_seleccionado
+                    ).select_related().order_by('apellido_estudiante', 'nombre_estudiante')
                     
-                    # Obtener casos clínicos del curso
-                    casos_clinicos = Caso_clinico.objects.filter(Curso=curso_seleccionado)
+                    # OPTIMIZADO: prefetch_related para reducir consultas
+                    casos_clinicos = Caso_clinico.objects.filter(
+                        Curso=curso_seleccionado
+                    ).prefetch_related('partes_cuerpo_set__etapa_set')
+                    
+                    # OPTIMIZADO: Una sola consulta con annotate
+                    progresos_curso = Progreso.objects.filter(
+                        progreso_curso=curso_seleccionado,
+                        video_visto=True
+                    ).values('progreso_estudiante', 'parte_cuerpo').annotate(
+                        total_videos_vistos=Count('id')
+                    )
+                    
+                    # Diccionario para acceso rápido
+                    progresos_dict = {}
+                    for p in progresos_curso:
+                        key = (p['progreso_estudiante'], p['parte_cuerpo'])
+                        progresos_dict[key] = p['total_videos_vistos']
                     
                     progreso_data = []
+                    
                     for estudiante in estudiantes_curso:
-                        progreso_casos = []
                         total_videos_curso = 0
                         total_vistos_estudiante = 0
+                        progreso_casos = []
                         
                         for caso in casos_clinicos:
-                            partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso)
-                            
                             progreso_caso = {
                                 'caso': caso,
                                 'partes_cuerpo': []
                             }
                             
-                            for parte in partes_cuerpo:
-                                etapas = Etapa.objects.filter(ParteCuerpo=parte)
-                                total_videos_parte = etapas.count()
+                            for parte in caso.partes_cuerpo_set.all():
+                                total_videos_parte = parte.etapa_set.count()
                                 total_videos_curso += total_videos_parte
                                 
                                 if total_videos_parte > 0:
-                                    videos_vistos = Progreso.objects.filter(
-                                        progreso_estudiante=estudiante,
-                                        progreso_curso=curso_seleccionado,
-                                        parte_cuerpo=parte,
-                                        video_visto=True
-                                    ).count()
-                                    
+                                    videos_vistos = progresos_dict.get(
+                                        (estudiante.id, parte.id), 
+                                        0
+                                    )
                                     total_vistos_estudiante += videos_vistos
                                     porcentaje = (videos_vistos / total_videos_parte) * 100
                                     
-                                    # COLORES MEJORADOS: Rojo < 70% Amarillo >= 70% Verde
                                     if porcentaje == 0:
-                                        color = 'danger'  # Rojo
+                                        color = 'danger'
                                     elif porcentaje < 70:
-                                        color = 'warning' # Amarillo
+                                        color = 'warning'
                                     else:
-                                        color = 'success' # Verde
+                                        color = 'success'
                                     
                                     progreso_caso['partes_cuerpo'].append({
                                         'parte': parte,
@@ -191,15 +203,14 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                                         'color': color
                                     })
                             
-                            progreso_casos.append(progreso_caso)
+                            if progreso_caso['partes_cuerpo']:
+                                progreso_casos.append(progreso_caso)
                         
-                        # PROGRESO GENERAL MEJORADO - basado en videos reales
                         if total_videos_curso > 0:
                             progreso_promedio = (total_vistos_estudiante / total_videos_curso) * 100
                         else:
                             progreso_promedio = 0
                         
-                        # COLOR DEL PROGRESO GENERAL
                         if progreso_promedio == 0:
                             color_general = 'danger'
                         elif progreso_promedio < 70:
