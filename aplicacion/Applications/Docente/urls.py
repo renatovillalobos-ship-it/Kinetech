@@ -29,4 +29,8 @@ urlpatterns = [
     path('progreso/<int:curso_id>/', views.ProgresoDocenteView.as_view(), name='progreso_curso'),
 
     path('principal/<int:curso_id>/', views.pagina_principal_docente, name='pagina_principal_docente'),
+
+    path('validar-correo-ucn/', views.validar_correo_ucn, name='validar_correo_ucn'),
+    path('validar-existencia-cuenta/', views.validar_existencia_cuenta, name='validar_existencia_cuenta'),
+   
 ]

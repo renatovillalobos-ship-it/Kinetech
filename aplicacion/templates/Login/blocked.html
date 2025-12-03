@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cuenta Bloqueada - UCN</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #333;
+        }
+        .blocked-container {
+            width: 100%;
+            max-width: 500px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            padding: 40px;
+            text-align: center;
+        }
+        .error-icon { color: #e74c3c; font-size: 60px; margin: 20px 0; }
+        .timer { font-size: 24px; color: #e74c3c; font-weight: bold; margin: 15px 0; }
+        .btn { display: inline-block; margin-top: 20px; padding: 12px 30px;
+               background: #4B70E2; color: white; border-radius: 6px;
+               text-decoration: none; font-weight: 600; }
+    </style>
+</head>
+<body>
+    <div class="blocked-container">
+        <div class="error-icon">🚫</div>
+        <h1>Cuenta Temporalmente Bloqueada</h1>
+        <p>Has excedido el límite de 3 intentos fallidos de inicio de sesión.</p>
+        <p class="timer">Tiempo de bloqueo: 30 minutos</p>
+        <p>Se ha enviado un correo para restablecer tu contraseña.</p>
+        <a href="{% url 'reset_password' %}" class="btn">RESTABLECER CONTRASEÑA</a>
+    </div>
+</body>
+</html>

@@ -12,6 +12,33 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = 'django-insecure-sw$_&cx=rdqf$+j(dt57hi6@9#v(ghhnwy-8)lmu#uzay5mk$3'
 
 
+DEBUG = True  # Asegúrate que sea True para desarrollo
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # <- Agregar esto si no está
+
+
+# ==============================================================================
+# CONFIGURACIÓN DE SESIONES PARA "RECORDARME"
+# ==============================================================================
+
+# Motor de sesiones (base de datos recomendado)
+SESSION_ENGINE = 'django.contrib.sessions.backends.db'
+
+# Tiempo de expiración de la sesión (30 días en segundos)
+SESSION_COOKIE_AGE = 2592000
+
+# La sesión NO expira cuando se cierra el navegador (permite "Recordarme")
+SESSION_EXPIRE_AT_BROWSER_CLOSE = False
+
+# Renovar la sesión en cada petición (recomendado para mejor UX)
+SESSION_SAVE_EVERY_REQUEST = True
+
+# Configuración de cookies de sesión
+SESSION_COOKIE_SECURE = False  # True en producción con HTTPS
+SESSION_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SAMESITE = 'Lax'
+
+
+
 
 # Application definition
 
@@ -23,6 +50,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',  # <- AÑADIR ESTO
+    
     
     #Aplicaciones Propias
     'Applications.Docente',
@@ -155,3 +184,29 @@ STATICFILES_DIRS = [
 ]
 
 
+
+# ============================================
+# CONFIGURACIÓN EMAIL - RESTABLECIMIENTO
+# ============================================
+
+# Para desarrollo - Muestra emails en consola
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# Configuración personalizada
+DEFAULT_FROM_EMAIL = 'soporte@sistema-ucn.cl'
+SITE_ID = 1  # Importante para que funcione correctamente
+
+# Hosts permitidos para desarrollo
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+
+# ============================================
+# CONFIGURACIÓN DE AUTENTICACIÓN
+# ============================================
+
+# Redirección después de login/logout
+LOGIN_URL = '/login/'  # O la URL de tu login
+LOGIN_REDIRECT_URL = '/'  # Página después de login exitoso
+LOGOUT_REDIRECT_URL = '/login/'  # Página después de logout
+
+# Tiempo de expiración del token de restablecimiento (24 horas en segundos)
+PASSWORD_RESET_TIMEOUT = 86400

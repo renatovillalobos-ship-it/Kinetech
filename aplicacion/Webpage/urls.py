@@ -19,6 +19,7 @@ from django.urls import path, re_path,include
 from django.conf import settings
 from django.conf.urls.static import static
 from Applications.Docente.views import Login
+from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -27,6 +28,32 @@ urlpatterns = [
     path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
     path('cuestionario/', include(('Applications.Cuestionario.urls', 'cuestionario'), namespace='cuestionario')),
 
+    # URLs para restablecimiento de contraseña
+    path('reset_password/',
+         auth_views.PasswordResetView.as_view(
+             template_name="Login/password_reset.html",
+             email_template_name="Login/password_reset_email.html",
+             subject_template_name="Login/password_reset_subject.txt"
+         ),
+         name="reset_password"),
+    
+    path('reset_password_sent/',
+         auth_views.PasswordResetDoneView.as_view(
+             template_name="Login/password_reset_sent.html"
+         ),
+         name="password_reset_done"),
+    
+    path('reset/<uidb64>/<token>/',
+         auth_views.PasswordResetConfirmView.as_view(
+             template_name="Login/password_reset_form.html"
+         ),
+         name="password_reset_confirm"),
+    
+    path('reset_password_complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name="Login/password_reset_done.html"
+         ),
+         name="password_reset_complete"),
 
 ]
 

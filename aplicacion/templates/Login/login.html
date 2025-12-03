@@ -35,7 +35,7 @@
             <h2 class="form_title title">Crear cuenta</h2>
 
             <!-- Mensajes -->
-            <div id="messages-container">
+            <div id="messages-container-docente">
                 {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
@@ -68,6 +68,16 @@
             </select>
 
             <input class="form__input" type="password" name="password_doc" placeholder="Contraseña*" required>
+            
+            <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+            <div class="form__checkbox-label mb-3">
+                <input type="checkbox" name="acepto_privacidad" required>
+                <span>
+                    Acepto las <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                </span>
+            </div>
+            <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+
 
             <button class="form__button button submit" type="submit">CREAR CUENTA</button>
         </form>
@@ -79,7 +89,7 @@
             <h2 class="form_title title">Crear cuenta</h2>
 
             <!-- Mensajes -->
-            <div id="messages-container">
+            <div id="messages-container-estudiante">
                 {% if messages %}
                     <ul class="messages">
                         {% for message in messages %}
@@ -112,6 +122,15 @@
 
             <input class="form__input" type="password" name="password_est" placeholder="Contraseña*" required>
 
+             <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
+            <div class="form__checkbox-label mb-3">
+                <input type="checkbox" name="acepto_privacidad" required>
+                <span>
+                    Acepto las <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                </span>
+            </div>
+            <!-- este parrafito -->
+
             <button class="form__button button submit" type="submit">CREAR CUENTA</button>
         </form>
 
@@ -124,6 +143,10 @@
             {% csrf_token %}
 
             <h2 class="form_title title">Iniciar sesión</h2>
+           
+            <!-- -------- -->
+            <div class="form__messages"></div>
+            <!-- -------- -->
 
             <input class="form__input" type="text" placeholder="Correo electrónico" name="correo" required>
             <input class="form__input" type="password" placeholder="Contraseña" name="contrasena" required>
@@ -132,10 +155,24 @@
                 <input type="checkbox" name="remember_me" class="form__checkbox">
                 Recordarme en este dispositivo
             </label>
+            
+            <!--ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    Al iniciar sesión, aceptas nuestras 
+                    <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                </small>
+            </div>
+            <!-- -------- -->
 
             <button class="form__button button submit">INGRESAR</button>
 
-            <a class="form__link" href="#">Olvidé mi contraseña</a>
+            <!-- <a class="form__link" href="#">Olvidé mi contraseña</a> -->
+            
+            <!-- -------- -->
+            <a class="form__link" href="{% url 'reset_password' %}">Olvidé mi contraseña</a>  <!-- ← CAMBIADO: ahora apunta a reset_password -->
+            <!-- -------- -->
+        
         </form>
 
     </div>
@@ -186,6 +223,43 @@ themeToggle.addEventListener('change', function() {
     }
 });
 </script>
+
+
+<!-- ---- -->
+<!-- Modal de Políticas de Privacidad -->
+<div id="modalPoliticas" class="modal-politicas">
+    <div class="modal-contenido">
+        <span class="cerrar-modal">&times;</span>
+        <h3>Políticas de Privacidad</h3>
+        <div class="politicas-texto">
+            <p><strong>Última actualización:</strong> {% now "d/m/Y" %}</p>
+            
+            <h4>1. Información que Recopilamos</h4>
+            <ul>
+                <li>Nombre, apellido, correo electrónico</li>
+                <li>País y datos académicos</li>
+                <li>Progreso en cursos</li>
+            </ul>
+
+            <h4>2. Uso de la Información</h4>
+            <ul>
+                <li>Gestión de usuarios y acceso</li>
+                <li>Seguimiento académico</li>
+                <li>Comunicación educativa</li>
+            </ul>
+
+            <h4>3. Protección de Datos</h4>
+            <ul>
+                <li>Contraseñas encriptadas</li>
+                <li>Acceso restringido</li>
+                <li>Comunicaciones seguras</li>
+            </ul>
+
+            <p><strong>Contacto:</strong> privacidad@ucn.cl</p>
+        </div>
+        <button class="button" id="aceptarPoliticas">Aceptar</button>
+    </div>
+</div>
 
 </body>
 </html>

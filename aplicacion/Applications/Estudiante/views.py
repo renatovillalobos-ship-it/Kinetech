@@ -12,6 +12,15 @@ from .models import Estudiante, Progreso
 from Applications.Caso_Clinico.models import Caso_clinico, Etapa 
 
 
+# ------------------
+import time
+from django.http import JsonResponse
+
+# ✅ AGREGAR ESTE IMPORT
+from django.contrib.auth import get_user_model
+import re  # ← ESTO FALTA EN EL ARCHIVO
+# ------------------
+
 # -----------------------------------------------------------
 # HOME ESTUDIANTE (PROTEGIDO POR SESIÓN)
 # -----------------------------------------------------------
@@ -132,6 +141,8 @@ class RegistroEstudiante(View):
     success_url_name = 'login'
 
     def post(self, request):
+        inicio = time.time()  # ✅ INICIAR MEDICIÓN
+
         nombre = request.POST.get('nombre_est')
         apellido = request.POST.get('apellido_est')
         pais = request.POST.get('pais_est')
@@ -166,11 +177,23 @@ class RegistroEstudiante(View):
                 foto_perfil_estudiante=None
             )
 
-            messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
+            # cambios
+            tiempo = round(time.time() - inicio, 2)  # ✅ CALCULAR TIEMPO
+    
+            messages.success(request, f"¡Registro exitoso en {tiempo} segundos! Ahora puedes iniciar sesión.")
+          
+            messages.error(request, "Correo ya registrado", extra_tags="estudiante")
+
+
+            #messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
             return redirect(self.success_url_name)
         
         except Exception as e:
-            messages.error(request, f"Error en el registro: {str(e)}")
+             # cambios
+            tiempo = round(time.time() - inicio, 2)
+            messages.error(request, f"Error en el registro ({tiempo}s): {str(e)}")
+    
+            #messages.error(request, f"Error en el registro: {str(e)}")
             return render(request, self.template_name)
 
        # except IntegrityError:
@@ -192,18 +215,117 @@ def autenticar_estudiante(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         contrasena = request.POST.get('contrasena')
+        remember_me = request.POST.get('remember_me')  # 'on' si está marcado
+
+        # ✅ BLOQUEO 3 INTENTOS (AGREGAR)
+        intentos = request.session.get(f'bloqueo_{correo}', 0)
+        if intentos >= 3:
+            print(f"📧 Email bloqueo a: {correo}")
+            return render(request, 'Login/blocked.html')
+        # ✅ FIN BLOQUEO
+
 
         estudiante = Estudiante.objects.filter(correo_estudiante=correo).first()
 
         if not estudiante or not check_password(contrasena, estudiante.contrasena_estudiante):
+     # ---------------
+            # ❌ FALLÓ: Contar intento
+            intentos += 1
+            request.session[f'bloqueo_{correo}'] = intentos
+            
+            if intentos >= 3:
+                print(f"📧 Email bloqueo a: {correo}")
+                messages.error(request, "Bloqueado por 3 intentos. Usa 'Restablecer contraseña'.")
+                return render(request, 'Login/blocked.html')
+            
+            messages.error(request, f"Error. Intentos: {intentos}/3")
+     # ---------------------------
+            
             messages.error(request, "Correo o contraseña incorrectos.")
             return redirect('estudiante:login')
+        
+        # ---------------
+        # ✅ ÉXITO: Resetear bloqueo
+        request.session.pop(f'bloqueo_{correo}', None)
+        # LIMPIAR sesión anterior
+        request.session.flush()
+        # ---------------
 
         # Crear sesión
         request.session['usuario_tipo'] = 'estudiante'
         request.session['usuario_id'] = estudiante.id
 
+        # --------
+        # IMPLEMENTAR "RECORDARME" - FUNCIONALIDAD REQUERIDA AL 100%
+        if remember_me:
+            # Sesión de 30 días (2592000 segundos)
+            request.session.set_expiry(2592000)
+            print("✓ Estudiante - Recordarme ACTIVADO (30 días)")
+        else:
+            # Sesión de navegador (se cierra al cerrar el navegador)
+            request.session.set_expiry(0)
+            print("✓ Estudiante - Recordarme DESACTIVADO (sesión navegador)")
+         # ------
+
         return redirect('estudiante:home_estudiante')
 
     return redirect('estudiante:login')
+
+
+def validar_correo_ucn(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    inicio = time.time()
+
+    correo = request.POST.get('correo', '').strip().lower()
+
+    # Validación robusta del correo institucional
+    patron = r'^[a-zA-Z0-9\.\-_]+@alumnos\.ucn\.cl$'
+    es_valido = bool(re.match(patron, correo))
+
+    tiempo = round(time.time() - inicio, 4)
+
+    if es_valido:
+        return JsonResponse({
+            'valido': True,
+            'mensaje': 'Correo institucional válido',
+            'tiempo': tiempo
+        })
+
+    return JsonResponse({
+        'valido': False,
+        'mensaje': 'Solo se permiten correos @alumnos.ucn.cl',
+        'tiempo': tiempo
+    })
+
+
+# -----------------------------------------------------------
+# VALIDACIÓN RÁPIDA DE EXISTENCIA DE CUENTA
+# -----------------------------------------------------------
+def validar_existencia_cuenta(request):
+    """Valida si una cuenta existe en menos de 10 segundos"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    inicio = time.time()
+    correo = request.POST.get('correo', '').strip().lower()
+    
+    # Validación ultra-rápida
+    existe_estudiante = Estudiante.objects.filter(correo_estudiante=correo).exists()
+    
+    # También verificar docente
+    User = get_user_model()
+    existe_docente = User.objects.filter(email=correo).exists()
+    
+    cuenta_existe = existe_estudiante or existe_docente
+    
+    tiempo = round(time.time() - inicio, 4)
+
+    return JsonResponse({
+        'existe': cuenta_existe,
+        'mensaje': '✓ Cuenta encontrada' if cuenta_existe else '✗ Cuenta no registrada',
+        'tiempo': tiempo,
+        'tipo': 'estudiante' if existe_estudiante else 'docente' if existe_docente else 'none'
+    })
 

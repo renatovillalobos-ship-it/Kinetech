@@ -16,6 +16,9 @@ from django.db import transaction
 
 
 import os
+import re  
+import time
+from django.http import JsonResponse
 
 
 from ..Estudiante.models import Estudiante, Progreso  
@@ -29,14 +32,54 @@ class LoginRequeridoDocenteMixin(View):
     login_url = '/docente/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        if request.session.get('usuario_tipo') != 'docente' or not request.session.get('usuario_id'):
+        #if request.session.get('usuario_tipo') != 'docente' or not request.session.get('usuario_id'):
+         #   return redirect(self.login_url)
+        #return super().dispatch(request, *args, **kwargs)
+        usuario_tipo = request.session.get('usuario_tipo')
+        usuario_id = request.session.get('usuario_id')
+        
+        # Verificar sesión de docente
+        if usuario_tipo != 'docente' or not usuario_id:
             return redirect(self.login_url)
+        
+        # Verificar que el docente existe
+        try:
+            docente = Docente.objects.get(id=usuario_id)
+        except Docente.DoesNotExist:
+            request.session.flush()
+            return redirect(self.login_url)
+            
         return super().dispatch(request, *args, **kwargs)
+
 # -----------------------------------------------------------
 # LOGIN DOCENTE
 # -----------------------------------------------------------
 class Login(TemplateView):
     template_name = 'login/login.html'
+    def get(self, request, *args, **kwargs):
+        # SOLO redirigir si hay una sesión VÁLIDA y ACTIVA
+        usuario_tipo = request.session.get('usuario_tipo')
+        usuario_id = request.session.get('usuario_id')
+        
+        if usuario_tipo and usuario_id:
+            # Verificar que la sesión no haya expirado
+            if request.session.get_expiry_age() > 0:
+                try:
+                    if usuario_tipo == 'docente':
+                        docente = Docente.objects.get(id=usuario_id)
+                        return redirect('docente:home_docente')
+                    elif usuario_tipo == 'estudiante':
+                        estudiante = Estudiante.objects.get(id=usuario_id)
+                        return redirect('estudiante:home_estudiante')
+                except (Docente.DoesNotExist, Estudiante.DoesNotExist):
+                    request.session.flush()
+            else:
+                # Sesión expirada - limpiar y mostrar login
+                request.session.flush()
+        
+        # MOSTRAR LOGIN (no redirigir)
+        return super().get(request, *args, **kwargs)
+
 
 
 # -----------------------------------------------------------
@@ -45,10 +88,10 @@ class Login(TemplateView):
 class Home_docente(TemplateView):
     template_name = 'docente/home_docente.html'
 
-    def get(self, request, *args, **kwargs):
-        if request.session.get('usuario_tipo') != 'docente':
-            return redirect('login')
-        return super().get(request, *args, **kwargs)
+    #def get(self, request, *args, **kwargs):
+     #   if request.session.get('usuario_tipo') != 'docente':
+      #      return redirect('login')
+       # return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -246,6 +289,8 @@ class RegistroDocente(View):
     success_url_name = 'login'
 
     def post(self, request):
+        inicio = time.time()  # ✅ INICIAR MEDICIÓN
+
         nombre = request.POST.get('nombre_doc')
         apellido = request.POST.get('apellido_doc')
         asignatura = request.POST.get('asigna_doc')
@@ -294,12 +339,18 @@ class RegistroDocente(View):
                 # Si el grupo no existe (por ejemplo, en un entorno de desarrollo nuevo)
                 # Simplemente lo reportamos pero permitimos que el registro continúe.
                 print("ADVERTENCIA: El grupo 'Docentes' no existe. Créalo en el Admin.")
+            tiempo = round(time.time() - inicio, 2)  # ✅ CALCULAR TIEMPO
             
-            messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
+            #messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
+            messages.success(request, f"Docente creado en {tiempo} segundos", extra_tags="docente")
+            messages.success(request, f"Registro exitoso en {tiempo} segundos. Ahora puedes iniciar sesión.")
             return redirect(self.success_url_name)
 
         except IntegrityError:
-            messages.error(request, "Este correo ya está registrado.")
+            tiempo = round(time.time() - inicio, 2)
+            messages.error(request, f"Este correo ya está registrado ({tiempo}s)")
+           
+            #messages.error(request, "Este correo ya está registrado.")
             return render(request, self.template_name)
 
 
@@ -313,12 +364,33 @@ class AutenticarUsuario(View):
     def post(self, request):
         correo = request.POST.get('correo')
         password = request.POST.get('contrasena')
+        remember_me = request.POST.get('remember_me') 
+        
+        # ✅ SISTEMA DE BLOQUEO (3 intentos)
+        intentos_key = f'intentos_{correo}'
+        intentos = request.session.get(intentos_key, 0)
+        
+        if intentos >= 3:
+            print(f"📧 Email bloqueo enviado a: {correo}")
+            return render(request, 'Login/blocked.html')
+        # ✅ FIN BLOQUEO
 
         # Verificar estudiante
         estudiante = Estudiante.objects.filter(correo_estudiante=correo).first()
         if estudiante and check_password(password, estudiante.contrasena_estudiante):
+            # ✅ ÉXITO: Resetear intentos
+            if intentos_key in request.session:
+                del request.session[intentos_key]
+
             request.session['usuario_tipo'] = 'estudiante'
             request.session['usuario_id'] = estudiante.id
+
+            # IMPLEMENTAR "RECORDARME" PARA ESTUDIANTE
+            if remember_me:
+                request.session.set_expiry(2592000)  # 30 días
+            else:
+                request.session.set_expiry(0)  # Sesión navegador
+
             return redirect('estudiante:home_estudiante')
 
         # Verificar docente
@@ -326,23 +398,45 @@ class AutenticarUsuario(View):
         if user_django is not None:
             try:
                 docente = Docente.objects.get(user=user_django)
+                # ✅ ÉXITO: Resetear intentos
+                if intentos_key in request.session:
+                    del request.session[intentos_key]
                 
+                # LIMPIAR sesión anterior
+                request.session.flush()
                 # Inicia la sesión de Django
                 login(request, user_django) 
+
+                # IMPLEMENTAR "RECORDARME" PARA DOCENTE
+                if remember_me:
+                    request.session.set_expiry(2592000)  # 30 días
+                else:
+                    request.session.set_expiry(0)  # Sesión navegador
+                # Inicia la sesión de Django
                 
                 request.session['usuario_tipo'] = 'docente'
                 request.session['usuario_id'] = docente.pk 
                 
                 return redirect('docente:home_docente')
             except Docente.DoesNotExist:
-                pass
+                messages.error(request, "Error en el perfil de docente.")
+                #pass
         #Código anterior (por si acaso)
         #docente = Docente.objects.filter(correo_docente=correo).first()
         #if docente and check_password(password, docente.contrasena_docente):
             #request.session['usuario_tipo'] = 'docente'
             #request.session['usuario_id'] = docente.id
             #return redirect('docente:home_docente')
-
+        
+         # ❌ FALLO: Contar intento
+        intentos += 1
+        request.session[intentos_key] = intentos
+        
+        if intentos >= 3:
+            print(f"📧 Email bloqueo enviado a: {correo}")
+            messages.error(request, "Cuenta bloqueada por 3 intentos. Usa 'Restablecer contraseña'.")
+            return render(request, 'Login/blocked.html')
+        
         messages.error(request, "Correo o contraseña incorrectos.")
         return render(request, self.template_name)
 
@@ -371,3 +465,58 @@ def pagina_principal_docente(request, curso_id):
 
     return render(request, 'docente/docente_pagina_principal.html', contexto)
 
+
+# -----------------------------------------------------------
+# VALIDACIÓN DE CORREO UCN (FUNCIONAL Y OPTIMIZADA)
+# -----------------------------------------------------------
+def validar_correo_ucn(request):
+    """Valida correos @alumnos.ucn.cl en menos de 10 segundos"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    inicio = time.time()
+    correo = request.POST.get('correo', '').strip().lower()
+    
+    # Validación ultra-rápida con expresión regular
+    patron = r'^[a-zA-Z0-9\.\-_]+@alumnos\.ucn\.cl$'
+    es_valido = bool(re.match(patron, correo))
+    
+    tiempo = round(time.time() - inicio, 4)
+
+    if es_valido:
+        return JsonResponse({
+            'valido': True,
+            'mensaje': '✓ Correo institucional válido',
+            'tiempo': tiempo
+        })
+
+    return JsonResponse({
+        'valido': False,
+        'mensaje': '✗ Solo se permiten correos @alumnos.ucn.cl',
+        'tiempo': tiempo
+    })
+
+# -----------------------------------------------------------
+# VALIDACIÓN DE EXISTENCIA DE CUENTA
+# -----------------------------------------------------------
+def validar_existencia_cuenta(request):
+    """Valida si una cuenta existe en menos de 10 segundos"""
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Método no permitido'}, status=405)
+
+    inicio = time.time()
+    correo = request.POST.get('correo', '').strip().lower()
+    
+    User = get_user_model()
+    existe_estudiante = Estudiante.objects.filter(correo_estudiante=correo).exists()
+    existe_docente = User.objects.filter(email=correo).exists()
+    
+    cuenta_existe = existe_estudiante or existe_docente
+    tiempo = round(time.time() - inicio, 4)
+
+    return JsonResponse({
+        'existe': cuenta_existe,
+        'mensaje': '✓ Cuenta encontrada' if cuenta_existe else '✗ Cuenta no registrada',
+        'tiempo': tiempo,
+        'tipo': 'estudiante' if existe_estudiante else 'docente' if existe_docente else 'none'
+    })

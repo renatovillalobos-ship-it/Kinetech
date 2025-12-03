@@ -26,7 +26,9 @@ urlpatterns = [
     path('curso/<int:curso_id>/ajax/caso/',views_ajax.ajax_caso_clinico,name='ajax_caso_clinico'),
     path('curso/<int:curso_id>/ajax/evaluaciones/',views_ajax.ajax_evaluaciones,name='ajax_evaluaciones'),
     path('curso/<int:curso_id>/ajax/cuestionario/<int:cuest_id>/guardar/',views_ajax.ajax_guardar_respuestas,name='ajax_guardar_respuestas'),
-
+    path('validar-correo-ucn/', views.validar_correo_ucn, name='validar_correo_ucn'),
+    path('validar-existencia-cuenta/', views.validar_existencia_cuenta, name='validar_existencia_cuenta'),
+    
 
 
 
