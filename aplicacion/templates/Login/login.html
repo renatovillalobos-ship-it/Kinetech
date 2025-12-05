@@ -6,7 +6,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@600&display=swap" rel="stylesheet">
+    <!-- CORREGIDO: Agregar los 3 pesos de la fuente -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NUEVO: Estilos para aplicar los pesos correctamente -->
+    <style>
+        body, h1, h2, h3, h4, h5, h6, p, input, button, textarea, select, a, span, div {
+            font-family: 'Source Sans Pro', sans-serif;
+        }
+        
+        /* TÍTULOS: Bold (700) */
+        h1, h2, h3, .form_title, .title, .switch__title, h4 {
+            font-weight: 700;
+        }
+        
+        /* SUBTÍTULOS: Semibold (600) */
+        .switch__description, .form__checkbox-label, label, .text-muted, small {
+            font-weight: 600;
+        }
+        
+        /* CONTENIDO: Regular (400) */
+        body, p, input, .form__input, .description, .politicas-texto, ul, li {
+            font-weight: 400;
+        }
+    </style>
 </head>
 
 <body>
@@ -73,7 +96,7 @@
             <div class="form__checkbox-label mb-3">
                 <input type="checkbox" name="acepto_privacidad" required>
                 <span>
-                    Acepto las <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                    Acepto las <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </span>
             </div>
             <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
@@ -126,7 +149,7 @@
             <div class="form__checkbox-label mb-3">
                 <input type="checkbox" name="acepto_privacidad" required>
                 <span>
-                    Acepto las <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                    Acepto las <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </span>
             </div>
             <!-- este parrafito -->
@@ -160,7 +183,7 @@
             <div class="text-center mt-4">
                 <small class="text-muted">
                     Al iniciar sesión, aceptas nuestras 
-                    <a href="#politicas" style="color: #4B70E2;">Políticas de Privacidad</a>
+                    <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </small>
             </div>
             <!-- -------- -->
