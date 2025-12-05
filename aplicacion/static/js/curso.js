@@ -1,210 +1,370 @@
 document.addEventListener("DOMContentLoaded", () => {
+    inicializarAplicacion();
+});
 
+function inicializarAplicacion() {
+    inicializarCargaContenido();
+    inicializarCuestionario();
+    inicializarNavegacion();
+}
+
+// ================================
+// 1. CARGA DINÁMICA DE CONTENIDO
+// ================================
+function inicializarCargaContenido() {
     const botones = document.querySelectorAll(".cargar-contenido");
     const panel = document.getElementById("panel-dinamico");
 
+    if (!panel) return;
+
+    // Cargar contenido inicial
+    const urlInicial = panel.dataset.inicialUrl;
+    if (urlInicial) {
+        cargarContenido(urlInicial, panel);
+    }
+
+    // Event listeners para botones
     botones.forEach(boton => {
         boton.addEventListener("click", e => {
             e.preventDefault();
-
             const url = boton.getAttribute("data-url");
-
-            fetch(url)
-                .then(response => response.text())
-                .then(html => {
-                    panel.innerHTML = html;
-                    panel.scrollTop = 0;
-                });
+            cargarContenido(url, panel);
+            marcarActivo(boton);
         });
     });
-
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    const panel = document.getElementById("panel-dinamico");
-    const url = panel.dataset.inicialUrl;
-
-    fetch(url)
-        .then(r => r.text())
-        .then(html => panel.innerHTML = html);
-});
-
-document.addEventListener("click", function (e) {
-    if (e.target.classList.contains("cargar-contenido")) {
-
-        // Quitar selección anterior
-        document.querySelectorAll(".sidebar-link").forEach(link => {
-            link.classList.remove("active-link");
-        });
-
-        // Marcar el nuevo como seleccionado
-        e.target.classList.add("active-link");
-    }
-});
-
-document.addEventListener("submit", function (e) {
-    if (e.target.id === "cuestionarioForm") {
-        e.preventDefault();
-
-        let form = e.target;
-        let url = form.dataset.url;
-        let formData = new FormData(form);
-
-        fetch(url, {
-            method: "POST",
-            headers: {
-                "X-CSRFToken": formData.get("csrfmiddlewaretoken"),
-            },
-            body: formData,
-        })
-        .then(r => r.json())
-        .then(data => {
-
-            if (data.success) {
-
-                alert("Cuestionario enviado correctamente.");
-
-                // marcar como completado en sidebar
-                const sec = form.dataset.section;
-                const estado = document.getElementById(`estado-${sec}`);
-                if (estado) estado.classList.add("completado");
-            }
-        });
-    }
-});
-
-// ===============================
-//  ENVÍO AJAX DEL CUESTIONARIO
-// ===============================
-document.addEventListener("submit", function (e) {
-
-    const form = e.target;
-    if (form.id !== "cuestionarioForm") return; // no es el cuestionario
-
-    e.preventDefault();
-
-    const url = form.dataset.urlGuardar;
-    const formData = new FormData(form);
-
-    fetch(url, {
-        method: "POST",
-        body: formData
-    })
-        .then(res => res.json())
-        .then(data => {
-
-            // Ya respondido anteriormente
-            if (data.ya_respondido) {
-                mostrarMensaje("Ya habías respondido este cuestionario.", "warning");
-                return;
-            }
-
-            if (data.success) {
-                mostrarMensaje("✔ Respuestas guardadas correctamente", "success");
-
-                // Marcar en el sidebar
-                const section = form.dataset.section;
-                const estadoSpan = document.getElementById(`estado-${section}`);
-                if (estadoSpan) estadoSpan.classList.add("completado");
-            }
-        })
-        .catch(() => {
-            mostrarMensaje("Ocurrió un error al guardar.", "danger");
-        });
-});
-
-
-// ===============================
-//  SISTEMA DE MENSAJES
-// ===============================
-function mostrarMensaje(texto, tipo = "success") {
-    const panel = document.getElementById("panel-dinamico");
-
-    const box = document.createElement("div");
-    box.className = `alert alert-${tipo}`;
-    box.style.fontWeight = "600";
-    box.style.borderRadius = "8px";
-    box.style.marginBottom = "15px";
-    box.innerText = texto;
-
-    panel.prepend(box);
-
-    setTimeout(() => box.remove(), 4000);
 }
 
-// --- GUARDAR CUESTIONARIO (AJAX) ---
-document.addEventListener("submit", function (e) {
-    const form = e.target;
-    if (form.id !== "cuestionarioForm") return;
+function cargarContenido(url, panel) {
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.text();
+        })
+        .then(html => {
+            panel.innerHTML = html;
+            panel.scrollTop = 0;
+            
+            // Si se cargó un cuestionario, inicializar sus eventos
+            if (html.includes('ajax-cuestionario')) {
+                inicializarCuestionarioForm();
+            }
+        })
+        .catch(error => {
+            console.error("Error al cargar contenido:", error);
+            mostrarMensaje("Error al cargar el contenido", "danger");
+        });
+}
 
+// ================================
+// 2. NAVEGACIÓN Y ESTADO ACTIVO
+// ================================
+function inicializarNavegacion() {
+    document.addEventListener("click", function (e) {
+        if (e.target.classList.contains("cargar-contenido")) {
+            marcarActivo(e.target);
+        }
+    });
+}
+
+function marcarActivo(elemento) {
+    // Quitar selección anterior
+    document.querySelectorAll(".sidebar-link").forEach(link => {
+        link.classList.remove("active-link");
+    });
+
+    // Marcar el nuevo como seleccionado
+    elemento.classList.add("active-link");
+}
+
+// ================================
+// 3. MANEJO DE CUESTIONARIO
+// ================================
+function inicializarCuestionario() {
+    // Este método se llama al cargar la página
+}
+
+function inicializarCuestionarioForm() {
+    // Este método se llama cuando se carga un cuestionario dinámicamente
+    const form = document.getElementById("cuestionarioForm");
+    if (!form) return;
+
+    // Remover listeners anteriores si existen
+    const nuevoForm = form.cloneNode(true);
+    form.parentNode.replaceChild(nuevoForm, form);
+
+    // Agregar listener al nuevo formulario
+    document.getElementById("cuestionarioForm").addEventListener("submit", manejarEnvioCuestionario);
+}
+
+function manejarEnvioCuestionario(e) {
     e.preventDefault();
-
-    const url = form.dataset.urlGuardar;
-    const section = form.dataset.section;
+    
+    const form = e.target;
+    const urlGuardar = form.dataset.urlGuardar;
+    const sectionId = form.dataset.section;
     const btn = document.getElementById("btnEnviar");
 
-    // Bloquear botón
+    // Validar que todas las preguntas estén respondidas
+    if (!validarCuestionarioCompleto()) {
+        mostrarMensajeCuestionario("⚠ Por favor responde todas las preguntas antes de enviar.", "warning");
+        return;
+    }
+
+    // Bloquear botón durante el envío
     btn.disabled = true;
-    btn.innerText = "Guardando...";
+    btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span> Enviando...';
 
     const formData = new FormData(form);
 
-    fetch(url, {
+    fetch(urlGuardar, {
         method: "POST",
         body: formData,
         headers: {
             "X-Requested-With": "XMLHttpRequest"
         }
     })
-    .then(res => res.json())
+    .then(res => {
+        if (!res.ok) {
+            throw new Error(`Error HTTP: ${res.status}`);
+        }
+        return res.json();
+    })
     .then(data => {
-
         // Ya había respondido
         if (data.ya_respondido) {
-            mostrarMensaje("Ya respondiste este cuestionario.", "warning");
-            btn.disabled = true;
-            btn.innerText = "Enviado";
+            mostrarMensajeCuestionario("Ya respondiste este cuestionario", "warning");
+            bloquearCuestionario(form, btn, "Enviado anteriormente");
+            marcarComoCompletado(sectionId);
             return;
         }
 
+        // Éxito al guardar
         if (data.success) {
-            mostrarMensaje("✔ Respuestas guardadas correctamente.", "success");
-
-            // Mostrar el puntaje si quieres
-            // mostrarMensaje(`Obtuviste ${data.puntaje} / ${data.total}`, "info");
-
-            // marcar como completado en sidebar
-            const estado = document.getElementById(`estado-${section}`);
-            if (estado) estado.classList.add("completado");
-
-            // bloquear el formulario para evitar cambios
-            form.querySelectorAll("input").forEach(i => i.disabled = true);
-
-            // cambiar botón
-            btn.classList.remove("btn-success");
-            btn.classList.add("btn-secondary");
-            btn.innerText = "Respuestas enviadas";
-            btn.disabled = true;
+            let mensajeHTML = `
+                <div class="mb-2">
+                    <h4 class="fw-bold mb-1">
+                        Nivel de diagnóstico: ${data.texto_nivel}
+                    </h4>
+                    <p class="mb-0">
+                        ${data.texto_recomendacion}
+                    </p>
+                </div>
+                <hr>
+                Puntaje: <strong>${data.puntaje}</strong> puntos<br>
+                Porcentaje: <strong>${data.porcentaje ? data.porcentaje.toFixed(1) : 0}%</strong>
+            `;
+            mostrarMensajeCuestionario(
+                mensajeHTML, 
+                "success"
+            );
+            
+            revisarVisualmenteCuestionario(form, btn, data.detalle_respuestas);
+            marcarComoCompletado(sectionId);
+            
+            // Actualizar el estado en el sidebar si existe
+            actualizarEstadoSidebar(sectionId);
+        } else {
+            mostrarMensajeCuestionario("Error al guardar las respuestas.", "danger");
+            btn.disabled = false;
+            btn.textContent = "Enviar respuestas";
         }
     })
-    .catch(err => {
-        console.error("ERROR:", err);
-        mostrarMensaje("Ocurrió un error al enviar.", "danger");
+    .catch(error => {
+        console.error("Error:", error);
+        mostrarMensajeCuestionario("Error de conexión. Intenta nuevamente.", "danger");
         btn.disabled = false;
-        btn.innerText = "Enviar respuestas";
+        btn.textContent = "Enviar respuestas";
     });
-});
-
-function mostrarMensaje(texto, tipo = "info") {
-    const div = document.createElement("div");
-    div.className = `alert alert-${tipo}`;
-    div.style.marginTop = "10px";
-    div.innerHTML = texto;
-
-    const contenedor = document.querySelector(".ajax-cuestionario");
-    contenedor.prepend(div);
-
-    setTimeout(() => div.remove(), 5000);
 }
 
+function validarCuestionarioCompleto() {
+    let todasRespondidas = true;
+    
+    document.querySelectorAll('.pregunta-card').forEach(card => {
+        const tieneRespuesta = card.querySelector('input[type="radio"]:checked');
+        if (!tieneRespuesta) {
+            todasRespondidas = false;
+            card.style.backgroundColor = "#fff5f5";
+            setTimeout(() => {
+                card.style.backgroundColor = "";
+            }, 2000);
+        }
+    });
+    
+    return todasRespondidas;
+}
+
+
+function revisarVisualmenteCuestionario(form, btn, detalle_respuestas) {
+    // 1. Deshabilitar todos los radio buttons
+    form.querySelectorAll('input[type="radio"]').forEach(input => {
+        input.disabled = true;
+    });
+
+    // 2. Aplicar las marcas visuales
+    if (detalle_respuestas && Array.isArray(detalle_respuestas)) {
+        detalle_respuestas.forEach(detalle => {
+            const respuestaCorrectaId = detalle.respuesta_correcta_id;
+            const respuestaEnviadaId = detalle.respuesta_enviada_id;
+            const esCorrecta = detalle.es_correcta;
+
+            // Iterar sobre todos los inputs de la pregunta
+            const inputsPregunta = form.querySelectorAll(`input[name="pregunta_${detalle.pregunta_id}"]`);
+            
+            inputsPregunta.forEach(input => {
+                const label = input.nextElementSibling;
+                if (!label) return;
+
+                // Si fue la respuesta seleccionada, la marcamos como "checked"
+                if (input.value == respuestaEnviadaId) {
+                    input.checked = true;
+                }
+
+                // Si esta es la respuesta CORRECTA (se le agrega el badge verde)
+                if (input.value == respuestaCorrectaId) {
+                    label.innerHTML += ' <span class="badge bg-success ms-2">✓ Correcta</span>';
+                } 
+                // Si fue la respuesta seleccionada Y es INCORRECTA (se le agrega el badge rojo)
+                else if (input.value == respuestaEnviadaId && !esCorrecta) {
+                    label.innerHTML += ' <span class="badge bg-danger ms-2">✗ Tu respuesta</span>';
+                }
+            });
+        });
+    }
+    
+    // 3. Cambiar estilo del botón
+    btn.classList.remove("btn-success");
+    btn.classList.add("btn-secondary");
+    btn.innerHTML = "Cuestionario completado";
+    btn.disabled = true;
+}
+
+function marcarComoCompletado(sectionId) {
+    const estadoElement = document.getElementById(`estado-${sectionId}`);
+    if (estadoElement) {
+        estadoElement.classList.add("completado");
+        estadoElement.innerHTML = "✓";
+    }
+}
+
+function actualizarEstadoSidebar(sectionId) {
+    // Buscar el enlace en el sidebar y actualizarlo
+    const sidebarLink = document.querySelector(`.sidebar-link[data-section="${sectionId}"] .estado-item`);
+    if (sidebarLink) {
+        sidebarLink.classList.add("completado");
+        sidebarLink.innerHTML = "✓";
+    }
+}
+
+// ================================
+// 4. SISTEMA DE MENSAJES
+// ================================
+function mostrarMensaje(texto, tipo = "info") {
+    const panel = document.getElementById("panel-dinamico");
+    if (!panel) return;
+
+    const mensaje = document.createElement("div");
+    mensaje.className = `alert alert-${tipo} alert-dismissible fade show`;
+    mensaje.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999;
+        min-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    
+    mensaje.innerHTML = `
+        ${texto}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    panel.appendChild(mensaje);
+    
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+        if (mensaje.parentNode) {
+            mensaje.remove();
+        }
+    }, 5000);
+}
+
+function mostrarMensajeCuestionario(texto, tipo = "info") {
+    const cuestionarioDiv = document.querySelector(".ajax-cuestionario");
+    if (!cuestionarioDiv) return;
+
+    // Remover mensajes anteriores
+    const mensajesAnteriores = cuestionarioDiv.querySelectorAll(".mensaje-cuestionario");
+    mensajesAnteriores.forEach(msg => msg.remove());
+
+    const mensaje = document.createElement("div");
+    mensaje.className = `mensaje-cuestionario alert alert-${tipo}`;
+    mensaje.style.cssText = `
+        margin: 15px auto;
+        max-width: 680px;
+        text-align: center;
+        font-weight: 500;
+    `;
+    
+    mensaje.innerHTML = texto;
+
+    // Insertar después del encabezado
+    const encabezado = cuestionarioDiv.querySelector(".text-center");
+    if (encabezado) {
+        encabezado.parentNode.insertBefore(mensaje, encabezado.nextSibling);
+    } else {
+        cuestionarioDiv.prepend(mensaje);
+    }
+
+    // Auto-eliminar después de 7 segundos (excepto mensajes de éxito)
+    if (tipo !== "success") {
+        setTimeout(() => {
+            if (mensaje.parentNode) {
+                mensaje.remove();
+            }
+        }, 7000);
+    }
+}
+
+// ================================
+// 5. FUNCIONES AUXILIARES
+// ================================
+function syncSidebarHeight() {
+    const main = document.getElementById("mainCursoContent");
+    const sidebar = document.getElementById("sidebarCurso");
+    
+    if (main && sidebar && window.innerWidth >= 768) {
+        sidebar.style.height = 'auto';
+        
+        setTimeout(function() {
+            const mainHeight = main.offsetHeight;
+            sidebar.style.height = mainHeight + 'px';
+            sidebar.style.minHeight = mainHeight + 'px';
+        }, 100);
+    } else if (sidebar && window.innerWidth < 768) {
+        sidebar.style.height = 'auto';
+        sidebar.style.minHeight = 'auto';
+    }
+}
+
+// Inicializar sincronización de altura
+if (document.getElementById("sidebarCurso")) {
+    document.addEventListener('DOMContentLoaded', syncSidebarHeight);
+    window.addEventListener('resize', syncSidebarHeight);
+    window.addEventListener('load', syncSidebarHeight);
+    
+    // Observar cambios en el contenido principal
+    if (typeof MutationObserver !== 'undefined') {
+        const main = document.getElementById("mainCursoContent");
+        if (main) {
+            const observer = new MutationObserver(syncSidebarHeight);
+            observer.observe(main, {
+                childList: true,
+                subtree: true
+            });
+        }
+    }
+}
 

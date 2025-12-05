@@ -3,21 +3,25 @@ from .models import cuestionario as CuestionarioModelo, Preguntas, Respuesta
 from Applications.Docente.models import Curso
 from django.shortcuts import redirect
 
-
-def ver_cuestionario(request, curso_id):
+def ver_cuestionario(request, curso_id, cuestionario_id=None):
     curso = get_object_or_404(Curso, id=curso_id)
     
-    # Tomar el primer cuestionario del curso
-    cuestionarios = CuestionarioModelo.objects.filter(Curso=curso)
-    if not cuestionarios.exists():
-        return render(request, 'estudiante/cuestionario.html', {
-            'curso_actual': curso,
-            'preguntas': []
-        })
-
-    cuestionario = cuestionarios.first()
+    # Si no se pasa un cuestionario_id, tomar el primero
+    if not cuestionario_id:
+        cuestionarios = CuestionarioModelo.objects.filter(Curso=curso)
+        if cuestionarios.exists():
+            cuestionario = cuestionarios.first()
+            return redirect('cuestionario:cuestionario_detalle', curso_id=curso_id, cuestionario_id=cuestionario.id)
+    
+    # Obtener el cuestionario específico
+    cuestionario = get_object_or_404(CuestionarioModelo, id=cuestionario_id, Curso=curso)
     preguntas = Preguntas.objects.filter(cuestionario=cuestionario).prefetch_related('respuesta_set')
-
+    
+    # Obtener todos los cuestionarios para el sidebar
+    cuestionarios_todos = CuestionarioModelo.objects.filter(Curso=curso)
+    cuestionarios_iniciales = cuestionarios_todos.filter(nombre='Inicial')
+    cuestionarios_finales = cuestionarios_todos.filter(nombre='Final')
+    
     if request.method == 'POST':
         respuestas_seleccionadas = {}
         for pregunta in preguntas:
@@ -37,11 +41,18 @@ def ver_cuestionario(request, curso_id):
         return render(request, 'estudiante/cuestionario_resultado.html', {
             'curso_actual': curso,
             'puntaje': puntaje,
-            'total': preguntas.count()
+            'total': preguntas.count(),
+            'cuestionario_actual': cuestionario,
+            'cuestionarios_iniciales': cuestionarios_iniciales,
+            'cuestionarios_finales': cuestionarios_finales
         })
 
     context = {
         'curso_actual': curso,
-        'preguntas': preguntas
+        'preguntas': preguntas,
+        'cuestionario_actual': cuestionario,
+        'cuestionarios_iniciales': cuestionarios_iniciales,
+        'cuestionarios_finales': cuestionarios_finales,
+        'cuestionario_id': cuestionario.id
     }
     return render(request, 'estudiante/cuestionario.html', context)

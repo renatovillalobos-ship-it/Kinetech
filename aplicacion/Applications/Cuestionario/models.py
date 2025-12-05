@@ -50,7 +50,7 @@ class Preguntas(models.Model):
 class Respuesta(models.Model):
     ID_pregunta = models.ForeignKey(Preguntas,on_delete=models.CASCADE)
     es_correcta = models.BooleanField(default=False)
-    retro = models.TextField('Retroalimentación', null=False)
+    retro = models.TextField('Alternativa', null=False)
 
     class Meta:
         verbose_name='Respuesta'

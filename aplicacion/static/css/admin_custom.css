@@ -122,3 +122,8 @@ a.btn-secondary:hover {
     color: #333 !important; 
 }
 
+select {
+    min-width: 250px !important;
+    max-width: 400px !important;
+    width: 350px !important;
+}
