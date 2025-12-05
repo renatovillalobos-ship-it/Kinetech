@@ -74,18 +74,30 @@
                 <span class="estado-item" id="estado-caso"></span>
             </button>
         </h2>
+
         <div id="collapseCaso" class="accordion-collapse collapse"
              aria-labelledby="headingCaso"
              data-bs-parent="#sidebarAccordion">
+
             <div class="list-group sidebar-list">
+                <a href="#" 
+                class="list-group-item sidebar-link cargar-contenido"
+                data-url="{% url 'estudiante:ajax_guia_kine' curso_id %}" 
+                data-section="Pasos">
+                    Pasos para la evaluación de pacientes
+                    <span class="estado-item small" id="estado-pasos"></span>
+                </a>
+
                 <a href="#"
                    class="list-group-item sidebar-link cargar-contenido"
-                   data-url="{% url 'estudiante:ajax_caso_clinico' curso_id %}"
+                   data-url="{% url  'Caso_Clinico:casos_lista_casos' curso_id %}"
                    data-section="caso">
                     Ver Caso Clínico
                     <span class="estado-item small" id="estado-caso-detalle"></span>
                 </a>
+
             </div>
+
         </div>
     </div>
 

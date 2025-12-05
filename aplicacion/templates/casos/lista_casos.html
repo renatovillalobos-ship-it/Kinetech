@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Casos Clínicos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .caso-card {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        .caso-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .btn-ver {
+            background: #003366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .volver-btn {
+            margin-bottom: 20px;
+            display: inline-block;
+            color: #003366;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="javascript:history.back()" class="volver-btn">
+            <i class="fas fa-arrow-left"></i> Volver al curso
+        </a>
+        
+        <h1>Casos Clínicos del Curso</h1>
+        
+        {% for caso in casos %}
+        <div class="caso-card">
+            <h2>{{ caso.caso }}</h2>
+            <p> {{ caso.Curso.nombre_del_curso }}</p>
+            <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" class="btn-ver">
+                <i class="fas fa-arrow-right"></i> Ver Detalles
+            </a>
+        </div>
+        {% empty %}
+        <p>No hay casos clínicos disponibles para este curso.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

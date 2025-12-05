@@ -27,7 +27,8 @@ urlpatterns = [
     path('estudiante/', include(('Applications.Estudiante.urls','estudiante'), namespace='estudiante')),
     path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
     path('cuestionario/', include(('Applications.Cuestionario.urls', 'cuestionario'), namespace='cuestionario')),
-
+    path('casos/',include('Applications.Caso_Clinico.urls')),
+    
     # URLs para restablecimiento de contraseña
     path('reset_password/',
          auth_views.PasswordResetView.as_view(
