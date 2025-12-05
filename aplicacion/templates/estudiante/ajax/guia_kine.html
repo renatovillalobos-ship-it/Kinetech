@@ -1,0 +1,199 @@
+{% load static %}
+
+<style>
+.pasos-container {
+    max-width: 750px;
+    margin: 0 auto;
+}
+
+/* === TITULO === */
+.pasos-title {
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--text-primary);  /* antes #0d47a1 */
+    text-align: center;
+    margin-bottom: 15px;
+}
+
+.pasos-subtitle {
+    text-align: center;
+    font-size: 1rem;
+    color: var(--text-secondary); /* antes #666 */
+    margin-bottom: 25px;
+}
+
+/* === CARD === */
+.pasos-guia {
+    background: var(--bg-card); /* antes #f8faff */
+    border-left: 4px solid #0d47a1;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 22px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.pasos-guia h5 {
+    font-weight: 600;
+    color: #0d47a1;
+    margin-bottom: 8px;
+}
+
+.pasos-list li {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+    color: var(--text-primary);
+}
+
+/* === DIVIDER === */
+.instrucciones-divider {
+    margin: 20px 0;
+    border-top: 1px solid #ddd;
+}
+
+/* === TIP === */
+.instrucciones-tip {
+    background: var(--bg-card); /* antes #e8f3ff */
+    padding: 15px;
+    border-radius: 8px;
+    border-left: 4px solid #1565c0;
+    font-size: 0.95rem;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--text-primary);
+}
+
+/* =============================== */
+/*        MODO OSCURO REAL         */
+/* =============================== */
+
+body.dark-mode .pasos-title {
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .pasos-guia{
+    background-color: var(--bg-card) !important;
+    border-left-color: #3b82f6 !important; /* azul claro */
+    box-shadow: none !important;
+}
+
+body.dark-mode .pasos-guia h5 {
+    color: #60a5fa !important; /* azul claro */
+}
+
+body.dark-mode .pasos-list li {
+    color: var(--text-secondary) !important;
+}
+
+body.dark-mode .instrucciones-tip {
+    background-color: #1e293b !important;
+    border-left-color: #3b82f6 !important;
+    color: var(--text-primary) !important;
+}
+
+body.dark-mode .instrucciones-divider {
+    border-color: #334155 !important;
+}
+</style>
+<div class="pasos-container">
+
+    <!-- Imagen UCN arriba -->
+    <div class="text-center mb-3">
+        <img src="{% static 'img/ucn_escudo.png' %}"
+             style="height: 90px;"
+             alt="UCN Escudo">
+    </div>
+
+    <h2 class="pasos-title">Guía Kinésica</h2>
+    <p class="pasos-subtitle">
+       Aquí encontrarás los pasos a seguir para realizar una correcta atención a los pacientes.
+    </p>
+
+        <!-- Paso 1 – Entrevista Inicial y Anamnesis (Recolección de Información) -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-handshake me-2"></i>Entrevista Inicial y Anamnesis (Recolección de Información)</h5>
+            <ul class="pasos-list">
+                <h6>Este es el primer contacto con el paciente y el momento de recopilar datos cruciales.</h6>
+                <li><strong>Saludo y Presentación:</strong> Preséntate, explica tu rol (estudiante de kinesiología bajo supervisión) y el objetivo de la sesión.</li>
+                <li><strong>Motivo de Consulta (MC):</strong> Pregunta la razón principal por la que el paciente acude a kinesiología.</li>
+                    <ul><li>*Ejemplo:* "¿Qué le trae por aquí hoy?"</li></ul>
+                <li><strong>Anamnesis Próxima (AP):</strong> Detalles del problema actual.</li>
+                    <ul>
+                        <li>*DOLOR:* Localización, tipo (punzante, sordo, quemante), intensidad (uso de la Escala Visual Analógica - EVA), duración, factores que lo aumentan/disminuyen (agravantes/atenuantes).</li>
+                        <li>*MECANISMO DE LESIÓN (ML):* Si aplica, cómo ocurrió la lesión.</li>
+                    </ul>
+                <li><strong>Anamnesis Remota (AR):</strong> Información de salud previa.</li>
+                    <ul>
+                        <li>*Antecedentes Médicos Personales (AMP):* Enfermedades crónicas (Diabetes, Hipertensión), cirugías previas, alergias, medicación actual.</li>
+                        <li>*Antecedentes Kinésicos (AK):* Tratamientos kinésicos anteriores por la misma u otra condición.</li>
+                        <li>*Hábitos y Ocupación:* Tipo de trabajo (sedentario, esfuerzo físico), nivel de actividad física, tabaquismo, consumo de alcohol, etc.</li>
+                    </ul>
+            </ul>
+        </div>
+
+        <!-- Paso 2 – Observación y Evaluación Postural -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-eye me-2"></i>Observación y Evaluación Postural</h5>
+            <ul class="pasos-list">
+                <h6>La primera parte de la exploración física, sin contacto.</h6>
+                <li><strong>Observación Estática:</strong> Evalúa la postura del paciente en bipedestación (de pie), sedestación (sentado) y, si es relevante, en decúbito.</li>
+                    <ul><li>Busca desalineaciones (escoliosis, pie plano, hiperlordosis), asimetrías (hombro más bajo), atrofia muscular o edema (hinchazón).</li></ul>
+                <li><strong>Observación Dinámica:</strong> Pídele al paciente que realice movimientos funcionales o relevantes a su queja (ej. caminar, agacharse, levantar el brazo).</li>
+            </ul>
+        </div>
+        
+        <!-- Paso 3 – Exploración Física Específica -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-hand-pointer me-2"></i>Exploración Física Específica</h5>
+            <ul class="pasos-list">
+                <h6>Se centra en la zona afectada y estructuras relacionadas.</h6>
+                <li><strong>Palpación:</strong> Identifica puntos dolorosos, temperatura, presencia de edema, tono muscular, y evalúa la textura de tejidos blandos y estructuras óseas.</li>
+                <li><strong>Evaluación de Rango de Movimiento (ROM):</strong></li>
+                    <ul>
+                        <li>*Activo (ROM-A):* El paciente realiza el movimiento por sí mismo. Evalúa la voluntad y la coordinación.</li>
+                        <li>*Pasivo (ROM-P):* El terapeuta mueve la articulación. Evalúa el límite articular y la sensación final (end-feel).</li>
+                        <li>*Resistido (ROM-R):* Se pide al paciente que realice un movimiento contra la resistencia. Evalúa la fuerza muscular (Escala de Daniels o Escala MRC) y la presencia de dolor.</li>
+                    </ul>
+                <li><strong>Pruebas Especiales:</strong> Realiza maniobras específicas (tests ortopédicos) para confirmar o descartar la afectación de una estructura en particular.</li>
+                <li><strong>Evaluación Neurológica (si es relevante):</strong> Evalúa sensibilidad (dermatomas), reflejos osteotendíneos (ROT) y fuerza de músculos clave (miotomas).</li>
+            </ul>
+        </div>
+
+        <!-- Paso 4 – Análisis y Diagnóstico Kinésico -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-brain me-2"></i>Análisis y Diagnóstico Kinésico</h5>
+            <ul class="pasos-list">
+                <h6>Integra toda la información recopilada.</h6>
+                <li><strong>Hipótesis Diagnóstica:</strong> Con base en la entrevista y la exploración física, formula posibles causas del problema (ej. tendinopatía, esguince, disfunción postural).</li>
+                <li><strong>Diagnóstico Kinésico/Funcional:</strong> Describe la disfunción principal en términos de movimiento y capacidad funcional.</li>
+                    <ul><li>*Ejemplo:* "Limitación del ROM de flexión de rodilla, lo que impide subir escaleras sin dolor."</li></ul>
+                <li><strong>Establecimiento de Objetivos:</strong> Define metas a corto, mediano y largo plazo que sean *SMART* (Específicas, Medibles, Alcanzables, Relevantes, con límite de Tiempo).</li>
+            </ul>
+        </div>
+        
+        <!-- Paso 5 – Plan de Tratamiento (Intervención) -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-list-check me-2"></i>Plan de Tratamiento (Intervención)</h5>
+            <ul class="pasos-list">
+                <h6>Define cómo se abordará la disfunción.</h6>
+                <li><strong>Selección de Técnicas:</strong> Elige las modalidades adecuadas.</li>
+                    <ul><li>*Ejemplos:* Terapia Manual (movilizaciones), Agentes Físicos (electroterapia), Ejercicios Terapéuticos (fortalecimiento, estiramiento).</li></ul>
+                <li><strong>Educación al Paciente (Fundamental):</strong> Explica la condición, la importancia de la adhesión y proporciona consejos ergonómicos o de autocuidado.</li>
+                <li><strong>Planificación:</strong> Detalla la frecuencia y duración de las sesiones.</li>
+            </ul>
+        </div>
+        
+        <!-- Paso 6 – Registro y Cierre -->
+        <div class="pasos-guia">
+            <h5><i class="fa-solid fa-clipboard-list me-2"></i>Registro y Cierre</h5>
+            <ul class="pasos-list">
+                <h6>Documentación final de la sesión.</h6>
+                <li><strong>Registro (Ficha Clínica):</strong> Anota de forma clara y concisa todos los hallazgos de la evaluación y el plan de tratamiento.</li>
+                <li><strong>Cierre y Próximos Pasos:</strong> Resume lo que se encontró y lo que se hará, responde a las últimas preguntas del paciente y agenda la próxima sesión.</li>
+                <li><strong>Consejo para Estudiantes:</strong> El flujo de información debe guiar la exploración. Las preguntas y hallazgos deben orientar las pruebas que realices.</li>
+            </ul>
+        </div>
+        
+    </div>
+
+</html>

@@ -116,6 +116,12 @@ def ajax_caso_clinico(request, curso_id):
         "curso_actual": curso
     })
 
+def ajax_guia_kine(request, curso_id):
+    curso = get_object_or_404(Curso, id=curso_id)
+    return render(request, "estudiante/ajax/guia_kine.html", {
+        "curso_actual": curso
+    })
+
 
 # -------------------------------------------
 # AJAX: EVALUACIONES

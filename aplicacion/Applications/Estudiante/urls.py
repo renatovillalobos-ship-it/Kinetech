@@ -41,7 +41,11 @@ urlpatterns = [
     path('ajax/caso-clinico/<int:curso_id>/', ajax_caso_clinico, name='ajax_caso_clinico'),
     path('ajax/evaluaciones/<int:curso_id>/', ajax_evaluaciones, name='ajax_evaluaciones'),
     path('ajax/guardar-respuestas/<int:curso_id>/<int:cuest_id>/', ajax_guardar_respuestas, name='ajax_guardar_respuestas'),
-
+    path('curso/<int:curso_id>/ajax/caso/',views_ajax.ajax_caso_clinico,name='ajax_caso_clinico'),
+    #pasos de evaluacion de pacientes
+    path('curso/<int:curso_id>/ajax/pasos/',views_ajax.ajax_guia_kine,name='ajax_guia_kine'),
+    path('curso/<int:curso_id>/ajax/evaluaciones/',views_ajax.ajax_evaluaciones,name='ajax_evaluaciones'),
+    path('curso/<int:curso_id>/ajax/cuestionario/<int:cuest_id>/guardar/',views_ajax.ajax_guardar_respuestas,name='ajax_guardar_respuestas'),
 
 
 ]

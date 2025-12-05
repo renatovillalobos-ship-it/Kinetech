@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Evaluación - {{ paciente.nombre }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        *{
+             font-family: 'Source Sans Pro', sans-serif !important;
+        }
+        .etapa-container {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 30px;
+            margin: 20px auto;
+            max-width: 900px;
+            background: white;
+        }
+        .video-section {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .etapa-activa {
+            border-left: 5px solid #28a745;
+            padding-left: 15px;
+            margin: 25px 0;
+        }
+        .pregunta {
+            background: #e9ecef;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+        .respuesta {
+            padding: 10px;
+            margin: 5px 0;
+            border-left: 3px solid #ccc;
+        }
+        .respuesta-correcta {
+            border-left-color: #28a745;
+            background: #d4edda;
+        }
+        .respuesta-incorrecta {
+            border-left-color: #dc3545;
+            background: #f8d7da;
+        }
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .etapa-container h1{
+            text-align: center;
+        }
+
+        .paciente-info{
+            background: var(--bg-card); /* antes #f8faff */
+            background: var(--bg-card); /* antes #f8faff */
+            border-left: 4px solid #0d47a1;
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 22px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="etapa-container">
+            <h1>Evaluación del Paciente</h1>
+            
+            <div class="paciente-info">
+                <h2>Información personal</h2>
+                <p><strong>Nombre:</strong>{{ paciente.nombre }} | <strong>Edad:</strong> {{ paciente.edad }} años </p>
+                <p><strong>Parte del cuerpo:</strong> {{ parte.ParteCuerpo }}</p>
+                <p><strong>Ocupación:</strong> {{ paciente.ocupacion }} | <strong>Previsión:</strong> {{ paciente.prevision }} </p>
+            </div>
+            
+            <!-- Video inicial del motivo de consulta -->
+            <div class="video-section">
+                <h3><i class="fas fa-video"></i> Motivo de Consulta</h3>
+                {% if etapas.0.video %}
+                    <div style="margin: 20px 0;">
+                        <iframe width="560" height="315" 
+                                src="{{ etapas.0.video }}" 
+                                frameborder="0" 
+                                allowfullscreen>
+                        </iframe>
+                    </div>
+                    <p>Observa el video del motivo de consulta antes de comenzar la evaluación.</p>
+                    
+                {% else %}
+                    <p><i class="fas fa-exclamation-triangle"></i> No hay video disponible para el motivo de consulta.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Lista de etapas -->
+            <h3>Proceso de Evaluación</h3>
+            
+            {% for etapa in etapas %}
+            <div class="etapa-activa" id="etapa-{{ etapa.id }}">
+                <h4>Etapa {{ forloop.counter }}: {{ etapa.nombre }}</h4>
+                
+                {% if etapa.video and not forloop.first %}
+                <div style="margin: 15px 0;">
+                    <p><strong>Video demostrativo:</strong></p>
+                    <a href="{{ etapa.video }}" target="_blank" style="color: #003366;">
+                        <i class="fas fa-external-link-alt"></i> Ver video
+                    </a>
+                </div>
+                {% endif %}
+                
+                <!-- Preguntas de esta etapa -->
+                {% for pregunta in etapa.preguntas %}
+                <div class="pregunta">
+                    <p><strong>Pregunta {{ forloop.counter }}:</strong> {{ pregunta.texto }}</p>
+                    
+                    <!-- Respuestas -->
+                    {% for respuesta in pregunta.respuestas %}
+                    <div class="respuesta {% if respuesta.correcta %}respuesta-correcta{% else %}respuesta-incorrecta{% endif %}">
+                        <p>
+                            {% if respuesta.correcta %}
+                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
+                            {% else %}
+                                <i class="fas fa-times-circle" style="color: #dc3545;"></i>
+                            {% endif %}
+                            {{ respuesta.texto }}
+                        </p>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+            {% empty %}
+            <p>No hay etapas definidas para esta evaluación.</p>
+            {% endfor %}
+            
+            <!-- Navegación -->
+            <div class="nav-buttons">
+                <a href="{% url 'Caso_Clinico:seleccionar_paciente' caso.id parte.id %}" 
+                   style="color: #003366; text-decoration: none;">
+                    <i class="fas fa-arrow-left"></i> Volver a selección de paciente
+                </a>
+                <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" 
+                   style="color: #003366; text-decoration: none;">
+                    <i class="fas fa-home"></i> Volver al caso clínico
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
