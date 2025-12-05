@@ -6,23 +6,18 @@
 {% block navbar %}
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
     <a href="{% url 'estudiante:home_estudiante' %}" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-        <img src="/static/img/logo_ucn.jpg" alt="Logo Facultad de Medicina" 
+        <img src="/static/img/logo_ucn.jpg" alt="Logo Facultad de Medicina"
         style="height: 70px; width: 70px; border-radius: 50%; margin-right: 10px;">
         <h2 class="navbar-title">UCN Kinesiologia</h2>
     </a>
-
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
     
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
-
             <a href="{% url 'estudiante:home_estudiante' %}" class="nav-item nav-link">Cursos</a>
             <a href="{% url 'estudiante:perfil_estudiante' %}" class="nav-item nav-link {% if request.resolver_match.url_name == 'perfil_estudiante' %}active{% endif %}">Perfil</a>
-
-
-
             <a href="{% url 'login' %}" class="btn btn-warning py-4 px-lg-5 d-none d-lg-block">Cerrar Sesión</a>
         </div>
     </div>
@@ -30,28 +25,13 @@
 {% endblock navbar %}
 
 {% block content %}
-
 <div class="container py-5">
-
     <div class="row justify-content-center">
-        <div class="col-lg-8">
-
+        <div class="col-lg-10">
             <div class="card shadow border-0 p-4">
-
+                <!-- Encabezado con foto y nombre -->
                 <div class="text-center">
-                    
-                    <!--{# Muestra alertas si existen #}-->
-                    <!--{% if messages %}
-                        <div class="mt-3">
-                            {% for message in messages %}
-                                
-                                <div class="alert alert-{{ message.tags }}">
-                                    {{ message }}
-                                </div>
-                            {% endfor %}
-                        </div>
-                    {% endif %}-->
-
+                    <!-- Sistema de mensajes filtrado -->
                     {% if messages %}
                         <ul class="messages">
                             {% for message in messages %}
@@ -61,8 +41,7 @@
                             {% endfor %}
                         </ul>
                     {% endif %}
-
-
+                    
                     {% if estudiante.foto_perfil_estudiante %}
                         <img src="{{ estudiante.foto_perfil_estudiante.url }}"
                              class="rounded-circle shadow"
@@ -72,70 +51,317 @@
                              class="rounded-circle shadow"
                              style="width: 180px; height: 180px; object-fit: cover;">
                     {% endif %}
-
-                    <h2 class="mt-4 text-primary">
+                    
+                    <h2 class="mt-4 text-primary fw-bold">
                         {{ estudiante.nombre_estudiante }} {{ estudiante.apellido_estudiante }}
                     </h2>
-
+                    <p class="text-muted">Estudiante de Kinesiología</p>
                     
                     {% if estudiante %}
-                    <!-- SUBIR FOTO -->
-                    <form action="{% url 'estudiante:subir_foto_estudiante' estudiante.id %}"
-                        method="POST" enctype="multipart/form-data" class="mt-3">
-                        {% csrf_token %}
-                        <input type="file" name="foto" required class="form-control mb-2">
-                        <button class="btn btn-primary w-100">Cambiar foto</button>
-                    </form>
-
-                    <!-- ELIMINAR FOTO -->
-                    <form action="{% url 'estudiante:eliminar_foto_estudiante' estudiante.id %}"
-                        method="POST" class="mt-2">
-                        {% csrf_token %}
-                        <button class="btn btn-danger w-100">Eliminar foto</button>
-                    </form>
-
+                    <!-- Botones para subir/eliminar foto -->
+                    <div class="row justify-content-center mt-3">
+                        <div class="col-md-6 mb-2">
+                            <form action="{% url 'estudiante:subir_foto_estudiante' estudiante.id %}"
+                                method="POST" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <div class="input-group">
+                                    <input type="file" name="foto" class="form-control" required>
+                                    <button class="btn btn-primary">
+                                        <i class="fas fa-upload me-1"></i> Subir
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form action="{% url 'estudiante:eliminar_foto_estudiante' estudiante.id %}"
+                                method="POST">
+                                {% csrf_token %}
+                                <button class="btn btn-danger w-100">
+                                    <i class="fas fa-trash me-1"></i> Eliminar Foto
+                                </button>
+                            </form>
+                        </div>
+                    </div>
                     {% else %}
                         <p class="text-danger mt-3">No se encontró información del estudiante.</p>
                     {% endif %}
-
                 </div>
-
-                <hr>
-
-                <div class="row mt-3">
-
-                    <div class="col-md-12 mb-3">
-                        <h5 class="text-secondary">Correo Electrónico</h5>
-                        <p class="fw-bold">{{ estudiante.correo_estudiante }}</p>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <h5 class="text-secondary">País</h5>
-                        <p class="fw-bold">{{ estudiante.pais_estudiante }}</p>
-                    </div>
-
-                    <div class="col-md-6 mb-3">
-                        <h5 class="text-secondary">Progreso del Curso</h5>
-
-                        {% if progreso %}
-                            <p class="fw-bold">
-                                {{ progreso }}%
-                            </p>
-                        {% else %}
-                            <p class="fw-bold text-muted">
-                                Sin progreso registrado
-                            </p>
-                        {% endif %}
+                
+                <hr class="my-4">
+                
+                <div class="row mt-4">
+                    <!-- Sección izquierda: Información personal -->
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Información Personal</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <h6 class="text-secondary mb-2">
+                                        <i class="fas fa-envelope me-2"></i>Correo Electrónico
+                                    </h6>
+                                    <p class="fw-bold text-dark fs-5">{{ estudiante.correo_estudiante }}</p>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <h6 class="text-secondary mb-2">
+                                        <i class="fas fa-globe-americas me-2"></i>País
+                                    </h6>
+                                    <p class="fw-bold text-dark fs-5">{{ estudiante.pais_estudiante }}</p>
+                                </div>
+                                
+                                <div>
+                                    <h6 class="text-secondary mb-2">
+                                        <i class="fas fa-graduation-cap me-2"></i>Cursos Inscritos
+                                    </h6>
+                                    {% if estudiante.cursos.all %}
+                                        <ul class="list-group list-group-flush">
+                                            {% for curso in estudiante.cursos.all %}
+                                                <li class="list-group-item d-flex justify-content-between align-items-center border-0 px-0">
+                                                    <span>{{ curso.nombre_curso }}</span>
+                                                    <span class="badge bg-info">{{ curso.codigo_curso }}</span>
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted">No tienes cursos asignados</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     
-
+                    <!-- Sección derecha: Gráfico de progreso -->
+                    <div class="col-lg-6">
+                        <div class="card h-100 border-0 shadow-sm">
+                            <div class="card-header bg-success text-white">
+                                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Progreso General</h5>
+                            </div>
+                            <div class="card-body text-center">
+                                {% if progreso %}
+                                    <!-- Gráfico Circular SVG -->
+                                    <div class="position-relative d-inline-block">
+                                        <svg width="220" height="220" viewBox="0 0 120 120" class="progress-chart">
+                                            <!-- Fondo del círculo -->
+                                            <circle cx="60" cy="60" r="54" 
+                                                    stroke="#e9ecef" 
+                                                    stroke-width="10" 
+                                                    fill="none"/>
+                                            
+                                            <!-- Círculo de progreso (animado) -->
+                                            <circle id="progress-circle" cx="60" cy="60" r="54" 
+                                                    stroke="#4CAF50" 
+                                                    stroke-width="10" 
+                                                    stroke-linecap="round"
+                                                    fill="none"
+                                                    stroke-dasharray="339.292"
+                                                    stroke-dashoffset="339.292"
+                                                    transform="rotate(-90 60 60)"/>
+                                            
+                                            <!-- Porcentaje en el centro -->
+                                            <text id="progress-text" x="60" y="60" 
+                                                  text-anchor="middle" 
+                                                  dy="0.3em" 
+                                                  font-size="24" 
+                                                  font-weight="bold"
+                                                  fill="#2c3e50">0%</text>
+                                        </svg>
+                                        
+                                        <!-- Información adicional -->
+                                        <div class="mt-4">
+                                            <h4 class="fw-bold text-success mb-3">Tu progreso: <span id="progress-value">{{ progreso }}</span>%</h4>
+                                            
+                                            <!-- Barra de progreso alternativa -->
+                                            <div class="progress mb-3" style="height: 20px;">
+                                                <div id="progress-bar" class="progress-bar bg-gradient progress-bar-striped progress-bar-animated" 
+                                                     role="progressbar" 
+                                                     style="width: 0%">
+                                                </div>
+                                            </div>
+                                            
+                                            <!-- Mensaje motivacional -->
+                                            <div id="progress-message" class="alert alert-light border">
+                                                <i class="fas fa-spinner fa-spin me-2"></i>
+                                                <span>Cargando progreso...</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <!-- Si no hay progreso registrado -->
+                                    <div class="text-center py-5">
+                                        <div class="mb-3">
+                                            <i class="fas fa-chart-pie fa-4x text-muted"></i>
+                                        </div>
+                                        <h4 class="text-muted mb-3">Sin progreso registrado</h4>
+                                        <p class="text-muted mb-4">Comienza a ver videos y realizar cuestionarios para generar tu progreso.</p>
+                                        <a href="{% url 'estudiante:home_estudiante' %}" class="btn btn-primary">
+                                            <i class="fas fa-play-circle me-2"></i> Comenzar cursos
+                                        </a>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
-
         </div>
     </div>
-
 </div>
 
+<!-- CSS para el gráfico -->
+<style>
+    .progress-chart {
+        transition: all 0.5s ease;
+    }
+    
+    .progress-bar {
+        background: linear-gradient(90deg, #4CAF50, #8BC34A);
+        transition: width 1.5s ease-in-out;
+    }
+    
+    /* Estilos para los mensajes de alerta */
+    .messages {
+        list-style: none;
+        padding-left: 0;
+        margin-bottom: 20px;
+    }
+    
+    .messages li {
+        border-radius: 5px;
+        padding: 10px 15px;
+        margin-bottom: 10px;
+    }
+</style>
+
+<!-- JavaScript para animar el gráfico -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if progreso %}
+        const progress = {{ progreso }};
+        const circle = document.getElementById('progress-circle');
+        const text = document.getElementById('progress-text');
+        const bar = document.getElementById('progress-bar');
+        const message = document.getElementById('progress-message');
+        const header = document.querySelector('.card-header.bg-success');
+        
+        // Calcular el offset del círculo SVG
+        const circumference = 2 * Math.PI * 54;
+        const offset = circumference - (progress / 100) * circumference;
+        
+        // Determinar color según el porcentaje (SCRUM-163)
+        let progressColor, progressGradient, headerColor;
+        
+        if (progress < 40) {
+            progressColor = '#dc3545';
+            progressGradient = 'linear-gradient(90deg, #dc3545, #e35d6a)';
+            headerColor = 'bg-danger';
+        } else if (progress >= 40 && progress <= 80) {
+            progressColor = '#ffc107';
+            progressGradient = 'linear-gradient(90deg, #ffc107, #ffdb6d)';
+            headerColor = 'bg-warning';
+        } else {
+            progressColor = '#28a745';
+            progressGradient = 'linear-gradient(90deg, #28a745, #20c997)';
+            headerColor = 'bg-success';
+        }
+        
+        // Aplicar color al círculo
+        circle.style.stroke = progressColor;
+        
+        // Aplicar color a la barra de progreso
+        bar.style.background = progressGradient;
+        
+        // Cambiar color del encabezado de la tarjeta
+        if (header) {
+            header.classList.remove('bg-success', 'bg-warning', 'bg-danger');
+            header.classList.add(headerColor);
+        }
+        
+        // Cambiar color del título "Tu progreso"
+        const progressTitle = document.querySelector('h4.fw-bold.text-success');
+        if (progressTitle) {
+            if (progress < 40) {
+                progressTitle.classList.remove('text-success');
+                progressTitle.classList.add('text-danger');
+            } else if (progress >= 40 && progress <= 80) {
+                progressTitle.classList.remove('text-success');
+                progressTitle.classList.add('text-warning');
+            }
+        }
+        
+        // Mensajes según el progreso
+        const messages = [
+            { min: 0, max: 20, text: "¡Comienza tu camino en Kinesiología!", icon: "fas fa-flag", color: "text-secondary" },
+            { min: 21, max: 40, text: "¡Vas por buen camino!", icon: "fas fa-walking", color: "text-info" },
+            { min: 41, max: 60, text: "¡Sigue así, estás progresando!", icon: "fas fa-running", color: "text-primary" },
+            { min: 61, max: 80, text: "¡Excelente trabajo!", icon: "fas fa-medal", color: "text-warning" },
+            { min: 81, max: 99, text: "¡Casi completas tu formación!", icon: "fas fa-trophy", color: "text-success" },
+            { min: 100, max: 100, text: "¡Felicidades, completaste todo!", icon: "fas fa-crown", color: "text-danger" }
+        ];
+        
+        // Encontrar el mensaje adecuado
+        let currentMessage = messages[0];
+        for (let msg of messages) {
+            if (progress >= msg.min && progress <= msg.max) {
+                currentMessage = msg;
+                break;
+            }
+        }
+        
+        // Animar el círculo SVG
+        setTimeout(() => {
+            circle.style.transition = 'stroke-dashoffset 2s ease-in-out';
+            circle.style.strokeDashoffset = offset;
+            
+            // Animar el texto del porcentaje
+            let current = 0;
+            const increment = progress / 50;
+            const timer = setInterval(() => {
+                current += increment;
+                if (current >= progress) {
+                    current = progress;
+                    clearInterval(timer);
+                }
+                text.textContent = Math.round(current) + '%';
+                
+                // Actualizar barra de progreso
+                bar.style.width = current + '%';
+                
+                // Actualizar número
+                document.getElementById('progress-value').textContent = Math.round(current);
+                
+                // Cambiar color del texto del porcentaje según SCRUM-163
+                if (current < 40) {
+                    text.setAttribute('fill', '#dc3545');
+                } else if (current >= 40 && current <= 80) {
+                    text.setAttribute('fill', '#ffc107');
+                } else {
+                    text.setAttribute('fill', '#28a745');
+                }
+            }, 30);
+            
+            // Actualizar mensaje motivacional
+            message.innerHTML = `
+                <i class="${currentMessage.icon} me-2 ${currentMessage.color}"></i>
+                <strong class="${currentMessage.color}">${currentMessage.text}</strong>
+                <span class="float-end text-muted small">${progress}% completado</span>
+            `;
+            
+            // Añadir fondo según el color del progreso
+            if (progress < 40) {
+                message.style.backgroundColor = '#f8d7da';
+                message.style.borderColor = '#dc3545';
+            } else if (progress >= 40 && progress <= 80) {
+                message.style.backgroundColor = '#fff3cd';
+                message.style.borderColor = '#ffc107';
+            } else {
+                message.style.backgroundColor = '#d4edda';
+                message.style.borderColor = '#28a745';
+            }
+            
+        }, 500);
+        {% endif %}
+    });
+</script>
 {% endblock %}
