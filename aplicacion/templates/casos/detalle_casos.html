@@ -178,8 +178,9 @@
 </head>
 <body>
     <div class="container">
-        <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" class="volver-btn">
-            <i class="fas fa-arrow-left"></i> Volver a casos clínicos <!--REVISAR PORQUE NO REDIRECCIONA-->
+        <a href="{% url 'estudiante:curso_panel' caso.Curso.id %}" class="volver-btn">
+
+            <i class="fas fa-arrow-left"></i> Volver a casos clínicos 
         </a>
         
         <h1>{{ caso.caso }}</h1>
@@ -193,7 +194,7 @@
                 <i class="{{ parte.icono }}"></i>
             </div>
             <div class="parte-info">
-                <h3>{{ parte.nombre }}</h3>
+                <h3>{{ parte.ParteCuerpo }}</h3>
                 <p><strong>Etapas:</strong> {{ parte.etapas_count }} disponibles</p>
                 
                 {% if parte.pacientes.all %}

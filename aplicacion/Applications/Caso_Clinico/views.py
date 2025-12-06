@@ -1,60 +1,39 @@
+# views.py - REEMPLAZA TODO EL CONTENIDO CON ESTO
+from django.shortcuts import render, get_object_or_404, redirect
+from django.urls import reverse
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.db.models import Prefetch
+import json
 
-
-from django.shortcuts import render, get_object_or_404
 from Applications.Caso_Clinico.models import (
     Caso_clinico, Partes_cuerpo, Pacientes, 
-    Etapa, PreguntaEtapa, RespuestaEtapa, Partes_paciente
+    Etapa, PreguntaEtapa, RespuestaEtapa, Partes_paciente,
+    TemaConsulta, OpcionTema
 )
-import json
-from django.db.models import Prefetch
 
-# CORREGIDO: Cambia 'casos/' por 'caso_clinico/'
+
 def lista_casos_clinicos(request, curso_id):
     casos = Caso_clinico.objects.filter(Curso_id=curso_id).select_related('Curso')
-    return render(request, 'casos/lista_casos.html', {  # ← CAMBIADO
+    return render(request, 'casos/lista_casos.html', {
         'casos': casos,
         'curso_id': curso_id
     })
 
-#def detalle_caso_clinico(request, caso_id):
-    #"""Paso 1: Muestra el caso clínico y sus partes del cuerpo"""
-    #caso = get_object_or_404(Caso_clinico, id=caso_id)
-    
-    # Obtener partes del cuerpo con sus relaciones
-    #partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso).prefetch_related(
-        #'partes_paciente_set__Pacientes',
-        #'etapa_set'
-    #)
-    
-    # Agregar icono a cada parte
-    #for parte in partes_cuerpo:
-        #parte.icono = obtener_icono_parte_cuerpo(parte.ParteCuerpo)
-    
-    #return render(request, 'casos/detalle_casos.html', {
-        #'caso': caso,
-        #'partes_cuerpo': partes_cuerpo,
-    #})
-
-
-# Applications/Caso_Clinico/views.py (función detalle_caso_clinico)
 
 def detalle_caso_clinico(request, caso_id):
     """Paso 1: Muestra el caso clínico y sus partes del cuerpo"""
     caso = get_object_or_404(Caso_clinico, id=caso_id)
     
-    # Obtener partes del cuerpo con sus relaciones
     partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso).prefetch_related(
         Prefetch('partes_paciente_set', queryset=Partes_paciente.objects.select_related('Pacientes')),
         'etapa_set'
     )
     
-    # Agregar icono y datos de pacientes a cada parte
     for parte in partes_cuerpo:
         parte.icono = obtener_icono_parte_cuerpo(parte.ParteCuerpo)
-        # Acceder a los pacientes a través de la relación intermedia para el template
         parte.pacientes = [pp.Pacientes for pp in parte.partes_paciente_set.all()]
-        # Contar etapas
-        parte.etapas_count = parte.etapa_set.count() # Añadimos el conteo de etapas
+        parte.etapas_count = parte.etapa_set.count()
     
     return render(request, 'casos/detalle_casos.html', {
         'caso': caso,
@@ -67,17 +46,16 @@ def seleccionar_paciente(request, caso_id, parte_id):
     caso = get_object_or_404(Caso_clinico, id=caso_id)
     parte = get_object_or_404(Partes_cuerpo, id=parte_id)
     
-    # Obtener las relaciones entre parte y pacientes
     relaciones = Partes_paciente.objects.filter(
         ParteCuerpo=parte
     ).select_related('Pacientes').order_by('id')
     
-    # CORRECCIÓN IMPORTANTE: Apuntar a 'casos/seleccionar_paciente.html'
     return render(request, 'casos/seleccionar_paciente.html', {
         'caso': caso,
         'parte': parte,
         'relaciones': relaciones,
     })
+
 
 def ver_etapas(request, caso_id, parte_id, paciente_id):
     """Muestra las etapas de evaluación para una parte del cuerpo"""
@@ -85,20 +63,13 @@ def ver_etapas(request, caso_id, parte_id, paciente_id):
     parte = get_object_or_404(Partes_cuerpo, id=parte_id)
     paciente = get_object_or_404(Pacientes, id=paciente_id)
     
-    # Obtener todas las etapas para esta parte del cuerpo
-    etapas = Etapa.objects.filter(
-        ParteCuerpo=parte
-    ).order_by('id')
+    etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
     
-    # Para cada etapa, verificar si tiene video o preguntas
     for etapa in etapas:
         etapa.tiene_video = bool(etapa.video)
-        etapa.tiene_preguntas = PreguntaEtapa.objects.filter(Etapa=etapa).exists()
-
-    # APLICAR CONVERSIÓN DE URL AQUÍ:
+        etapa.tiene_preguntas = etapa.preguntas.exists()
         if etapa.tiene_video:
-            etapa.video_embed = convertir_url_youtube_a_embed(etapa.video) # Creamos un nuevo atributo
-    
+            etapa.embed_url = etapa.embed_url()
     
     return render(request, 'casos/ver_etapas.html', {
         'caso': caso,
@@ -107,45 +78,202 @@ def ver_etapas(request, caso_id, parte_id, paciente_id):
         'etapas': etapas,
     })
 
+
+from django.shortcuts import render, get_object_or_404
+from .models import Caso_clinico, Partes_cuerpo, Pacientes, Etapa, TemaConsulta, PreguntaEtapa
+
 def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
-    """Muestra el detalle de una etapa específica"""
+    # Obtener objetos
     caso = get_object_or_404(Caso_clinico, id=caso_id)
     parte = get_object_or_404(Partes_cuerpo, id=parte_id)
     paciente = get_object_or_404(Pacientes, id=paciente_id)
-    etapa = get_object_or_404(Etapa, id=etapa_id, ParteCuerpo=parte)
+    etapa = get_object_or_404(Etapa, id=etapa_id)
     
-    # Verificar si la etapa tiene video
-    tiene_video = bool(etapa.video)
+    # Obtener etapas relacionadas
+    todas_etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
+    etapa_actual_numero = list(todas_etapas).index(etapa) + 1
+    total_etapas = todas_etapas.count()
     
-    # Obtener preguntas si las tiene
-    preguntas = []
-    if not tiene_video:
-        preguntas = PreguntaEtapa.objects.filter(Etapa=etapa).prefetch_related('respuestaetapa_set')
-    
-    # Obtener todas las etapas para navegación
-    todas_etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('id')
-    etapas_list = list(todas_etapas)
-    
+    # Etapas anterior y siguiente
     try:
-        index_actual = etapas_list.index(etapa)
-        etapa_anterior = etapas_list[index_actual - 1] if index_actual > 0 else None
-        etapa_siguiente = etapas_list[index_actual + 1] if index_actual < len(etapas_list) - 1 else None
-    except ValueError:
+        etapa_anterior = todas_etapas.get(orden=etapa.orden - 1)
+    except Etapa.DoesNotExist:
         etapa_anterior = None
+        
+    try:
+        etapa_siguiente = todas_etapas.get(orden=etapa.orden + 1)
+    except Etapa.DoesNotExist:
         etapa_siguiente = None
     
-    return render(request, 'casos/etapa_detalle.html', {
+    # Contexto base
+    contexto = {
         'caso': caso,
         'parte': parte,
         'paciente': paciente,
         'etapa': etapa,
-        'tiene_video': tiene_video,
-        'preguntas': preguntas,
+        'etapa_actual_numero': etapa_actual_numero,
+        'total_etapas': total_etapas,
         'etapa_anterior': etapa_anterior,
         'etapa_siguiente': etapa_siguiente,
-        'total_etapas': len(etapas_list),
-        'etapa_actual_numero': index_actual + 1 if 'index_actual' in locals() else 1,
+    }
+    
+    # Datos específicos por tipo de etapa
+    if etapa.tipo == 'formulario_temas':
+        # Obtener temas para esta etapa
+        temas = TemaConsulta.objects.filter(etapa=etapa).order_by('orden')
+        contexto['temas'] = temas
+    
+    elif etapa.tipo == 'preguntas_tema':
+        # Obtener preguntas para esta etapa
+        preguntas = PreguntaEtapa.objects.filter(Etapa=etapa).prefetch_related('respuestas')
+        contexto['preguntas'] = preguntas
+    
+    return render(request, 'casos/etapa_detalle.html', contexto)
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from .models import TemaConsulta, OpcionTema
+import json
+
+@csrf_exempt
+def api_opciones_tema(request, tema_id):
+    """API para obtener opciones de un tema específico"""
+    try:
+        tema = get_object_or_404(TemaConsulta, id=tema_id)
+        opciones = OpcionTema.objects.filter(tema=tema).order_by('id')
+        
+        opciones_data = [
+            {
+                'id': opcion.id,
+                'texto': opcion.texto,
+                'es_correcta': opcion.es_correcta,
+                'retroalimentacion': opcion.retroalimentacion or '',
+                'lleva_a_etapa': opcion.lleva_a_etapa.id if opcion.lleva_a_etapa else None
+            }
+            for opcion in opciones
+        ]
+        
+        return JsonResponse({
+            "success": True,
+            "tema_id": tema_id,
+            "tema_nombre": tema.nombre,
+            "opciones": opciones_data
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            "success": False, 
+            "error": str(e)
+        }, status=500)
+
+@csrf_exempt
+def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
+    """Procesar respuesta del usuario en etapa de formulario de temas"""
+    if request.method == 'POST':
+        try:
+            opcion_id = request.POST.get('opcion_id')
+            
+            # Obtener la opción seleccionada
+            opcion = get_object_or_404(OpcionTema, id=opcion_id)
+            
+            # Obtener contexto
+            caso = get_object_or_404(Caso_clinico, id=caso_id)
+            parte = get_object_or_404(Partes_cuerpo, id=parte_id)
+            paciente = get_object_or_404(Pacientes, id=paciente_id)
+            etapa = get_object_or_404(Etapa, id=etapa_id, ParteCuerpo=parte)
+            
+            # Guardar la respuesta en sesión
+            if 'respuestas_caso' not in request.session:
+                request.session['respuestas_caso'] = {}
+            
+            key = f"{caso_id}_{parte_id}_{paciente_id}_{etapa_id}"
+            request.session['respuestas_caso'][key] = {
+                'opcion_id': opcion_id,
+                'correcta': opcion.es_correcta,
+                'retroalimentacion': opcion.retroalimentacion,
+                'fecha': str(datetime.now())
+            }
+            request.session.modified = True
+            
+            # Determinar qué hacer según si es correcta o no
+            if opcion.es_correcta:
+                # Si tiene redirección específica
+                if opcion.lleva_a_etapa:
+                    siguiente_etapa = opcion.lleva_a_etapa
+                else:
+                    # Buscar siguiente etapa del mismo tipo o la siguiente en orden
+                    siguiente_etapa = Etapa.objects.filter(
+                        ParteCuerpo=parte,
+                        orden__gt=etapa.orden
+                    ).order_by('orden').first()
+                
+                if siguiente_etapa:
+                    return JsonResponse({
+                        'success': True,
+                        'correcta': True,
+                        'redirect': True,
+                        'url': reverse('Caso_Clinico:etapa_detalle', 
+                                     args=[caso_id, parte_id, paciente_id, siguiente_etapa.id])
+                    })
+                else:
+                    # No hay más etapas
+                    return JsonResponse({
+                        'success': True,
+                        'correcta': True,
+                        'redirect': True,
+                        'url': reverse('Caso_Clinico:ver_progreso', 
+                                     args=[caso_id, parte_id, paciente_id])
+                    })
+            else:
+                # Respuesta incorrecta - quedarse en la misma etapa
+                return JsonResponse({
+                    'success': True,
+                    'correcta': False,
+                    'redirect': False,
+                    'retroalimentacion': opcion.retroalimentacion or "Respuesta incorrecta. Intente nuevamente."
+                })
+                
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+    
+    return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+
+def ver_progreso(request, caso_id, parte_id, paciente_id):
+    """Muestra el progreso del caso"""
+    caso = get_object_or_404(Caso_clinico, id=caso_id)
+    parte = get_object_or_404(Partes_cuerpo, id=parte_id)
+    paciente = get_object_or_404(Pacientes, id=paciente_id)
+    
+    etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
+    
+    # Obtener respuestas de sesión
+    respuestas = request.session.get('respuestas_caso', {})
+    etapas_completadas = 0
+    
+    for etapa in etapas:
+        key = f"{caso_id}_{parte_id}_{paciente_id}_{etapa.id}"
+        if key in respuestas:
+            etapas_completadas += 1
+    
+    progreso_porcentaje = (etapas_completadas / len(etapas)) * 100 if etapas else 0
+    
+    return render(request, 'casos/progreso.html', {
+        'caso': caso,
+        'parte': parte,
+        'paciente': paciente,
+        'etapas': etapas,
+        'respuestas': respuestas,
+        'progreso_porcentaje': progreso_porcentaje,
+        'etapas_completadas': etapas_completadas,
+        'total_etapas': len(etapas),
     })
+
+
 def obtener_icono_parte_cuerpo(nombre_parte):
     """Determina el ícono apropiado para cada parte del cuerpo"""
     nombre = nombre_parte.lower()
@@ -180,27 +308,3 @@ def obtener_icono_parte_cuerpo(nombre_parte):
             return icono
     
     return 'fas fa-user-md'
-
-# NUEVA FUNCIÓN DE AYUDA
-def convertir_url_youtube_a_embed(url):
-    """
-    Convierte una URL normal de YouTube (watch?v=) a una URL de incrustación (embed/).
-    Si la URL ya es de incrustación o no es de YouTube, la devuelve sin cambios.
-    """
-    if not url:
-        return url
-    
-    # Si ya es una URL de incrustación, la devolvemos
-    if 'embed/' in url:
-        return url
-        
-    import re
-    # Patrón para extraer el código del video de una URL "watch"
-    patron = re.compile(r'(?:https?://)?(?:www\.)?(?:youtube\.com/watch\?v=|youtu\.be/)([a-zA-Z0-9_-]+)')
-    
-    match = patron.search(url)
-    if match:
-        video_id = match.group(1)
-        return f'https://www.youtube.com/embed/{video_id}'
-        
-    return url

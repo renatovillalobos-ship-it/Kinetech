@@ -1,26 +1,25 @@
+# urls.py
 from django.urls import path
 from . import views
 
 app_name = 'Caso_Clinico'
 
 urlpatterns = [
-    # Lista de casos por curso
-    path('curso/<int:curso_id>/casos/', 
-         views.lista_casos_clinicos, 
-         name='casos_lista_casos'),
+    path('lista/<int:curso_id>/', views.lista_casos_clinicos, name='lista_casos'),
+    path('detalle/<int:caso_id>/', views.detalle_caso_clinico, name='detalle_caso'),
+    path('seleccionar-paciente/<int:caso_id>/<int:parte_id>/', 
+         views.seleccionar_paciente, name='seleccionar_paciente'),
+    path('ver-etapas/<int:caso_id>/<int:parte_id>/<int:paciente_id>/', 
+         views.ver_etapas, name='ver_etapas'),
+    path('etapa-detalle/<int:caso_id>/<int:parte_id>/<int:paciente_id>/<int:etapa_id>/', 
+         views.etapa_detalle, name='etapa_detalle'),
     
-    # Detalle de caso
-    path('casos/<int:caso_id>/', 
-         views.detalle_caso_clinico, 
-         name='detalle_caso'),
+    # API endpoints
+    path('api/opciones-tema/<int:tema_id>/', views.api_opciones_tema, name='api_opciones_tema'),
     
-    # Seleccionar paciente
-    path('casos/<int:caso_id>/parte/<int:parte_id>/', 
-         views.seleccionar_paciente, 
-         name='seleccionar_paciente'),
+    path('procesar-respuesta/<int:caso_id>/<int:parte_id>/<int:paciente_id>/<int:etapa_id>/', 
+         views.procesar_respuesta, name='procesar_respuesta'),
     
-    # Ver etapas
-    path('casos/<int:caso_id>/parte/<int:parte_id>/paciente/<int:paciente_id>/', 
-         views.ver_etapas, 
-         name='ver_etapas'),
+    path('progreso/<int:caso_id>/<int:parte_id>/<int:paciente_id>/', 
+         views.ver_progreso, name='ver_progreso'),
 ]

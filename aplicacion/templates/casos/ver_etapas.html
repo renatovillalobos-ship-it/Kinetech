@@ -23,11 +23,6 @@
             background: #f8f9fa;
             border-radius: 8px;
         }
-        .etapa-activa {
-            border-left: 5px solid #28a745;
-            padding-left: 15px;
-            margin: 25px 0;
-        }
         .pregunta {
             background: #e9ecef;
             padding: 15px;
@@ -71,37 +66,41 @@
             margin-bottom: 22px;
             box-shadow: 0 1px 4px rgba(0,0,0,0.05);
         }
+
+        /* Estilo del nuevo botón para comenzar la evaluación */
+        .btn-comenzar {
+            background: #0d47a1; /* Color verde para comenzar/siguiente */
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 700;
+            font-size: 1.1em;
+            letter-spacing: 0.5px;
+            transition: background 0.3s, transform 0.2s;
+            box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2);
+        }
+        .btn-comenzar:hover {
+            background: #063780; /* Tono más oscuro al pasar el mouse */
+            transform: translateY(-1px);
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="etapa-container">
-            <h1>Evaluación del Paciente</h1>
+            <h1>Ficha clínica</h1>
             
             <div class="paciente-info">
                 <h2>Información personal</h2>
                 <p><strong>Nombre:</strong>{{ paciente.nombre }} | <strong>Edad:</strong> {{ paciente.edad }} años </p>
                 <p><strong>Parte del cuerpo:</strong> {{ parte.ParteCuerpo }}</p>
-                <p><strong>Ocupación:</strong> {{ paciente.ocupacion }} | <strong>Previsión:</strong> {{ paciente.prevision }} </p>
+                <p><strong>Ocupación:</strong> {{ paciente.ocupacion }}  </p>
+                <p> <strong>Previsión:</strong> {{ paciente.prevision }}</p>
             </div>
-            
-            <!-- Video inicial del motivo de consulta -->
-            <div class="video-section">
-                <h3><i class="fas fa-video"></i> Motivo de Consulta</h3>
-                {% if etapas.0.video %}
-                    <div style="margin: 20px 0;">
-                        <iframe width="560" height="315" 
-                                src="{{ etapas.0.video }}" 
-                                frameborder="0" 
-                                allowfullscreen>
-                        </iframe>
-                    </div>
-                    <p>Observa el video del motivo de consulta antes de comenzar la evaluación.</p>
-                    
-                {% else %}
-                    <p><i class="fas fa-exclamation-triangle"></i> No hay video disponible para el motivo de consulta.</p>
-                {% endif %}
-            </div>
+        
             
             <!-- Lista de etapas -->
             <h3>Proceso de Evaluación</h3>
@@ -109,41 +108,14 @@
             {% for etapa in etapas %}
             <div class="etapa-activa" id="etapa-{{ etapa.id }}">
                 <h4>Etapa {{ forloop.counter }}: {{ etapa.nombre }}</h4>
-                
-                {% if etapa.video and not forloop.first %}
-                <div style="margin: 15px 0;">
-                    <p><strong>Video demostrativo:</strong></p>
-                    <a href="{{ etapa.video }}" target="_blank" style="color: #003366;">
-                        <i class="fas fa-external-link-alt"></i> Ver video
-                    </a>
-                </div>
-                {% endif %}
-                
-                <!-- Preguntas de esta etapa -->
-                {% for pregunta in etapa.preguntas %}
-                <div class="pregunta">
-                    <p><strong>Pregunta {{ forloop.counter }}:</strong> {{ pregunta.texto }}</p>
-                    
-                    <!-- Respuestas -->
-                    {% for respuesta in pregunta.respuestas %}
-                    <div class="respuesta {% if respuesta.correcta %}respuesta-correcta{% else %}respuesta-incorrecta{% endif %}">
-                        <p>
-                            {% if respuesta.correcta %}
-                                <i class="fas fa-check-circle" style="color: #28a745;"></i>
-                            {% else %}
-                                <i class="fas fa-times-circle" style="color: #dc3545;"></i>
-                            {% endif %}
-                            {{ respuesta.texto }}
-                        </p>
-                    </div>
-                    {% endfor %}
-                </div>
-                {% endfor %}
-            </div>
             {% empty %}
             <p>No hay etapas definidas para esta evaluación.</p>
             {% endfor %}
-            
+
+            <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapas.0.id %}" 
+                    class="btn-comenzar">
+                <i class="fas fa-arrow-right"></i>Comenzar Evaluación
+            </a>
             <!-- Navegación -->
             <div class="nav-buttons">
                 <a href="{% url 'Caso_Clinico:seleccionar_paciente' caso.id parte.id %}" 

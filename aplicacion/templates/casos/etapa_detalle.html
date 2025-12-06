@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Etapa {{ etapa_actual_numero }}: {{ etapa.nombre }}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Estilos Base del Contenedor */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .etapa-card {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .etapa-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        /* Estilos para Video */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Estilos para Formulario de Temas */
+        .temas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+        .tema-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .tema-card:hover {
+            border-color: #007bff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .tema-icono {
+            font-size: 2.5em;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+        
+        .opciones-tema {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+        .opcion-tema {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .opcion-tema:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        /* Estilos para Preguntas */
+        .pregunta-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #003366;
+        }
+        
+        .opciones-pregunta {
+            margin-top: 15px;
+        }
+        
+        .opcion-pregunta {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        .opcion-pregunta:hover {
+            background: #f0f8ff;
+        }
+        
+        /* Estilos para respuestas seleccionadas */
+        .opcion-seleccionada-correcta {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+        
+        .opcion-seleccionada-incorrecta {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+        
+        /* Retroalimentación */
+        .retroalimentacion-box {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+        .retroalimentacion-correcta {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+        .retroalimentacion-incorrecta {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        /* Navegación */
+        .nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+        .btn-nav {
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+        
+        .btn-anterior {
+            background: #6c757d;
+            color: white;
+        }
+        
+        .btn-siguiente {
+            background: #007bff;
+            color: white;
+            opacity: 0.5;
+            pointer-events: none;
+            border: none;
+            cursor: not-allowed;
+        }
+        
+        .btn-siguiente.habilitado {
+            opacity: 1;
+            pointer-events: auto;
+            background: #28a745;
+            cursor: pointer;
+        }
+        
+        /* Botón deshabilitado */
+        .btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="etapa-card">
+            <div class="etapa-header">
+                <h2>Etapa {{ etapa_actual_numero }} de {{ total_etapas }}: {{ etapa.nombre }}</h2>
+                <p>Caso: <strong>{{ caso.caso }}</strong> | Paciente: <strong>{{ paciente.nombre }}</strong></p>
+            </div>
+
+            {% if etapa.tipo == 'video_inicial' and etapa.tiene_video_valido %}
+                <!-- VIDEO INICIAL -->
+                <div style="text-align: center;">
+                    <h3><i class="fas fa-video"></i> Video de Presentación</h3>
+                    <p>Vea el motivo de consulta del paciente:</p>
+                    
+                    <div class="video-container">
+                        <iframe src="{{ etapa.embed_url }}?rel=0&modestbranding=1&showinfo=0&controls=1" 
+                                frameborder="0" allowfullscreen
+                                title="Video: {{ etapa.nombre }}">
+                        </iframe>
+                    </div>
+                    
+                    <div id="video-completado" style="display: none;">
+                        <div class="retroalimentacion-box retroalimentacion-correcta">
+                            <i class="fas fa-check-circle"></i> Video visto. Puede continuar.
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Habilitar siguiente después de ver el video
+                            setTimeout(function() {
+                                document.getElementById('btnSiguiente').classList.add('habilitado');
+                                document.getElementById('video-completado').style.display = 'block';
+                            }, 5000); // 5 segundos para simular que vio el video
+                        });
+                    </script>
+                </div>
+
+{% elif etapa.tipo == 'formulario_temas' and temas %}
+    <!-- FORMULARIO DE TEMAS -->
+    <div style="text-align: center; margin-bottom: 30px;">
+        <h3><i class="fas fa-clipboard-list"></i> Seleccione los temas a evaluar</h3>
+        <p>Elija los aspectos que desea investigar sobre el paciente:</p>
+    </div>
+    
+    <div class="temas-grid">
+        {% for tema in temas %}
+            <div class="tema-card" onclick="mostrarOpcionesTema({{ tema.id }})" id="tema-{{ tema.id }}">
+                <div class="tema-icono">
+                    <i class="{{ tema.icono }}"></i>
+                </div>
+                <h4>{{ tema.nombre }}</h4>
+                <p style="font-size: 0.9em; color: #666;">{{ tema.descripcion|truncatewords:15 }}</p>
+                <button style="margin-top: 10px; background: #007bff; color: white; border: none; padding: 8px 15px; border-radius: 5px;">
+                    <i class="fas fa-arrow-right"></i> Evaluar
+                </button>
+            </div>
+        {% endfor %}
+    </div>
+    
+                
+                <!-- Contenedor para opciones dinámicas -->
+                <div id="opciones-container"></div>
+                
+                <!-- Retroalimentación -->
+                <div id="retroalimentacion-tema" class="retroalimentacion-box"></div>
+
+            {% elif etapa.tipo == 'preguntas_tema' and preguntas %}
+                <!-- PREGUNTAS SOBRE TEMA -->
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <h3><i class="fas fa-question-circle"></i> Preguntas sobre: {{ etapa.tema }}</h3>
+                </div>
+                
+                {% for pregunta in preguntas %}
+                    <div class="pregunta-box" id="pregunta-{{ pregunta.id }}">
+                        <h4>{{ pregunta.pregunta }}</h4>
+                        <div class="opciones-pregunta">
+                            {% for respuesta in pregunta.respuestas.all %}
+                                <div class="opcion-pregunta" 
+                                     data-respuesta-id="{{ respuesta.id }}"
+                                     data-correcta="{{ respuesta.correcta|yesno:'true,false' }}"
+                                     onclick="seleccionarRespuesta(this, '{{ respuesta.retroalimentacion|escapejs }}')">
+                                    {{ respuesta.texto }}
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endfor %}
+                
+                <div id="retroalimentacion-pregunta" class="retroalimentacion-box"></div>
+
+            {% elif etapa.tipo == 'video_respuesta' and etapa.tiene_video_valido %}
+                <!-- VIDEO DE RESPUESTA -->
+                <div style="text-align: center;">
+                    <h3><i class="fas fa-video"></i> Explicación: {{ etapa.tema }}</h3>
+                    <p>Esta explicación complementa la evaluación realizada:</p>
+                    
+                    <div class="video-container">
+                        <iframe src="{{ etapa.embed_url }}" 
+                                frameborder="0" allowfullscreen
+                                title="Video explicación: {{ etapa.nombre }}">
+                        </iframe>
+                    </div>
+                    
+                    <div id="video-respuesta-completado" style="display: none;">
+                        <div class="retroalimentacion-box retroalimentacion-correcta">
+                            <i class="fas fa-check-circle"></i> Video visto. Puede continuar.
+                        </div>
+                    </div>
+                    
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            // Habilitar siguiente después de ver el video
+                            setTimeout(function() {
+                                document.getElementById('btnSiguiente').classList.add('habilitado');
+                                document.getElementById('video-respuesta-completado').style.display = 'block';
+                            }, 5000);
+                        });
+                    </script>
+                </div>
+
+            {% elif etapa.tipo == 'tratamientos' or etapa.tipo == 'diagnosticos' %}
+                <!-- TRATAMIENTOS O DIAGNÓSTICOS -->
+                <div style="text-align: center;">
+                    <h3><i class="fas fa-stethoscope"></i> {{ etapa.nombre }}</h3>
+                    <p>Resumen de hallazgos y recomendaciones:</p>
+                </div>
+                
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0;">
+                    <h4><i class="fas fa-clipboard-check"></i> Evaluación completada</h4>
+                    <p>Ha finalizado la evaluación del paciente. Puede revisar el progreso completo.</p>
+                    
+                    <div style="margin-top: 20px;">
+                        <a href="{% url 'Caso_Clinico:ver_progreso' caso.id parte.id paciente.id %}" 
+                           class="btn-nav" style="background: #28a745;">
+                            <i class="fas fa-chart-line"></i> Ver progreso completo
+                        </a>
+                    </div>
+                </div>
+
+            {% else %}
+                <div style="text-align: center; padding: 30px; border: 1px dashed #ccc;">
+                    <i class="fas fa-exclamation-triangle fa-2x" style="color: #ffc107;"></i>
+                    <p>Contenido no disponible para esta etapa.</p>
+                </div>
+            {% endif %}
+
+            <!-- Navegación -->
+            <div class="nav-buttons">
+                {% if etapa_anterior %}
+                    <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_anterior.id %}" 
+                       class="btn-nav btn-anterior">
+                        <i class="fas fa-arrow-left"></i> Anterior
+                    </a>
+                {% else %}
+                    <a href="{% url 'Caso_Clinico:ver_etapas' caso.id parte.id paciente.id %}" 
+                       class="btn-nav btn-anterior">
+                        <i class="fas fa-list"></i> Resumen
+                    </a>
+                {% endif %}
+
+                {% if etapa_siguiente and etapa.tipo != 'formulario_temas' %}
+                    <button class="btn-nav btn-siguiente" id="btnSiguiente" onclick="window.location.href='{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_siguiente.id %}'">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                {% elif not etapa_siguiente and etapa.tipo == 'tratamientos' or etapa.tipo == 'diagnosticos' %}
+                    <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" 
+                       class="btn-nav btn-siguiente habilitado" style="background: #dc3545;">
+                        Finalizar Caso <i class="fas fa-check"></i>
+                    </a>
+                {% else %}
+                    <button class="btn-nav btn-siguiente" id="btnSiguiente" disabled>
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </button>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+   <script>
+// Función para mostrar opciones de tema
+function mostrarOpcionesTema(temaId) {
+    console.log('Solicitando opciones para tema:', temaId);
+    
+    // URL de la API - AJUSTA ESTA URL SEGÚN TU PROYECTO
+    const url = `/casos/api/opciones-tema/${temaId}/`;
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la petición: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Respuesta recibida:', data);
+            
+            if (data.success && data.opciones.length > 0) {
+                const container = document.getElementById('opciones-container');
+                container.innerHTML = `
+                    <div class="opciones-tema" id="opciones-tema-${temaId}" style="display: block;">
+                        <h4>Seleccione una opción para este tema:</h4>
+                        ${data.opciones.map(opcion => `
+                            <div class="opcion-tema" 
+                                 onclick="seleccionarOpcionTema(${opcion.id}, ${temaId}, ${opcion.es_correcta}, '${opcion.retroalimentacion.replace(/'/g, "\\'")}')">
+                                <strong>${opcion.texto}</strong>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                alert('No hay opciones disponibles para este tema.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Error al cargar opciones. Verifica la consola para más detalles.');
+        });
+}
+
+// Función para seleccionar opción de tema
+function seleccionarOpcionTema(opcionId, temaId, esCorrecta, retroalimentacion) {
+    console.log('Opción seleccionada:', {opcionId, temaId, esCorrecta, retroalimentacion});
+    
+    const retroDiv = document.getElementById('retroalimentacion-tema');
+    const temaCard = document.getElementById(`tema-${temaId}`);
+    
+    // Marcar tema como completado
+    if (temaCard) {
+        temaCard.style.borderColor = esCorrecta ? '#28a745' : '#dc3545';
+        temaCard.style.background = esCorrecta ? '#f0fff4' : '#fff0f0';
+        
+        const boton = temaCard.querySelector('button');
+        if (boton) {
+            boton.innerHTML = esCorrecta ? 
+                '<i class="fas fa-check"></i> Correcto' : 
+                '<i class="fas fa-times"></i> Incorrecto';
+            boton.style.background = esCorrecta ? '#28a745' : '#dc3545';
+            boton.disabled = true;
+        }
+    }
+    
+    // Mostrar retroalimentación
+    retroDiv.className = `retroalimentacion-box ${esCorrecta ? 'retroalimentacion-correcta' : 'retroalimentacion-incorrecta'}`;
+    retroDiv.innerHTML = `
+        <h4><i class="fas fa-${esCorrecta ? 'check-circle' : 'exclamation-circle'}"></i> 
+        ${esCorrecta ? '¡Correcto!' : 'Incorrecto'}</h4>
+        <p>${retroalimentacion}</p>
+        ${esCorrecta ? '<p><strong>Este tema ha sido completado.</strong></p>' : ''}
+    `;
+    retroDiv.style.display = 'block';
+    
+    // Verificar si todos los temas están completados
+    verificarTemasCompletados();
+}
+
+// Función para verificar si todos los temas están completados
+function verificarTemasCompletados() {
+    const temasCards = document.querySelectorAll('.tema-card');
+    let todosCompletados = true;
+    
+    temasCards.forEach(card => {
+        const boton = card.querySelector('button');
+        if (boton && !boton.disabled) {
+            todosCompletados = false;
+        }
+    });
+    
+    // Habilitar botón siguiente si todos los temas están completados
+    const btnSiguiente = document.getElementById('btnSiguiente');
+    if (btnSiguiente && todosCompletados) {
+        btnSiguiente.classList.add('habilitado');
+        btnSiguiente.disabled = false;
+        btnSiguiente.onclick = function() {
+            window.location.href = "{% url 'Caso_Clinico:detalle_caso' caso.id %}";
+        };
+    }
+}
+</script>
+</body>
+</html>
