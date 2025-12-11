@@ -15,15 +15,26 @@ solo_letras = RegexValidator(
 )
 
 def validacion_imagen(value):
-    if not value.name.lower().endswith('.png'):
-        raise ValidationError("La imagen debe ser formato PNG.")
+    # Extensiones permitidas
+    extensiones_validas = ['png', 'jpg', 'jpeg']
+
+    # Verificar extensión por nombre del archivo
+    extension = value.name.split('.')[-1].lower()
+    if extension not in extensiones_validas:
+        raise ValidationError("Formato no permitido. Usa PNG, JPG o JPEG.")
+
+    # Validar que el archivo realmente sea una imagen válida
     try:
         imagen = Image.open(value)
-        if imagen.format != 'PNG':
-            raise ValidationError("El archivo NO es un PNG real. Debe ser una imagen PNG.")
+        imagen.verify()  # Comprueba integridad del archivo
+
+        # Validar formato real del archivo
+        if imagen.format not in ['PNG', 'JPEG', 'JPG']:
+            raise ValidationError("El archivo debe ser una imagen PNG, JPG o JPEG real.")
     except Exception:
-        raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
-    
+        raise ValidationError("Archivo inválido o corrupto.")
+
+
 # Create your models here.
 class Estudiante(models.Model):
 

@@ -17,14 +17,19 @@ solo_letras = RegexValidator(
 
 
 def validacion_imagen(value):
-    if not value.name.lower().endswith('.png'):
-        raise ValidationError("La imagen debe ser formato PNG.")
+    ext = value.name.split('.')[-1].lower()  # extrae extensión
+    
+    formatos_validos = ['png', 'jpg', 'jpeg']
+    
+    if ext not in formatos_validos:
+        raise ValidationError("La imagen debe ser PNG, JPG o JPEG.")
+    
+    # Validar que realmente sea una imagen válida usando Pillow
     try:
-        imagen = Image.open(value)
-        if imagen.format != 'PNG':
-            raise ValidationError("El archivo NO es un PNG real. Debe ser una imagen PNG.")
+        img = Image.open(value)
+        img.verify()  # Verifica que el archivo sea una imagen real
     except Exception:
-        raise ValidationError("Archivo inválido. Debe ser una imagen PNG.")
+        raise ValidationError("El archivo no es una imagen válida.")
     
 User = get_user_model()
 

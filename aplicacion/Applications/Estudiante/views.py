@@ -103,15 +103,32 @@ def subir_foto_estudiante(request, id):
 
     if request.method == 'POST':
         foto = request.FILES.get('foto')
-        if foto:
-            estudiante.foto_perfil_estudiante = foto
+
+        if not foto:
+            messages.error(request, "Debes seleccionar una imagen.")
+            return redirect('estudiante:perfil_estudiante')
+
+        # Intentar validar imagen antes de guardar
+        try:
+            estudiante.foto_perfil_estudiante.field.clean(foto, estudiante)
+        except ValidationError as e:
+            messages.error(request, e.messages[0])
+            return redirect('estudiante:perfil_estudiante')
+
+        # Eliminar foto anterior (si existía)
+        if estudiante.foto_perfil_estudiante:
             try:
-                # Validar solo la imagen
-                estudiante.foto_perfil_estudiante.field.clean(foto, estudiante)
-                estudiante.save()
-                messages.success(request, 'Foto actualizada correctamente.')
-            except ValidationError as e:
-                messages.error(request, e.messages[0])
+                if os.path.isfile(estudiante.foto_perfil_estudiante.path):
+                    os.remove(estudiante.foto_perfil_estudiante.path)
+            except:
+                pass
+
+        # Guardar nueva imagen
+        estudiante.foto_perfil_estudiante = foto
+        estudiante.save()
+
+        messages.success(request, "Foto actualizada correctamente.")
+        return redirect('estudiante:perfil_estudiante')
 
     return redirect('estudiante:perfil_estudiante')
 
