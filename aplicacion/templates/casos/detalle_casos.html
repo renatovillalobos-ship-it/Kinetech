@@ -1,192 +1,30 @@
-<!--<!DOCTYPE html>
-<html>
+{% extends 'casos/base_casos.html' %}
+{% load static %}
+
+{% block title %}{{ caso.caso }} - Partes del Cuerpo{% endblock %}
+
+{% block content %}
 <head>
-    <title>{{ caso.caso }} - Partes del Cuerpo</title>
+    <title>{{ caso.caso }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        .parte-card {
-            border: 2px solid #7E9BC0;
-            border-radius: 10px;
-            padding: 20px;
-            margin: 15px 0;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-        .parte-icon {
-            font-size: 3rem;
-            color: #003366;
-        }
-        .btn-seleccionar {
-            background: #003366;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .volver-btn {
-            margin-bottom: 20px;
-            display: inline-block;
-            color: #003366;
-            text-decoration: none;
-        }
-        .pacientes-list {
-            margin-top: 10px;
-            padding-left: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="{% static 'css/casos.css' %}">
 </head>
-<body>
-    <div class="container">
-        <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" class="volver-btn">
-            <i class="fas fa-arrow-left"></i> Volver a casos clínicos
-        </a>
-        
-        <h1>{{ caso.caso }}</h1>
-        <p><strong>Curso:</strong> {{ caso.Curso.nombre_del_curso }}</p>
-        
-        <h2>Partes del Cuerpo para Evaluación</h2>
-        
-        {% for parte in partes_cuerpo %}
-        <div class="parte-card">
-            <div class="parte-icon">
-                <i class="{{ parte.icono }}"></i>
-            </div>
-            <div class="parte-info">
-                <h3>{{ parte.nombre }}</h3>
-                <p><strong>Etapas:</strong> {{ parte.etapas_count }} disponibles</p>
-                
-                {% if parte.pacientes %}
-                <div class="pacientes-list">
-                    <strong>Pacientes relacionados:</strong>
-                    <ul>
-                        {% for paciente in parte.pacientes %}
-                        <li>{{ paciente.nombre }} ({{ paciente.edad }} años)</li>
-                        {% endfor %}
-                    </ul>
-                </div>
-                {% endif %}
-                
-                <a href="{% url 'Caso_Clinico:seleccionar_paciente' caso.id parte.id %}" class="btn-seleccionar">
-                    <i class="fas fa-user-md"></i> Seleccionar para Evaluación
-                </a>
-            </div>
-        </div>
-        {% empty %}
-        <p>No hay partes del cuerpo registradas para este caso.</p>
-        {% endfor %}
-    </div>
-</body>
-</html>-->
 
-
-
-
-<!DOCTYPE html>
-<html>
-<head>
-    <title>{{ caso.caso }} - Partes del Cuerpo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Source Sans Pro', sans-serif;
-            background-color: #f4f6f9; /* Fondo muy suave */
-            color: #333;
-        }
-        h1, h2, h3 {
-            color: #003366; /* Azul Oscuro */
-        }
-        .parte-card {
-            border: 1px solid #7E9BC0; /* Azul Claro */
-            border-left: 5px solid #003366; /* Línea de acento */
-            border-radius: 10px;
-            padding: 20px;
-            margin: 20px 0;
-            background: white;
-            display: flex;
-            align-items: center;
-            gap: 25px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-        .parte-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
-        }
-        .parte-icon {
-            font-size: 3.5rem;
-            color: #AC6D33; /* Color de Acento (Terracota) */
-            padding: 15px;
-            border-radius: 50%;
-            background-color: #f0f7ff; /* Fondo sutil para el ícono */
-        }
-        .btn-seleccionar {
-            background: #AC6D33; /* Color de Acento (Terracota) */
-            color: white;
-            padding: 10px 25px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
-            font-weight: 600;
-            transition: background 0.3s;
-        }
-        .btn-seleccionar:hover {
-            background: #8e5829; /* Tono más oscuro al pasar el mouse */
-        }
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        .volver-btn {
-            margin-bottom: 25px;
-            display: inline-block;
-            color: #003366;
-            text-decoration: none;
-            font-weight: 600;
-        }
-        .pacientes-list {
-            margin-top: 10px;
-            padding-left: 20px;
-            font-size: 0.95em;
-        }
-        .pacientes-list ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin-top: 5px;
-        }
-        .pacientes-list li {
-            background: #e9f0f6;
-            padding: 5px 10px;
-            margin-bottom: 3px;
-            border-radius: 3px;
-            display: inline-block;
-            margin-right: 5px;
-            color: #003366;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <a href="{% url 'estudiante:curso_panel' caso.Curso.id %}" class="volver-btn">
-
-            <i class="fas fa-arrow-left"></i> Volver a casos clínicos 
-        </a>
-        
-        <h1>{{ caso.caso }}</h1>
-        <p><strong>Curso:</strong> {{ caso.Curso.nombre_del_curso }}</p>
-        
-        <h2>Partes del Cuerpo para Evaluación</h2>
+<style>
+     .container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    }
+</style>
+<div class="container">
+    <a href="{% url 'estudiante:curso_panel' caso.Curso.id %}" class="volver-btn">
+        <i class="fas fa-arrow-left"></i> Volver a casos clínicos 
+    </a>
+    
+    <h1>{{ caso.caso }}</h1>
+    
+    <h2>Partes del Cuerpo para Evaluación</h2>
         
         {% for parte in partes_cuerpo %}
         <div class="parte-card">
@@ -213,9 +51,10 @@
                 </a>
             </div>
         </div>
-        {% empty %}
-        <p>No hay partes del cuerpo registradas para este caso.</p>
-        {% endfor %}
-    </div>
+    {% empty %}
+    <p>No hay partes del cuerpo registradas para este caso.</p>
+    {% endfor %}
+</div>
+{% endblock %}
 </body>
 </html>

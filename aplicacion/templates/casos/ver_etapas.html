@@ -1,133 +1,65 @@
+{% extends 'casos/base_casos.html' %}
+{% load static %}
 
-<!DOCTYPE html>
-<html>
+{% block title %}{{ caso.caso }} - Partes del Cuerpo{% endblock %}
+
+{% block content %}
 <head>
     <title>Evaluación - {{ paciente.nombre }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        *{
-             font-family: 'Source Sans Pro', sans-serif !important;
-        }
-        .etapa-container {
-            border: 2px solid #003366;
-            border-radius: 10px;
-            padding: 30px;
-            margin: 20px auto;
-            max-width: 900px;
-            background: white;
-        }
-        .video-section {
-            text-align: center;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-        .pregunta {
-            background: #e9ecef;
-            padding: 15px;
-            border-radius: 5px;
-            margin: 15px 0;
-        }
-        .respuesta {
-            padding: 10px;
-            margin: 5px 0;
-            border-left: 3px solid #ccc;
-        }
-        .respuesta-correcta {
-            border-left-color: #28a745;
-            background: #d4edda;
-        }
-        .respuesta-incorrecta {
-            border-left-color: #dc3545;
-            background: #f8d7da;
-        }
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 30px;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-
-        .etapa-container h1{
-            text-align: center;
-        }
-
-        .paciente-info{
-            background: var(--bg-card); /* antes #f8faff */
-            background: var(--bg-card); /* antes #f8faff */
-            border-left: 4px solid #0d47a1;
-            border-radius: 8px;
-            padding: 18px;
-            margin-bottom: 22px;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.05);
-        }
-
-        /* Estilo del nuevo botón para comenzar la evaluación */
-        .btn-comenzar {
-            background: #0d47a1; /* Color verde para comenzar/siguiente */
-            color: white;
-            padding: 12px 30px;
-            border-radius: 5px;
-            text-decoration: none;
-            display: inline-block;
-            margin-top: 15px;
-            font-weight: 700;
-            font-size: 1.1em;
-            letter-spacing: 0.5px;
-            transition: background 0.3s, transform 0.2s;
-            box-shadow: 0 4px 6px rgba(0, 51, 102, 0.2);
-        }
-        .btn-comenzar:hover {
-            background: #063780; /* Tono más oscuro al pasar el mouse */
-            transform: translateY(-1px);
-        }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/casos.css' %}">
 </head>
 <body>
     <div class="container">
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            <a href="{% url 'Caso_Clinico:seleccionar_paciente' caso.id parte.id %}" 
+               style="color: #003366; text-decoration: none;">
+                <i class="fas fa-arrow-left"></i> Volver a selección de paciente
+            </a>
+            <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" 
+               style="color: #003366; text-decoration: none;">
+                <i class="fas fa-home"></i> Volver al caso clínico
+            </a>
+        </div>
+
         <div class="etapa-container">
             <h1>Ficha clínica</h1>
             
             <div class="paciente-info">
                 <h2>Información personal</h2>
-                <p><strong>Nombre:</strong>{{ paciente.nombre }} | <strong>Edad:</strong> {{ paciente.edad }} años </p>
-                <p><strong>Parte del cuerpo:</strong> {{ parte.ParteCuerpo }}</p>
-                <p><strong>Ocupación:</strong> {{ paciente.ocupacion }}  </p>
-                <p> <strong>Previsión:</strong> {{ paciente.prevision }}</p>
+                <div class="paciente-details">
+                    <p><strong>Nombre:</strong> {{ paciente.nombre }} | <strong>Edad:</strong> {{ paciente.edad }} años</p>
+                    <p><strong>Parte del cuerpo:</strong> {{ parte.ParteCuerpo }}</p>
+                    <p><strong>Ocupación:</strong> {{ paciente.ocupacion }}</p>
+                    <p><strong>Previsión:</strong> {{ paciente.prevision }}</p>
+                </div>
             </div>
-        
-            
-            <!-- Lista de etapas -->
+        </div>
+
+        <!-- Lista de etapas -->
+        <div class="etapas-section">
             <h3>Proceso de Evaluación</h3>
             
             {% for etapa in etapas %}
-            <div class="etapa-activa" id="etapa-{{ etapa.id }}">
-                <h4>Etapa {{ forloop.counter }}: {{ etapa.nombre }}</h4>
+                <div class="etapa-activa" id="etapa-{{ etapa.id }}">
+                    <h4>Etapa {{ forloop.counter }}: {{ etapa.nombre }}</h4>
+                </div>
             {% empty %}
-            <p>No hay etapas definidas para esta evaluación.</p>
+                <p>No hay etapas definidas para esta evaluación.</p>
             {% endfor %}
 
-            <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapas.0.id %}" 
-                    class="btn-comenzar">
-                <i class="fas fa-arrow-right"></i>Comenzar Evaluación
-            </a>
-            <!-- Navegación -->
-            <div class="nav-buttons">
-                <a href="{% url 'Caso_Clinico:seleccionar_paciente' caso.id parte.id %}" 
-                   style="color: #003366; text-decoration: none;">
-                    <i class="fas fa-arrow-left"></i> Volver a selección de paciente
-                </a>
-                <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" 
-                   style="color: #003366; text-decoration: none;">
-                    <i class="fas fa-home"></i> Volver al caso clínico
-                </a>
-            </div>
+            {% if etapas %}
+                <div class="comenzar-container">
+                    <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapas.0.id %}" 
+                       class="btn-comenzar">
+                        <i class="fas fa-arrow-right"></i> Comenzar Evaluación
+                    </a>
+                </div>
+            {% endif %}
         </div>
     </div>
+{% endblock %}
 </body>
 </html>

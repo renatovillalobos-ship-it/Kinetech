@@ -1,5 +1,5 @@
-# models.py - REEMPLAZA TODO EL CONTENIDO CON ESTO
 from django.db import models
+from django.forms import ValidationError
 from Applications.Docente.models import Curso
 from django.core.validators import RegexValidator
 from datetime import datetime  # Añade este import
@@ -113,21 +113,62 @@ class Etapa(models.Model):
     def __str__(self):
         return f"{self.ParteCuerpo.ParteCuerpo} - {self.nombre} ({self.get_tipo_display()})"
     
-    def tiene_video_valido(self):
-        return bool(self.video)
+# models.py - En la clase Etapa
+
+    def clean(self):
+        super().clean()
+        if self.video and self.tipo in ['video_inicial', 'video_respuesta']:
+            # Validar que la URL sea de YouTube
+            if 'youtube.com' not in self.video and 'youtu.be' not in self.video:
+                raise ValidationError('Solo se permiten URLs de YouTube para videos.')
+            
+            # Validación Adicional: Intentar generar el embed URL para asegurar que la URL es parseable
+            if not self.embed_url():
+                # Si la función embed_url no puede generar un ID válido, rechazamos la URL.
+                raise ValidationError(
+                    'La URL de YouTube no tiene un formato válido (watch?v= o youtu.be/). '
+                    'Por favor, revise la URL.'
+                )
     
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+    
+    @property
+    def tiene_video_valido(self):
+        """Verifica si el video es válido"""
+        if not self.video:
+            return False
+        return 'youtube.com' in self.video or 'youtu.be' in self.video
+    
+# models.py - En la clase Etapa (Refinamiento en youtu.be)
     def embed_url(self):
-        """Convierte URL de YouTube a embed URL"""
+        """Genera URL embed para YouTube - Versión corregida"""
         if not self.video:
             return ""
-        if 'youtube.com/watch' in self.video:
-            video_id = self.video.split('v=')[1].split('&')[0]
-            return f"https://www.youtube.com/embed/{video_id}"
-        elif 'youtu.be' in self.video:
-            video_id = self.video.split('/')[-1]
-            return f"https://www.youtube.com/embed/{video_id}"
-        return self.video
-
+    
+        try:
+            video_id = ""
+            
+            # 1. Manejar formato youtu.be/l5aj2a8x2qs
+            if 'youtu.be/' in self.video:
+                # Extraer ID: Quita youtu.be/, luego quita cualquier parámetro de consulta (ej. ?t=)
+                video_id = self.video.split('youtu.be/')[1].split('?')[0][:11]
+            
+            # 2. Manejar formato estándar watch?v=l5aj2a8x2qs
+            elif 'watch?v=' in self.video:
+                # Extraer ID: Quita watch?v=, luego quita cualquier otro parámetro (ej. &list=)
+                video_id = self.video.split('watch?v=')[1].split('&')[0][:11]
+                
+            # 3. Solo si se obtuvo un ID válido de 11 caracteres
+            if len(video_id) == 11:
+                # Retornar la URL de embed
+                return f"https://www.youtube.com/embed/{video_id}?rel=0"
+        
+            return ""
+        
+        except Exception:
+            return ""
 
 class TemaConsulta(models.Model):
     """Temas que se pueden evaluar en el formulario de temas"""

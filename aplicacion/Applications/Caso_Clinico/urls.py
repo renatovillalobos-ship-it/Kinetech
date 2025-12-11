@@ -1,6 +1,7 @@
 # urls.py
 from django.urls import path
 from . import views
+from .views import VideoDetailView
 
 app_name = 'Caso_Clinico'
 
@@ -22,4 +23,6 @@ urlpatterns = [
     
     path('progreso/<int:caso_id>/<int:parte_id>/<int:paciente_id>/', 
          views.ver_progreso, name='ver_progreso'),
+
+     path("videos/<int:pk>/", VideoDetailView.as_view(), name="detalle_video"),
 ]

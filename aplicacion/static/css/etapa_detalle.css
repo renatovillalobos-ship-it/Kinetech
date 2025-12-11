@@ -1,0 +1,358 @@
+/* Estilos específicos para etapa_detalle.html */
+
+/* Contenedor principal */
+.etapa-card {
+    border: 2px solid #003366;
+    border-radius: 12px;
+    padding: 30px;
+    margin-bottom: 20px;
+    background: white;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+}
+
+.etapa-header {
+    text-align: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+.etapa-header h2 {
+    color: #003366;
+    margin-bottom: 10px;
+    font-size: 1.6em;
+}
+
+.etapa-header p {
+    color: #666;
+    font-size: 1.05em;
+}
+
+/* Secciones de video */
+.video-section {
+    text-align: center;
+    margin: 25px 0;
+}
+
+.video-description {
+    color: #555;
+    margin-bottom: 20px;
+    font-size: 1.1em;
+}
+
+.video-completion {
+    margin-top: 20px;
+    display: none;
+}
+
+/* Sección de temas */
+.temas-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.temas-description {
+    color: #555;
+    margin-top: 10px;
+    font-size: 1.1em;
+}
+
+.tema-card {
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: white;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.tema-card:hover {
+    border-color: #007bff;
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+.tema-icono {
+    font-size: 2.5em;
+    color: #003366;
+    margin-bottom: 15px;
+}
+
+.tema-descripcion {
+    font-size: 0.9em;
+    color: #666;
+    flex-grow: 1;
+    margin-bottom: 15px;
+}
+
+.tema-btn {
+    margin-top: 10px;
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background 0.3s;
+}
+
+.tema-btn:hover {
+    background: #0056b3;
+}
+
+/* Contenedor de opciones */
+.opciones-container {
+    margin-top: 30px;
+}
+
+.opciones-tema {
+    margin-top: 20px;
+    padding: 25px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background: #f9f9f9;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.opcion-tema {
+    display: block;
+    padding: 15px;
+    margin: 10px 0;
+    background: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.05em;
+}
+
+.opcion-tema:hover {
+    border-color: #007bff;
+    background: #f0f8ff;
+    transform: translateX(5px);
+}
+
+/* Sección de preguntas */
+.preguntas-header {
+    text-align: center;
+    margin-bottom: 25px;
+}
+
+.preguntas-container {
+    margin: 20px 0;
+}
+
+.pregunta-box {
+    background: #f8f9fa;
+    padding: 25px;
+    border-radius: 10px;
+    margin: 25px 0;
+    border-left: 5px solid #003366;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.pregunta-box h4 {
+    color: #003366;
+    margin-bottom: 20px;
+    font-size: 1.2em;
+}
+
+.opciones-pregunta {
+    margin-top: 15px;
+}
+
+.opcion-pregunta {
+    display: block;
+    padding: 15px;
+    margin: 10px 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1.05em;
+}
+
+.opcion-pregunta:hover {
+    background: #f0f8ff;
+    border-color: #007bff;
+}
+
+/* Evaluación completa */
+.evaluacion-completa {
+    text-align: center;
+    margin: 20px 0;
+}
+
+.evaluacion-description {
+    color: #555;
+    margin: 15px 0 25px;
+    font-size: 1.1em;
+}
+
+.completado-box {
+    background: #f8f9fa;
+    padding: 30px;
+    border-radius: 10px;
+    margin: 20px 0;
+    border: 2px solid #28a745;
+}
+
+.completado-box h4 {
+    color: #28a745;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+}
+
+.btn-progreso {
+    background: #28a745;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    font-weight: 600;
+    transition: background 0.3s;
+    margin-top: 15px;
+}
+
+.btn-progreso:hover {
+    background: #218838;
+}
+
+/* Contenido no disponible */
+.contenido-no-disponible {
+    text-align: center;
+    padding: 40px;
+    border: 2px dashed #ccc;
+    border-radius: 10px;
+    margin: 20px 0;
+    background: #fff9e6;
+}
+
+.contenido-no-disponible i {
+    color: #ffc107;
+    font-size: 3em;
+    margin-bottom: 15px;
+}
+
+.contenido-no-disponible p {
+    color: #666;
+    font-size: 1.1em;
+}
+
+/* Navegación mejorada */
+.nav-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 40px;
+    padding-top: 20px;
+    border-top: 1px solid #eaeaea;
+}
+
+.btn-nav {
+    padding: 12px 30px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: bold;
+    transition: all 0.3s;
+    display: inline-block;
+    text-align: center;
+    font-size: 1.05em;
+}
+
+.btn-anterior {
+    background: #6c757d;
+    color: white;
+    border: none;
+}
+
+.btn-anterior:hover {
+    background: #5a6268;
+    transform: translateX(-2px);
+}
+
+.btn-siguiente {
+    background: #007bff;
+    color: white;
+    opacity: 0.5;
+    pointer-events: none;
+    border: none;
+    cursor: not-allowed;
+}
+
+.btn-siguiente.habilitado {
+    opacity: 1;
+    pointer-events: auto;
+    background: #28a745;
+    cursor: pointer;
+}
+
+.btn-siguiente.habilitado:hover {
+    background: #218838;
+    transform: translateX(2px);
+}
+
+.btn-finalizar {
+    background: #dc3545;
+}
+
+.btn-finalizar:hover {
+    background: #c82333;
+}
+
+/* Retroalimentación */
+.retroalimentacion-box {
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 8px;
+    display: none;
+    animation: fadeIn 0.3s ease;
+}
+
+.retroalimentacion-correcta {
+    background: #d4edda;
+    border: 1px solid #c3e6cb;
+    color: #155724;
+}
+
+.retroalimentacion-incorrecta {
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .etapa-card {
+        padding: 20px;
+    }
+    
+    .nav-buttons {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .btn-nav {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .tema-card {
+        padding: 15px;
+    }
+    
+    .pregunta-box {
+        padding: 20px;
+    }
+}

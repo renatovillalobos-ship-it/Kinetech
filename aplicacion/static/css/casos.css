@@ -1,0 +1,451 @@
+.parte-card {
+            border: 1px solid #7E9BC0; /* Azul Claro */
+            border-left: 5px solid #003366; /* Línea de acento */
+            border-radius: 10px;
+            padding: 20px;
+            margin: 20px 0;
+            background: white;
+            display: flex;
+            align-items: center;
+            gap: 25px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+     }
+.parte-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    }
+.parte-icon {
+            font-size: 3.5rem;
+            color: #AC6D33; /* Color de Acento (Terracota) */
+            padding: 15px;
+            border-radius: 50%;
+            background-color: #f0f7ff; /* Fondo sutil para el ícono */
+    }
+.btn-seleccionar {
+            background: #AC6D33; /* Color de Acento (Terracota) */
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+            font-weight: 600;
+            transition: background 0.3s;
+    }
+.btn-seleccionar:hover {
+            background: #8e5829; /* Tono más oscuro al pasar el mouse */
+    }
+
+.volver-btn {
+            margin-bottom: 25px;
+            display: inline-block;
+            color: #003366;
+            text-decoration: none;
+            font-weight: 600;
+    }
+.pacientes-list {
+            margin-top: 10px;
+            padding-left: 20px;
+            font-size: 0.95em;
+        }
+.pacientes-list ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 5px;
+        }
+.pacientes-list li {
+            background: #e9f0f6;
+            padding: 5px 10px;
+            margin-bottom: 3px;
+            border-radius: 3px;
+            display: inline-block;
+            margin-right: 5px;
+            color: #003366;
+        }
+
+.etapa-card {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 30px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+.etapa-header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        
+        /* Estilos para Video */
+.video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            max-width: 100%;
+            margin: 20px 0;
+        }
+.video-container iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Estilos para Formulario de Temas */
+.temas-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+        
+.tema-card {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+.tema-card:hover {
+            border-color: #007bff;
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+.tema-icono {
+            font-size: 2.5em;
+            color: #003366;
+            margin-bottom: 10px;
+        }
+        
+.opciones-tema {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background: #f9f9f9;
+        }
+        
+.opcion-tema {
+            display: block;
+            padding: 15px;
+            margin: 10px 0;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+.opcion-tema:hover {
+            border-color: #007bff;
+            background: #f0f8ff;
+        }
+        
+        /* Estilos para Preguntas */
+.pregunta-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 5px solid #003366;
+        }
+        
+.opciones-pregunta {
+            margin-top: 15px;
+        }
+        
+.opcion-pregunta {
+            display: block;
+            padding: 12px;
+            margin: 8px 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+.opcion-pregunta:hover {
+            background: #f0f8ff;
+        }
+        
+        /* Estilos para respuestas seleccionadas */
+.opcion-seleccionada-correcta {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+        
+.opcion-seleccionada-incorrecta {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+        
+        /* Retroalimentación */
+.retroalimentacion-box {
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+            display: none;
+        }
+        
+.retroalimentacion-correcta {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        
+.retroalimentacion-incorrecta {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        
+        /* Navegación */
+.nav-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+        
+.btn-nav {
+            padding: 12px 25px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background 0.3s;
+            display: inline-block;
+            text-align: center;
+        }
+        
+.btn-anterior {
+            background: #6c757d;
+            color: white;
+        }
+        
+.btn-siguiente {
+            background: #007bff;
+            color: white;
+            opacity: 0.5;
+            pointer-events: none;
+            border: none;
+            cursor: not-allowed;
+        }
+        
+.btn-siguiente.habilitado {
+            opacity: 1;
+            pointer-events: auto;
+            background: #28a745;
+            cursor: pointer;
+        }
+        
+        /* Botón deshabilitado */
+.btn-nav:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+.caso-card {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            background: white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+.caso-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+.btn-ver {
+            background: #003366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+
+.paciente-card {
+            border: 1px solid #7E9BC0;
+            border-left: 5px solid #AC6D33; /* Color de Acento (Terracota) */
+            border-radius: 10px;
+            padding: 25px;
+            margin: 20px 0;
+            background: white;
+            transition: all 0.3s;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+        }
+.paciente-card:hover {
+            background: #fff8f5; /* Fondo más suave */
+            transform: translateX(5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+.btn-continuar {
+            background: #003366; 
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+.btn-continuar:hover {
+            background: #003366;
+        }
+
+.volver-btn {
+            margin-bottom: 25px;
+            display: inline-block;
+            color: #003366;
+            text-decoration: none;
+            font-weight: 600;
+        }
+.paciente-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+.paciente-detail p {
+            margin: 5px 0;
+            color: #555;
+        }
+.no-pacientes {
+            background: #fef4e6;
+            border: 1px solid #AC6D33;
+            color: #333;
+        }
+.no-pacientes h3 {
+            color: #AC6D33;
+        }
+.action-link {
+            background: #003366;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin: 0 10px;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+.action-link:hover {
+            background: #001a33;
+        }
+
+/* Estilos para la ficha clínica - Versión corregida */
+.etapa-container {
+    border: 1px solid #7E9BC0;
+    border-left: 5px solid #003366;
+    border-radius: 10px;
+    padding: 30px;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.paciente-info {
+    background: #f8faff;
+    border-radius: 8px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+.paciente-info h2 {
+    color: #003366;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+.paciente-details p {
+    margin: 12px 0;
+    padding: 8px 0;
+    font-size: 1.05em;
+    line-height: 1.6;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.paciente-details p:last-child {
+    border-bottom: none;
+}
+
+.paciente-details strong {
+    color: #003366;
+    min-width: 120px;
+    display: inline-block;
+}
+
+.btn-comenzar {
+    background: #003366;
+    color: white;
+    padding: 12px 30px;
+    border-radius: 5px;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 25px;
+    font-weight: 700;
+    font-size: 1.1em;
+    transition: background 0.3s, transform 0.2s;
+}
+
+.btn-comenzar:hover {
+    background: #001a33;
+    transform: translateY(-1px);
+}
+
+.comenzar-container {
+    text-align: center;
+    margin: 30px 0;
+}
+
+.etapas-section {
+    border: 1px solid #7E9BC0;
+    border-left: 5px solid #AC6D33;
+    border-radius: 10px;
+    padding: 25px;
+    margin: 20px auto;
+    max-width: 1200px;
+    background: white;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+}
+
+.etapas-section h3 {
+    color: #003366;
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+/* Estilos para etapas activas */
+.etapa-activa {
+    background: #f0f7ff;
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin: 12px 0;
+    border-left: 4px solid #7E9BC0;
+    transition: background 0.3s;
+}
+
+.etapa-activa:hover {
+    background: #e6f0ff;
+}
+
+.etapa-activa h4 {
+    color: #003366;
+    margin: 0;
+    font-size: 1.1em;
+}

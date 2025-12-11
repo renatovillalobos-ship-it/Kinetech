@@ -1,17 +1,28 @@
-# views.py - REEMPLAZA TODO EL CONTENIDO CON ESTO
+from datetime import datetime
 from django.shortcuts import render, get_object_or_404, redirect
 from django.urls import reverse
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.db.models import Prefetch
 import json
-
+import json
 from Applications.Caso_Clinico.models import (
     Caso_clinico, Partes_cuerpo, Pacientes, 
     Etapa, PreguntaEtapa, RespuestaEtapa, Partes_paciente,
     TemaConsulta, OpcionTema
 )
+from django.views.generic import DetailView
 
+# En views.py - Corregir VideoDetailView
+class VideoDetailView(DetailView):
+    model = Etapa  # Cambiar de Etapa.video a Etapa
+    template_name = "video.html"
+    context_object_name = "etapa"  # Cambiar de video a etapa
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['embed_url'] = self.object.embed_url() if self.object.video else None
+        return context
 
 def lista_casos_clinicos(request, curso_id):
     casos = Caso_clinico.objects.filter(Curso_id=curso_id).select_related('Curso')
@@ -79,9 +90,6 @@ def ver_etapas(request, caso_id, parte_id, paciente_id):
     })
 
 
-from django.shortcuts import render, get_object_or_404
-from .models import Caso_clinico, Partes_cuerpo, Pacientes, Etapa, TemaConsulta, PreguntaEtapa
-
 def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
     # Obtener objetos
     caso = get_object_or_404(Caso_clinico, id=caso_id)
@@ -89,12 +97,17 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
     paciente = get_object_or_404(Pacientes, id=paciente_id)
     etapa = get_object_or_404(Etapa, id=etapa_id)
     
+    embed_url = None
+    if etapa.video:
+        embed_url = etapa.embed_url()
     # Obtener etapas relacionadas
     todas_etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
     etapa_actual_numero = list(todas_etapas).index(etapa) + 1
     total_etapas = todas_etapas.count()
     
-    # Etapas anterior y siguiente
+    # NO asignar a la propiedad, usar un atributo diferente si es necesario
+    # O simplemente usar la propiedad directamente en el template
+    
     try:
         etapa_anterior = todas_etapas.get(orden=etapa.orden - 1)
     except Etapa.DoesNotExist:
@@ -111,6 +124,7 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
         'parte': parte,
         'paciente': paciente,
         'etapa': etapa,
+        'embed_url': embed_url, 
         'etapa_actual_numero': etapa_actual_numero,
         'total_etapas': total_etapas,
         'etapa_anterior': etapa_anterior,
@@ -127,14 +141,14 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
         # Obtener preguntas para esta etapa
         preguntas = PreguntaEtapa.objects.filter(Etapa=etapa).prefetch_related('respuestas')
         contexto['preguntas'] = preguntas
+    else:
+        DetailView()
     
     return render(request, 'casos/etapa_detalle.html', contexto)
 
 
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import TemaConsulta, OpcionTema
-import json
+
+
 
 @csrf_exempt
 def api_opciones_tema(request, tema_id):
