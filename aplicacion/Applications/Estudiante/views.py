@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
 from django.core.exceptions import ValidationError
+from django.db.models import Count
+from Applications.Cuestionario.models import cuestionario
+from Applications.Estudiante.models import ResultadoCuestionario
+
 import os
 
 from ..Docente.models import Curso
@@ -77,6 +81,47 @@ class CerrarSesion(View):
         return redirect('login')
 
 # -----------------------------------------------------------
+# PROGRESO
+# -----------------------------------------------------------
+
+def calcular_progreso_estudiante(estudiante):
+    cursos = estudiante.cursos.all()
+
+    if not cursos.exists():
+        return 0  # SIN CURSOS = 0%
+
+    # --- VIDEOS TOTALES ---
+    total_videos = Etapa.objects.filter(
+        ParteCuerpo__CasoClinico__Curso__in=cursos
+    ).count()
+
+    # --- VIDEOS VISTOS ---
+    videos_vistos = Progreso.objects.filter(
+        progreso_estudiante=estudiante,
+        video_visto=True
+    ).values('etapa_completada').distinct().count()
+
+    # --- CUESTIONARIOS TOTALES ---
+    cuestionarios_totales = cuestionario.objects.filter(
+        Curso__in=cursos
+    ).count()
+
+    # --- CUESTIONARIOS COMPLETADOS ---
+    cuestionarios_completados = ResultadoCuestionario.objects.filter(
+        estudiante=estudiante
+    ).values('cuestionario').distinct().count()
+
+    # --- ACTIVIDADES TOTALES ---
+    total_actividades = total_videos + cuestionarios_totales
+    actividades_completadas = videos_vistos + cuestionarios_completados
+
+    if total_actividades == 0:
+        return 0
+
+    progreso_final = (actividades_completadas / total_actividades) * 100
+    return round(progreso_final, 2)
+
+# -----------------------------------------------------------
 # PERFIL ESTUDIANTE
 # -----------------------------------------------------------
 class Perfil_estudiante(TemplateView):
@@ -90,7 +135,8 @@ class Perfil_estudiante(TemplateView):
         context['estudiante'] = estudiante
 
         progreso_obj = Progreso.objects.filter(progreso_estudiante=estudiante).first()
-        context['progreso'] = progreso_obj.porcentaje_progreso if progreso_obj else None
+        context['progreso'] = calcular_progreso_estudiante(estudiante)
+
 
         return context
 
