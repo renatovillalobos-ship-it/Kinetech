@@ -31,6 +31,22 @@ def validacion_imagen(value):
     except Exception:
         raise ValidationError("El archivo no es una imagen válida.")
     
+class Curso(models.Model):
+    nombre_del_Curso = models.CharField('Nombre del Curso', max_length=150, null=False)
+    Descripcion_del_curso = models.TextField('Descripción del Curso', max_length=1000, null=False)
+    Descripcion_breve_del_curso=models.TextField('Breve Descripción', max_length=150, null=False)
+    fecha_realización_curso = models.DateField('Fecha Realización Curso')
+    paralelo_curso= models.IntegerField('Paralelo Curso', null=False)
+    #curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE,blank=True, related_name='cursos_asignados')
+
+    class Meta: 
+        verbose_name='Curso'
+        verbose_name_plural='Cursos'
+        ordering=['fecha_realización_curso', 'nombre_del_Curso']
+
+    def __str__(self):
+        return str(self.id) + '-' + self.nombre_del_Curso + ' ' + str(self.fecha_realización_curso)
+    
 User = get_user_model()
 
 class Docente(models.Model):
@@ -56,6 +72,8 @@ class Docente(models.Model):
                                     null=False,
                                     choices=pais_opciones,
                                     default='Chile')
+    curso_principal = models.ForeignKey(Curso, on_delete=models.SET_NULL, 
+                                        null=True, blank=True,default=None, related_name='docentes')
     foto_perfil_docente = models.ImageField(
     'Foto perfil docente', 
     upload_to='perfiles/docentes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
@@ -68,26 +86,16 @@ class Docente(models.Model):
         verbose_name_plural='Docentes'
         ordering=['apellido_docente', 'nombre_docente']
 
+    def save(self, *args, **kwargs):
+        # CORRECCIÓN: usar curso_principal en lugar de curso
+        if self.curso_principal:
+            self.asignatura_docente = self.curso_principal.nombre_del_Curso
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return  self.nombre_docente + ' '+ self.apellido_docente
 
 
-class Curso(models.Model):
-    nombre_del_Curso = models.CharField('Nombre del Curso', max_length=150, null=False)
-    Descripcion_del_curso = models.TextField('Descripción del Curso', max_length=1000, null=False)
-    Descripcion_breve_del_curso=models.TextField('Breve Descripción', max_length=150, null=False)
-    fecha_realización_curso = models.DateField('Fecha Realización Curso')
-    paralelo_curso= models.IntegerField('Paralelo Curso', null=False)
-    curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE)
-
-    class Meta: 
-        verbose_name='Curso'
-        verbose_name_plural='Cursos'
-        ordering=['fecha_realización_curso', 'nombre_del_Curso']
-
-    def __str__(self):
-        return str(self.id) + '-' + self.nombre_del_Curso + ' ' + str(self.fecha_realización_curso)
     
 
 

@@ -12,7 +12,6 @@ class DocenteForm(forms.ModelForm):
         label="Correo Electrónico",
         widget=forms.TextInput(attrs={'class': 'vTextField', 'size': 32})  # Usar TextInput, no EmailInput
     )
-    # resto igual...
 
     class Meta:
         model = Docente

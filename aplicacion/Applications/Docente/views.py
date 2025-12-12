@@ -101,10 +101,14 @@ class Home_docente(TemplateView):
         docente = get_object_or_404(Docente, id=docente_id)
 
         context['docente'] = docente
-        context['cursos'] = Curso.objects.filter(curso_docente=docente)
+    
+    # Si el docente tiene un curso principal
+        if docente.curso_principal:
+            context['cursos'] = [docente.curso_principal]
+        else:
+            context['cursos'] = Curso.objects.none()  # Lista vacía
 
         return context
-
 
 # ----------------------------------------
 # VISTA PARA DETALLE Y PROGRESO
@@ -129,14 +133,15 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
         if docente_id:
             try:
                 docente = Docente.objects.get(id=docente_id)
-                context['cursos'] = Curso.objects.filter(curso_docente=docente).select_related('curso_docente')
+                context['cursos'] = Curso.objects.filter(docentes=docente)
                 
                 if curso_id:
                     curso_seleccionado = get_object_or_404(
-                        Curso, 
-                        id=curso_id, 
-                        curso_docente=docente
+                    Curso, 
+                    id=curso_id, 
+                    docentes=docente  # ✅
                     )
+                
                     context['curso_seleccionado'] = curso_seleccionado
                     
                     # SOLO estudiantes de ESTE curso (NO "all()")
@@ -248,7 +253,7 @@ class PerfilDocente(TemplateView):
         docente_id = self.request.session.get('usuario_id')
         docente = get_object_or_404(Docente, id=docente_id)
         context['docente'] = docente
-        context['cursos'] = Curso.objects.filter(curso_docente=docente)
+        context['cursos'] = Curso.objects.filter(docentes=docente)
         return context
 
 
@@ -293,18 +298,46 @@ def eliminar_foto_docente(request, id):
 # REGISTRO DOCENTE
 # -----------------------------------------------------------
 
-User = get_user_model()
+# En views.py de Docente (donde está tu clase RegistroDocente)
+from Applications.Docente.models import Curso, Docente
+from django.contrib.auth.models import User, Group
+from django.db import transaction
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from django.views import View
+from django.db import IntegrityError
+import time
+from django.utils import timezone
 
 class RegistroDocente(View):
     template_name = 'login/login.html'
     success_url_name = 'login'
 
+    def get(self, request):
+        # Obtener cursos disponibles
+        cursos_disponibles = Curso.objects.all()
+        
+        # Mantener la lista de asignaturas si la necesitas para otro propósito
+        asignaturas = ['Anatomía', 'Fisiología', 'Patología', 'Farmacología', 'Otra']
+        
+        context = {
+            'cursos_disponibles': cursos_disponibles,
+            'asignaturas': asignaturas,  # Si aún la necesitas
+        }
+        return render(request, self.template_name, context)
+
     def post(self, request):
-        inicio = time.time()  # ✅ INICIAR MEDICIÓN
+        inicio = time.time()
 
         nombre = request.POST.get('nombre_doc')
         apellido = request.POST.get('apellido_doc')
-        asignatura = request.POST.get('asigna_doc')
+        
+        # CORRECCIÓN: curso_id debe ser el ID numérico, no texto
+        curso_id = request.POST.get('curso_id')  # Este debería ser número (1, 2, 3...)
+        
+        # Si estás usando el campo "asigna_doc" para el curso
+        curso_seleccionado = request.POST.get('asigna_doc')  # Esto es el texto
+        
         pais = request.POST.get('pais_doc')
         correo = request.POST.get('correo_doc')
         password = request.POST.get('password_doc')
@@ -313,6 +346,7 @@ class RegistroDocente(View):
             messages.error(request, "Todos los campos son obligatorios.")
             return render(request, self.template_name)
 
+        # Validar correo
         dominios_permitidos = ('@gmail.com', '@hotmail.com', '@ucn.cl', '@ce.ucn.cl')
         if not any(correo.endswith(d) for d in dominios_permitidos):
             messages.error(request, f"El correo debe pertenecer a uno de estos dominios: {dominios_permitidos}")
@@ -320,51 +354,74 @@ class RegistroDocente(View):
         
         try:
             with transaction.atomic():
-                
-                # Crear el objeto User de Django (is_staff=True)
+                # 1. Crear User de Django
                 user_django = User.objects.create_user(
                     username=correo,
                     email=correo,
                     password=password,
                     first_name=nombre,
                     last_name=apellido,
-                    is_staff=True # Le da acceso al panel /admin/
+                    is_staff=True
                 )
 
-            Docente.objects.create(
-                user=user_django,
-                nombre_docente=nombre,
-                apellido_docente=apellido,
-                asignatura_docente=asignatura,
-                pais_docente=pais
-            )
+                # 2. Obtener el Curso basado en la selección
+                curso = None
+                
+                # OPCIÓN A: Si curso_id es numérico (ID del curso)
+                if curso_id and curso_id.isdigit():
+                    try:
+                        curso = Curso.objects.get(id=int(curso_id))
+                    except Curso.DoesNotExist:
+                        messages.error(request, "El curso seleccionado no existe.")
+                        return render(request, self.template_name)
+                
+                # OPCIÓN B: Si asigna_doc es el nombre del curso
+                elif curso_seleccionado:
+                    # Buscar curso por nombre o crear uno nuevo
+                    curso, creado = Curso.objects.get_or_create(
+                        nombre_del_Curso=curso_seleccionado,
+                        defaults={
+                            'Descripcion_del_curso': f'Curso de {curso_seleccionado}',
+                            'Descripcion_breve_del_curso': curso_seleccionado,
+                            'fecha_realización_curso': timezone.now().date(),
+                            'paralelo_curso': 1
+                        }
+                    )
+                else:
+                    messages.error(request, "Debe seleccionar un curso/asignatura.")
+                    return render(request, self.template_name)
 
-            try:
-                # Buscamos el grupo por su nombre
-                docente_group = Group.objects.get(name='Docentes')
+                # 3. Crear Docente
+                docente = Docente.objects.create(
+                    user=user_django,
+                    nombre_docente=nombre,
+                    apellido_docente=apellido,
+                    pais_docente=pais,
+                    # asignatura_docente se llenará automáticamente en save()
+                    curso_principal=curso  # Asignar el curso
+                )
                 
-                # Asignamos el usuario recién creado al grupo
-                user_django.groups.add(docente_group) 
+                # 4. Asignar al grupo de Docentes
+                try:
+                    docente_group = Group.objects.get(name='Docentes')
+                    user_django.groups.add(docente_group) 
+                except Group.DoesNotExist:
+                    print("ADVERTENCIA: El grupo 'Docentes' no existe.")
+
+                tiempo = round(time.time() - inicio, 2)
+                messages.success(request, f"Docente {nombre} {apellido} creado en {tiempo} segundos", extra_tags="docente")
+                messages.success(request, f"Asignado al curso: {curso.nombre_del_Curso}")
                 
-            except Group.DoesNotExist:
-                # Si el grupo no existe (por ejemplo, en un entorno de desarrollo nuevo)
-                # Simplemente lo reportamos pero permitimos que el registro continúe.
-                print("ADVERTENCIA: El grupo 'Docentes' no existe. Créalo en el Admin.")
-            tiempo = round(time.time() - inicio, 2)  # ✅ CALCULAR TIEMPO
-            
-            #messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
-            messages.success(request, f"Docente creado en {tiempo} segundos", extra_tags="docente")
-            messages.success(request, f"Registro exitoso en {tiempo} segundos. Ahora puedes iniciar sesión.")
-            return redirect(self.success_url_name)
+                return redirect(self.success_url_name)
 
         except IntegrityError:
             tiempo = round(time.time() - inicio, 2)
             messages.error(request, f"Este correo ya está registrado ({tiempo}s)")
-           
-            #messages.error(request, "Este correo ya está registrado.")
             return render(request, self.template_name)
-
-
+        except Exception as e:
+            tiempo = round(time.time() - inicio, 2)
+            messages.error(request, f"Error al crear docente: {str(e)} ({tiempo}s)")
+            return render(request, self.template_name)
 # -----------------------------------------------------------
 # AUTENTICAR USUARIO (ESTUDIANTE O DOCENTE)
 # -----------------------------------------------------------
