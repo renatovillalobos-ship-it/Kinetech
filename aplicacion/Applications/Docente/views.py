@@ -57,44 +57,29 @@ class LoginRequeridoDocenteMixin(View):
 # -----------------------------------------------------------
 class Login(TemplateView):
     template_name = 'login/login.html'
-   
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-
-        # Tomar nombres únicos de cursos (asignaturas)
-        asignaturas = (
-            Curso.objects.values_list('nombre_del_Curso', flat=True)
-            .distinct()
-            .order_by('nombre_del_Curso')
-        )
-
-        context['asignaturas'] = asignaturas
-        return context
-
-
     def get(self, request, *args, **kwargs):
-
+        # SOLO redirigir si hay una sesión VÁLIDA y ACTIVA
         usuario_tipo = request.session.get('usuario_tipo')
         usuario_id = request.session.get('usuario_id')
         
-        # Si hay sesión activa → redirigir
-        if usuario_tipo and usuario_id and request.session.get_expiry_age() > 0:
-
-            try:
-                if usuario_tipo == 'docente':
-                    Docente.objects.get(id=usuario_id)
-                    return redirect('docente:home_docente')
-
-                elif usuario_tipo == 'estudiante':
-                    Estudiante.objects.get(id=usuario_id)
-                    return redirect('estudiante:home_estudiante')
-
-            except (Docente.DoesNotExist, Estudiante.DoesNotExist):
+        if usuario_tipo and usuario_id:
+            # Verificar que la sesión no haya expirado
+            if request.session.get_expiry_age() > 0:
+                try:
+                    if usuario_tipo == 'docente':
+                        docente = Docente.objects.get(id=usuario_id)
+                        return redirect('docente:home_docente')
+                    elif usuario_tipo == 'estudiante':
+                        estudiante = Estudiante.objects.get(id=usuario_id)
+                        return redirect('estudiante:home_estudiante')
+                except (Docente.DoesNotExist, Estudiante.DoesNotExist):
+                    request.session.flush()
+            else:
+                # Sesión expirada - limpiar y mostrar login
                 request.session.flush()
-
-        # Si no hay sesión → cargar login con asignaturas en el contexto
+        
+        # MOSTRAR LOGIN (no redirigir)
         return super().get(request, *args, **kwargs)
-
 
 
 
