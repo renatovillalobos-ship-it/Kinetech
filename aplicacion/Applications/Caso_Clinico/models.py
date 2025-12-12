@@ -91,8 +91,6 @@ class Etapa(models.Model):
     TIPO_CHOICES = [
         ('video_inicial', 'Video Inicial'),
         ('formulario_temas', 'Formulario de Temas'),
-        ('preguntas_tema', 'Preguntas sobre Tema'),
-        ('video_respuesta', 'Video de Respuesta'),
         ('tratamientos', 'Tratamientos'),
         ('diagnosticos', 'Diagnósticos'),
     ]
@@ -101,7 +99,6 @@ class Etapa(models.Model):
     nombre = models.CharField('Nombre Etapa', max_length=100, null=False)
     tipo = models.CharField('Tipo de Etapa', max_length=20, choices=TIPO_CHOICES, default='video_inicial')
     video = models.URLField('URL del Video', null=True, blank=True)
-    tema = models.CharField('Tema específico', max_length=100, blank=True, null=True)
     orden = models.IntegerField('Orden', default=1)
     
     class Meta:
@@ -112,19 +109,16 @@ class Etapa(models.Model):
     
     def __str__(self):
         return f"{self.ParteCuerpo.ParteCuerpo} - {self.nombre} ({self.get_tipo_display()})"
-    
-# models.py - En la clase Etapa
 
     def clean(self):
         super().clean()
-        if self.video and self.tipo in ['video_inicial', 'video_respuesta']:
-            # Validar que la URL sea de YouTube
+        if self.video and self.tipo in ['video_inicial']:
+
             if 'youtube.com' not in self.video and 'youtu.be' not in self.video:
                 raise ValidationError('Solo se permiten URLs de YouTube para videos.')
             
-            # Validación Adicional: Intentar generar el embed URL para asegurar que la URL es parseable
             if not self.embed_url():
-                # Si la función embed_url no puede generar un ID válido, rechazamos la URL.
+
                 raise ValidationError(
                     'La URL de YouTube no tiene un formato válido (watch?v= o youtu.be/). '
                     'Por favor, revise la URL.'
@@ -141,32 +135,37 @@ class Etapa(models.Model):
             return False
         return 'youtube.com' in self.video or 'youtu.be' in self.video
     
-# models.py - En la clase Etapa (Refinamiento en youtu.be)
     def embed_url(self):
-        """Genera URL embed para YouTube - Versión corregida"""
+        """Genera URL embed para el video de respuesta"""
         if not self.video:
             return ""
-    
+        
         try:
             video_id = ""
+            url = self.video
             
-            # 1. Manejar formato youtu.be/l5aj2a8x2qs
-            if 'youtu.be/' in self.video:
-                # Extraer ID: Quita youtu.be/, luego quita cualquier parámetro de consulta (ej. ?t=)
-                video_id = self.video.split('youtu.be/')[1].split('?')[0][:11]
+            if '/shorts/' in url:
+                video_id = url.split('/shorts/')[1].split('?')[0][:11]
             
-            # 2. Manejar formato estándar watch?v=l5aj2a8x2qs
-            elif 'watch?v=' in self.video:
-                # Extraer ID: Quita watch?v=, luego quita cualquier otro parámetro (ej. &list=)
-                video_id = self.video.split('watch?v=')[1].split('&')[0][:11]
-                
-            # 3. Solo si se obtuvo un ID válido de 11 caracteres
+            # Caso 2: Enlaces youtu.be
+            elif 'youtu.be/' in url:
+                video_id = url.split('youtu.be/')[1].split('?')[0][:11]
+            
+            # Caso 3: Enlaces watch?v=
+            elif 'watch?v=' in url:
+                video_id = url.split('watch?v=')[1].split('&')[0][:11]
+            
+            # Caso 4: Enlaces embed/
+            elif 'embed/' in url:
+                video_id = url.split('embed/')[1].split('?')[0][:11]
+            
+            # Caso 5: Enlaces youtu.be con shorts (alternativo)
+            elif 'youtu.be/shorts/' in url:
+                video_id = url.split('youtu.be/shorts/')[1].split('?')[0][:11]
+            
             if len(video_id) == 11:
-                # Retornar la URL de embed
                 return f"https://www.youtube.com/embed/{video_id}?rel=0"
-        
             return ""
-        
         except Exception:
             return ""
 
@@ -176,7 +175,6 @@ class TemaConsulta(models.Model):
                               limit_choices_to={'tipo': 'formulario_temas'})
     nombre = models.CharField('Nombre del Tema', max_length=100)
     descripcion = models.TextField('Descripción', blank=True)
-    icono = models.CharField('Ícono', max_length=50, default='fas fa-question-circle')
     orden = models.IntegerField('Orden', default=1)
     
     class Meta:
@@ -187,15 +185,13 @@ class TemaConsulta(models.Model):
     def __str__(self):
         return f"{self.nombre} - {self.etapa.nombre}"
 
-
 class OpcionTema(models.Model):
-    """Opciones para cada tema (respuestas posibles)"""
     tema = models.ForeignKey(TemaConsulta, on_delete=models.CASCADE, related_name='opciones')
-    texto = models.TextField('Texto de la opción')
+    texto = models.TextField('Pregunta')
     es_correcta = models.BooleanField('Es correcta', default=False)
     retroalimentacion = models.TextField('Retroalimentación', blank=True)
-    lleva_a_etapa = models.ForeignKey(Etapa, on_delete=models.SET_NULL, null=True, blank=True,
-                                     help_text="Etapa a la que redirige si se selecciona esta opción")
+    video_respuesta = models.URLField('Video de respuesta correcta', blank=True, null=True,
+                                     help_text="URL de YouTube para respuesta correcta")
     
     class Meta:
         verbose_name = 'Opción de Tema'
@@ -203,30 +199,61 @@ class OpcionTema(models.Model):
     
     def __str__(self):
         return f"{self.texto[:50]}... ({'✓' if self.es_correcta else '✗'})"
+    
+    def embed_url(self):
+        """Genera URL embed para el video de respuesta"""
+        if not self.video_respuesta:
+            return ""
+        
+        try:
+            video_id = ""
+            url = self.video_respuesta
+            
+            # Caso 1: YouTube Shorts (como en la imagen: https://youtube.com/shorts/fMjFxdEGbQk?feature=share)
+            if '/shorts/' in url:
+                video_id = url.split('/shorts/')[1].split('?')[0][:11]
+            
+            # Caso 2: Enlaces youtu.be
+            elif 'youtu.be/' in url:
+                video_id = url.split('youtu.be/')[1].split('?')[0][:11]
+            
+            # Caso 3: Enlaces watch?v=
+            elif 'watch?v=' in url:
+                video_id = url.split('watch?v=')[1].split('&')[0][:11]
+            
+            # Caso 4: Enlaces embed/
+            elif 'embed/' in url:
+                video_id = url.split('embed/')[1].split('?')[0][:11]
+            
+            # Caso 5: Enlaces youtu.be con shorts (alternativo)
+            elif 'youtu.be/shorts/' in url:
+                video_id = url.split('youtu.be/shorts/')[1].split('?')[0][:11]
+            
+            if len(video_id) == 11:
+                return f"https://www.youtube.com/embed/{video_id}?rel=0"
+            return ""
+        except Exception:
+            return ""
+        
+class Diagnostico_Tratamiento(models.Model):
 
-
-class PreguntaEtapa(models.Model):
-    Etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='preguntas')
-    pregunta = models.TextField('Pregunta')
+    TIPO_CONTENIDO = [
+        ('diagnostico', 'Diagnóstico'),
+        ('tratamiento', 'Tratamiento'),
+    ]
+    
+    etapa = models.ForeignKey(Etapa, on_delete=models.CASCADE, related_name='contenidos', limit_choices_to={
+            'tipo__in': ['diagnosticos', 'tratamientos']
+        })
+    tipo = models.CharField('Tipo de contenido', max_length=20, choices=TIPO_CONTENIDO)
+    titulo = models.CharField('Título', max_length=200)
+    descripcion = models.TextField('Descripción')
+    orden = models.IntegerField('Orden', default=1)
     
     class Meta:
-        verbose_name = 'Pregunta de Etapa'
-        verbose_name_plural = 'Preguntas de Etapa'
+        ordering = ['etapa', 'orden']
+        verbose_name = 'Diagnóstico y tratamiento'
+        verbose_name_plural = 'Diagnósticos y tratamientos'
     
     def __str__(self):
-        return f"{self.pregunta[:50]}..."
-
-
-class RespuestaEtapa(models.Model):
-    pregunta = models.ForeignKey(PreguntaEtapa, on_delete=models.CASCADE, related_name='respuestas')
-    texto = models.TextField('Texto de respuesta', blank=True)
-    correcta = models.BooleanField('Correcta', default=False)
-    retroalimentacion = models.TextField('Retroalimentación')
-    
-    class Meta:
-        verbose_name = 'Respuesta de Etapa'
-        verbose_name_plural = 'Respuestas de Etapa'
-    
-    def __str__(self):
-        texto_corto = self.texto[:50] if self.texto else self.retroalimentacion[:50]
-        return f"{texto_corto}... ({'✓' if self.correcta else '✗'})"
+        return f"{self.get_tipo_display()}: {self.titulo}"

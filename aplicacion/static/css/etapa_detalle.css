@@ -1,6 +1,6 @@
+
 /* Estilos específicos para etapa_detalle.html */
 
-/* Contenedor principal */
 .etapa-card {
     border: 2px solid #003366;
     border-radius: 12px;
@@ -185,7 +185,7 @@
 
 .opcion-pregunta:hover {
     background: #f0f8ff;
-    border-color: #007bff;
+    border-color: #4B70E2;
 }
 
 /* Evaluación completa */
@@ -251,7 +251,6 @@
     font-size: 1.1em;
 }
 
-/* Navegación mejorada */
 .nav-buttons {
     display: flex;
     justify-content: space-between;
@@ -283,7 +282,7 @@
 }
 
 .btn-siguiente {
-    background: #007bff;
+    background: #4B70E2;
     color: white;
     opacity: 0.5;
     pointer-events: none;
@@ -332,7 +331,372 @@
     color: #721c24;
 }
 
-/* Responsive */
+/* Contenedor principal de diagnósticos */
+.diagnosticos-etapa-container {
+    margin: 30px 0;
+}
+
+.diagnosticos-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.diagnosticos-header h3 {
+    color: #003366;
+    margin-bottom: 10px;
+    font-size: 1.5em;
+}
+
+.diagnosticos-description {
+    color: #666;
+    font-size: 1.1em;
+}
+
+/* Layout de dos columnas */
+.diagnosticos-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-top: 20px;
+}
+
+.diagnosticos-columna {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e0e0e0;
+}
+
+.detalle-columna {
+    background: white;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    border: 1px solid #e0e0e0;
+}
+
+/* Asegurar altura adecuada */
+.diagnosticos-columna, .detalle-columna {
+    min-height: 500px;
+    max-height: 700px;
+    overflow-y: auto;
+}
+
+/* Lista de diagnósticos */
+.diagnosticos-lista {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Cards de diagnóstico */
+.diagnostico-card {
+    background: white;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    border: 2px solid #e0e0e0;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.diagnostico-card:hover {
+    border-color: #4B70E2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.diagnostico-card.seleccionado {
+    background: #e3f2fd;
+    border-color: #4a90e2;
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
+}
+
+/* Íconos y tipografía */
+.diagnostico-card i {
+    font-size: 24px;
+    color: #4a90e2;
+    margin-top: 5px;
+}
+
+.diagnostico-info {
+    flex-grow: 1;
+}
+
+.diagnostico-info h4 {
+    margin: 0 0 5px 0;
+    color: #2c3e50;
+    font-size: 1.1em;
+}
+
+/* Badge para tipo */
+.badge-tipo {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: bold;
+    background: #e3f2fd;
+    color: #1565c0;
+    margin-bottom: 8px;
+}
+
+/* Estilos para diferenciar tipos */
+.tipo-diagnostico {
+    border-left: 4px solid #4a90e2;
+}
+
+.tipo-tratamiento {
+    border-left: 4px solid #50c878;
+}
+
+.tipo-diagnostico .badge-tipo {
+    background-color: #e3f2fd;
+    color: #4a90e2;
+}
+
+.tipo-tratamiento .badge-tipo {
+    background-color: #e8f5e9;
+    color: #50c878;
+}
+
+.descripcion-corta {
+    font-size: 14px;
+    color: #666;
+    line-height: 1.5;
+    margin: 5px 0 0 0;
+}
+
+/* Panel de detalle */
+.diagnostico-detalle-panel {
+    height: 100%;
+}
+
+.detalle-placeholder {
+    text-align: center;
+    color: #999;
+    padding: 100px 20px;
+}
+
+.detalle-placeholder i {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #ddd;
+}
+
+.detalle-placeholder p {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+/* Contenido del detalle */
+.detalle-content {
+    animation: fadeIn 0.5s ease;
+}
+
+.detalle-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #eaeaea;
+}
+
+.detalle-header h3 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.3em;
+}
+
+.detalle-section {
+    margin-bottom: 25px;
+}
+
+.detalle-section h5 {
+    color: #4a90e2;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.descripcion-content {
+    background: #f8f9fa;
+    padding: 20px;
+    border-radius: 8px;
+    line-height: 1.6;
+    font-size: 1.05em;
+    border-left: 4px solid #4a90e2;
+}
+
+.detalle-actions {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.btn-imprimir {
+    background: #6c757d;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-imprimir:hover {
+    background: #5a6268;
+    transform: translateY(-2px);
+}
+
+/* Estilos para mensajes de carga/error */
+.diagnosticos-loading {
+    text-align: center;
+    padding: 40px;
+    color: #666;
+}
+
+.diagnosticos-loading i {
+    font-size: 2em;
+    margin-bottom: 15px;
+    color: #007bff;
+}
+
+.error-diagnosticos {
+    text-align: center;
+    padding: 30px;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    border-radius: 8px;
+    color: #721c24;
+}
+
+.error-diagnosticos i {
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+.video-respuesta-container {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    border-top: 5px solid #28a745;
+}
+
+.video-controls-top {
+    background: linear-gradient(135deg, #e9f7fe 0%, #d1f2eb 100%);
+    border-radius: 10px;
+    padding: 20px;
+    margin: 15px 0 25px 0;
+    border: 2px solid #a8e6cf;
+    text-align: center;
+}
+
+.controls-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-volver-superior {
+    background: linear-gradient(135deg, #4B70E2 0%, #0056b3 100%);
+    color: white;
+    border: none;
+    padding: 14px 30px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.25);
+    min-width: 220px;
+    justify-content: center;
+}
+
+.btn-volver-superior:hover {
+    background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+    transform: translateY(-3px);
+    box-shadow: 0 6px 15px rgba(0, 123, 255, 0.35);
+}
+
+.btn-volver-superior:active {
+    transform: translateY(-1px);
+}
+
+.instruccion-principal {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0;
+}
+
+.instruccion-secundaria {
+    font-size: 14px;
+    color: #7f8c8d;
+    font-style: italic;
+    margin: 0;
+}
+
+.video-explicativo-container {
+    margin-top: 10px;
+}
+
+.video-explicativo-container h5 {
+    color: #34495e;
+    margin-bottom: 10px;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.video-wrapper {
+    position: relative;
+    width: 100%;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    border-radius: 10px;
+    box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+    background: #000;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+@media (max-width: 992px) {
+    .diagnosticos-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .diagnosticos-columna, .detalle-columna {
+        min-height: 300px;
+        max-height: 400px;
+    }
+}
+
 @media (max-width: 768px) {
     .etapa-card {
         padding: 20px;
@@ -355,4 +719,129 @@
     .pregunta-box {
         padding: 20px;
     }
+    
+    .diagnostico-card {
+        padding: 15px;
+    }
+    
+    .detalle-columna, .diagnosticos-columna {
+        padding: 20px;
+    }
 }
+
+    .tratamientos-etapa-container {
+        margin: 30px 0;
+    }
+
+    .tratamientos-header {
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .tratamientos-header h3 {
+        color: #003366;
+        margin-bottom: 10px;
+        font-size: 1.5em;
+    }
+
+    .tratamientos-description {
+        color: #666;
+        font-size: 1.1em;
+    }
+
+    .tratamientos-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-top: 20px;
+    }
+
+    .tratamientos-columna {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 25px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        border: 1px solid #e0e0e0;
+    }
+
+    .tratamiento-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: flex-start;
+        gap: 15px;
+        border: 2px solid #e0e0e0;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        margin-bottom: 15px;
+        border-left: 4px solid #50c878; /* Verde para tratamientos */
+    }
+
+    .tratamiento-card:hover {
+        border-color: #50c878;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .tratamiento-card.seleccionado {
+        background: #e8f5e9;
+        border-color: #50c878;
+        box-shadow: 0 4px 12px rgba(80, 200, 120, 0.2);
+    }
+
+    .tratamiento-card i {
+        font-size: 24px;
+        color: #50c878;
+        margin-top: 5px;
+    }
+
+    .tratamiento-info {
+        flex-grow: 1;
+    }
+
+    .tratamiento-info h4 {
+        margin: 0 0 5px 0;
+        color: #2c3e50;
+        font-size: 1.1em;
+    }
+
+    /* Botón Finalizar */
+    .btn-finalizar {
+        background: #28a745;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s;
+        opacity: 0.5;
+        pointer-events: none;
+    }
+
+    .btn-finalizar.habilitado {
+        opacity: 1;
+        pointer-events: auto;
+        background: #28a745;
+    }
+
+    .btn-finalizar.habilitado:hover {
+        background: #218838;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
+    }
+
+    /* Estilos responsive */
+    @media (max-width: 992px) {
+        .tratamientos-grid {
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .tratamientos-columna, .detalle-columna {
+            min-height: 300px;
+            max-height: 400px;
+        }
+    }

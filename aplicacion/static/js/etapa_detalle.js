@@ -1,7 +1,34 @@
 // Funciones específicas para etapa_detalle.html
 
+
 // Inicialización cuando el DOM está listo
 document.addEventListener('DOMContentLoaded', function() {
+    const itemsInteractivos = document.querySelectorAll('.item-interactivo');
+    const descripcionBox = document.getElementById('descripcion-resultado');
+    const resultadoTitulo = document.getElementById('resultado-titulo');
+    const resultadoDescripcion = document.getElementById('resultado-descripcion');
+    
+    // Función para manejar el clic en Diagnósticos/Tratamientos
+    itemsInteractivos.forEach(item => {
+        item.addEventListener('click', function() {
+            // 1. Obtener datos del botón (vienen del data-attributes del HTML)
+            const titulo = this.getAttribute('data-titulo');
+            const descripcion = this.getAttribute('data-descripcion');
+            
+            // 2. Limpiar la selección previa y marcar el botón actual
+            itemsInteractivos.forEach(i => i.classList.remove('activo'));
+            this.classList.add('activo');
+            
+            // 3. Llenar el área de descripción
+            resultadoTitulo.textContent = titulo;
+            // Usamos innerHTML porque la descripción (TextField) puede contener formato HTML
+            resultadoDescripcion.innerHTML = descripcion; 
+            
+            // 4. Mostrar la caja y desplazar la vista
+            descripcionBox.style.display = 'block';
+            descripcionBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        });
+    });
     // Configurar botón siguiente
     const btnSiguiente = document.getElementById('btnSiguiente');
     if (btnSiguiente && btnSiguiente.dataset.nextUrl) {
@@ -35,4 +62,3 @@ function manejarVideoAutomatico() {
         }
     }, 5000); // 5 segundos
 }
-

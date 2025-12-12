@@ -24,6 +24,7 @@ from django.contrib.auth import views as auth_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Login.as_view(), name='login'),  # Ruta raiz para la vista login
+    path('login/', Login.as_view(), name='login'),
     path('estudiante/', include(('Applications.Estudiante.urls','estudiante'), namespace='estudiante')),
     path('docente/', include(('Applications.Docente.urls', 'docente'), namespace='docente')),
     path('cuestionario/', include(('Applications.Cuestionario.urls', 'cuestionario'), namespace='cuestionario')),

@@ -1,4 +1,3 @@
-# admin.py - REEMPLAZA TODO EL CONTENIDO CON ESTO
 from django.contrib import admin
 from django import forms
 from .models import *
@@ -42,9 +41,8 @@ class EtapaAdmin(admin.ModelAdmin):
         'ParteCuerpo',
         'tipo',
         'orden',
-        'tema',
     )
-    search_fields = ('nombre', 'ParteCuerpo__ParteCuerpo', 'tema')
+    search_fields = ('nombre', 'ParteCuerpo__ParteCuerpo')
     list_filter = ('ParteCuerpo', 'tipo')
     list_editable = ('orden',)
 
@@ -59,36 +57,15 @@ class PartesCuerpoAdmin(admin.ModelAdmin):
     list_filter = ('CasoClinico__caso',)
 
 
-class PreguntaEtapaAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'pregunta',
-        'Etapa',
-    )
-    search_fields = ('pregunta', 'Etapa__nombre')
-    list_filter = ('Etapa__nombre',)
-
-
-class RespuestaEtapaAdmin(admin.ModelAdmin):
-    list_display = (
-        'id',
-        'pregunta',
-        'texto',
-        'correcta',
-    )
-    search_fields = ('texto', 'retroalimentacion', 'pregunta__pregunta')
-    list_filter = ('correcta', 'pregunta__Etapa__nombre')
-
-
 class TemaConsultaAdmin(admin.ModelAdmin):
-    list_display = ('nombre', 'etapa', 'orden', 'icono')
+    list_display = ('nombre', 'etapa', 'orden')
     list_filter = ('etapa',)
     search_fields = ('nombre', 'descripcion')
     list_editable = ('orden',)
 
 
 class OpcionTemaAdmin(admin.ModelAdmin):
-    list_display = ('texto', 'tema', 'es_correcta', 'lleva_a_etapa')
+    list_display = ('texto', 'tema', 'es_correcta')
     list_filter = ('es_correcta', 'tema__etapa')
     search_fields = ('texto', 'retroalimentacion')
 
@@ -98,6 +75,11 @@ class PartesPacienteAdmin(admin.ModelAdmin):
     list_filter = ('ParteCuerpo',)
     search_fields = ('Pacientes__nombre', 'ParteCuerpo__ParteCuerpo')
 
+class Diagnostico_TratamientoAdmin(admin.ModelAdmin): 
+    list_display = ('titulo', 'etapa', 'orden')
+    list_filter = ('etapa',)
+    search_fields = ('titulo', 'descripcion')
+    list_editable = ('orden',)
 
 # Register your models here UNA SOLA VEZ
 admin.site.register(Pacientes, PacientesAdmin)
@@ -105,7 +87,6 @@ admin.site.register(Caso_clinico, CasoClinicoAdmin)
 admin.site.register(Etapa, EtapaAdmin)
 admin.site.register(Partes_paciente, PartesPacienteAdmin)
 admin.site.register(Partes_cuerpo, PartesCuerpoAdmin)
-admin.site.register(PreguntaEtapa, PreguntaEtapaAdmin)
-admin.site.register(RespuestaEtapa, RespuestaEtapaAdmin)
 admin.site.register(TemaConsulta, TemaConsultaAdmin)
 admin.site.register(OpcionTema, OpcionTemaAdmin)
+admin.site.register(Diagnostico_Tratamiento,Diagnostico_TratamientoAdmin)

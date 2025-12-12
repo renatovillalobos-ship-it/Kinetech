@@ -8,16 +8,15 @@ import json
 import json
 from Applications.Caso_Clinico.models import (
     Caso_clinico, Partes_cuerpo, Pacientes, 
-    Etapa, PreguntaEtapa, RespuestaEtapa, Partes_paciente,
-    TemaConsulta, OpcionTema
+    Etapa, Partes_paciente,
+    TemaConsulta, OpcionTema, Diagnostico_Tratamiento
 )
 from django.views.generic import DetailView
 
-# En views.py - Corregir VideoDetailView
 class VideoDetailView(DetailView):
-    model = Etapa  # Cambiar de Etapa.video a Etapa
+    model = Etapa  
     template_name = "video.html"
-    context_object_name = "etapa"  # Cambiar de video a etapa
+    context_object_name = "etapa"  
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -78,7 +77,6 @@ def ver_etapas(request, caso_id, parte_id, paciente_id):
     
     for etapa in etapas:
         etapa.tiene_video = bool(etapa.video)
-        etapa.tiene_preguntas = etapa.preguntas.exists()
         if etapa.tiene_video:
             etapa.embed_url = etapa.embed_url()
     
@@ -98,15 +96,12 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
     etapa = get_object_or_404(Etapa, id=etapa_id)
     
     embed_url = None
+    
     if etapa.video:
         embed_url = etapa.embed_url()
-    # Obtener etapas relacionadas
     todas_etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
     etapa_actual_numero = list(todas_etapas).index(etapa) + 1
     total_etapas = todas_etapas.count()
-    
-    # NO asignar a la propiedad, usar un atributo diferente si es necesario
-    # O simplemente usar la propiedad directamente en el template
     
     try:
         etapa_anterior = todas_etapas.get(orden=etapa.orden - 1)
@@ -117,8 +112,19 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
         etapa_siguiente = todas_etapas.get(orden=etapa.orden + 1)
     except Etapa.DoesNotExist:
         etapa_siguiente = None
+
+    if etapa_siguiente:
+        next_url = reverse('Caso_Clinico:etapa_detalle', kwargs={
+            'caso_id': caso_id,
+            'parte_id': parte_id,
+            'paciente_id': paciente_id,
+            'etapa_id': etapa_siguiente.id
+        })
+    else:
+        next_url = reverse('Caso_Clinico:detalle_caso', kwargs={
+            'caso_id': caso_id
+        })
     
-    # Contexto base
     contexto = {
         'caso': caso,
         'parte': parte,
@@ -129,44 +135,40 @@ def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
         'total_etapas': total_etapas,
         'etapa_anterior': etapa_anterior,
         'etapa_siguiente': etapa_siguiente,
+        'next_url': next_url,
     }
-    
-    # Datos específicos por tipo de etapa
     if etapa.tipo == 'formulario_temas':
-        # Obtener temas para esta etapa
         temas = TemaConsulta.objects.filter(etapa=etapa).order_by('orden')
         contexto['temas'] = temas
-    
-    elif etapa.tipo == 'preguntas_tema':
-        # Obtener preguntas para esta etapa
-        preguntas = PreguntaEtapa.objects.filter(Etapa=etapa).prefetch_related('respuestas')
-        contexto['preguntas'] = preguntas
+        
+    elif etapa.tipo in ['diagnosticos', 'tratamientos']:
+        contenidos = etapa.contenidos.all().order_by('orden')
+        
+        contexto['diagnosticos'] = contenidos.filter(tipo='diagnostico')
+        contexto['tratamientos'] = contenidos.filter(tipo='tratamiento')
+        
     else:
-        DetailView()
+        pass 
     
     return render(request, 'casos/etapa_detalle.html', contexto)
 
-
-
-
-
 @csrf_exempt
 def api_opciones_tema(request, tema_id):
-    """API para obtener opciones de un tema específico"""
     try:
         tema = get_object_or_404(TemaConsulta, id=tema_id)
         opciones = OpcionTema.objects.filter(tema=tema).order_by('id')
         
-        opciones_data = [
-            {
+        opciones_data = []
+        for opcion in opciones:
+            opcion_data = {
                 'id': opcion.id,
                 'texto': opcion.texto,
                 'es_correcta': opcion.es_correcta,
                 'retroalimentacion': opcion.retroalimentacion or '',
-                'lleva_a_etapa': opcion.lleva_a_etapa.id if opcion.lleva_a_etapa else None
+                'video_respuesta': opcion.video_respuesta or '',
+                'embed_url_video': opcion.embed_url(),  # IMPORTANTE: usar el método embed_url()
             }
-            for opcion in opciones
-        ]
+            opciones_data.append(opcion_data)
         
         return JsonResponse({
             "success": True,
@@ -176,11 +178,12 @@ def api_opciones_tema(request, tema_id):
         })
         
     except Exception as e:
+        import traceback
+        traceback.print_exc()
         return JsonResponse({
             "success": False, 
             "error": str(e)
         }, status=500)
-
 @csrf_exempt
 def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
     """Procesar respuesta del usuario en etapa de formulario de temas"""
@@ -287,6 +290,34 @@ def ver_progreso(request, caso_id, parte_id, paciente_id):
         'total_etapas': len(etapas),
     })
 
+
+@csrf_exempt
+def api_diagnosticos(request, etapa_id):
+    """Retorna los diagnósticos y tratamientos de una Etapa en formato JSON."""
+    if request.method != 'GET':
+        return JsonResponse({'success': False, 'error': 'Método no permitido'}, status=405)
+
+    try:
+        contenidos = Diagnostico_Tratamiento.objects.filter(etapa_id=etapa_id).order_by('orden', 'id')
+        
+        data_diagnosticos = []
+        for contenido in contenidos:
+            data_diagnosticos.append({
+                'id': contenido.id,
+                'titulo': contenido.titulo,
+                'descripcion': contenido.descripcion,
+                'tipo': contenido.tipo,
+            })
+            
+        return JsonResponse({
+            'success': True,
+            'etapa_id': etapa_id,
+            'diagnosticos': data_diagnosticos
+        })
+        
+    except Exception as e:
+        print(f"Error al obtener diagnósticos de la etapa {etapa_id}: {e}")
+        return JsonResponse({'success': False, 'error': str(e)}, status=500)
 
 def obtener_icono_parte_cuerpo(nombre_parte):
     """Determina el ícono apropiado para cada parte del cuerpo"""

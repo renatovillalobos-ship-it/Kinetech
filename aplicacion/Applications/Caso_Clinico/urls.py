@@ -25,4 +25,6 @@ urlpatterns = [
          views.ver_progreso, name='ver_progreso'),
 
      path("videos/<int:pk>/", VideoDetailView.as_view(), name="detalle_video"),
+     path('api/diagnosticos/<int:etapa_id>/', views.api_diagnosticos, name='api_diagnosticos'),
+
 ]

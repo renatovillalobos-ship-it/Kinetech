@@ -449,3 +449,41 @@
     margin: 0;
     font-size: 1.1em;
 }
+
+/* Estilos para los botones de Diagnóstico/Tratamiento */
+
+.listado-interactivo {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.item-interactivo {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.2s;
+    font-weight: 500;
+}
+
+.item-interactivo:hover {
+    background-color: #e0e0e0;
+}
+
+.item-interactivo.activo {
+    background-color: #007bff; /* Un color de acento azul */
+    color: white;
+    border-color: #0056b3;
+}
+
+.descripcion-box {
+    margin-top: 30px;
+    padding: 20px;
+    border: 2px solid #003366; /* Borde con tu color principal */
+    border-radius: 8px;
+    background-color: #f0f8ff; /* Fondo claro para destacar */
+}
+

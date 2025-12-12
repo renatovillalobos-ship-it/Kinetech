@@ -5,288 +5,700 @@
 
 {% block content %}
 <head>
-    <title>Etapa {{ etapa_actual_numero }}: {{ etapa.nombre }}</title>
+    <title>{{ caso.caso }}</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="{% static 'css/casos.css' %}">
     <link rel="stylesheet" href="{% static 'css/etapa_detalle.css' %}">
+    <link rel="stylesheet" href="{% static 'css/casos.css' %}">
 </head>
+<div class="container">
+    <div class="etapa-card">
+        <div class="etapa-header">
+            <h2>Etapa {{ etapa_actual_numero }} de {{ total_etapas }}: {{ etapa.nombre }}</h2>
+            <p>Caso: <strong>{{ caso.caso }}</strong> | Paciente: <strong>{{ paciente.nombre }}</strong></p>
+        </div>
 
-<body>
-    <div class="container">
-        <div class="etapa-card">
-            <div class="etapa-header">
-                <h2>Etapa {{ etapa_actual_numero }} de {{ total_etapas }}: {{ etapa.nombre }}</h2>
-                <p>Caso: <strong>{{ caso.caso }}</strong> | Paciente: <strong>{{ paciente.nombre }}</strong></p>
+        <!-- CONTENIDO ESPECÍFICO POR TIPO DE ETAPA -->
+        {% if etapa.tipo == 'video_inicial' and embed_url %}
+            <!-- VIDEO INICIAL -->
+            <div class="video-section">
+                <h3><i class="fas fa-video"></i> Motivo de consulta </h3>
+                <p class="video-description">Mire atentamente el siguiente video antes de continuar:</p>
+                
+                <div class="video-container">  
+                    <iframe width="560" height="315"
+                        src="{{ embed_url }}"
+                        title="YouTube video player"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        referrerpolicy="strict-origin-when-cross-origin"
+                        allowfullscreen>
+                    </iframe>
+                </div>
+                
+                <div id="video-completado" class="video-completion" style="display: none;">
+                    <div class="retroalimentacion-box retroalimentacion-correcta">
+                        <i class="fas fa-check-circle"></i> Puede continuar
+                    </div>
+                </div>
             </div>
 
-            <!-- CONTENIDO ESPECÍFICO POR TIPO DE ETAPA -->
-            {% if etapa.tipo == 'video_inicial' and embed_url %}
-                <!-- VIDEO INICIAL -->
-                <div class="video-section">
-                    <h3><i class="fas fa-video"></i> Motivo de consulta </h3>
-                    <p class="video-description">Mire atentamente el siguiente video antes de continuar:</p>
-                    
-                    <div class="video-container">  
-                        <iframe width="560" height="315"
-                            src="{{ embed_url }}"
-                            title="YouTube video player"
-                            frameborder="0"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            referrerpolicy="strict-origin-when-cross-origin"
-                            allowfullscreen>
-                        </iframe>
-
+        {% elif etapa.tipo == 'formulario_temas' and temas %}
+            <!-- FORMULARIO DE TEMAS -->
+            <div class="temas-header">
+                <h3><i class="fas fa-clipboard-list"></i> Revise el listado de posibles preguntas</h3>
+                    <p class="temas-description">Marque las preguntas que desea consultar al paciente:</p>
+            </div>
+            
+            <div class="temas-grid">
+                {% for tema in temas %}
+                    <div class="tema-card" onclick="mostrarOpcionesTema({{ tema.id }})" id="tema-{{ tema.id }}">
+                        <div class="tema-icono">
+                            <i class="{{ tema.icono }}"></i>
+                        </div>
+                        <h4>{{ tema.nombre }}</h4>
+                        <p class="tema-descripcion">{{ tema.descripcion|truncatewords:15 }}</p>
+                        <button class="tema-btn">
+                            <i class="fas fa-arrow-right"></i> Evaluar
+                        </button>
                     </div>
-                    
-                    
-                    <div id="video-completado" class="video-completion" style="display: none;">
-                        <div class="retroalimentacion-box retroalimentacion-correcta">
-                            <i class="fas fa-check-circle"></i> Puede continuar
+                {% endfor %}
+            </div>
+            
+            <!-- Contenedor para opciones dinámicas -->
+            <div id="opciones-container" class="opciones-container"></div>
+            
+            <!-- Retroalimentación -->
+            <div id="retroalimentacion-tema" class="retroalimentacion-box"></div>
+
+        {% elif etapa.tipo == 'preguntas_tema' and preguntas %}
+            <!-- PREGUNTAS SOBRE TEMA -->
+            <div class="preguntas-header">
+                <h3><i class="fas fa-question-circle"></i> Preguntas sobre: {{ etapa.tema }}</h3>
+            </div>
+            
+            <div class="preguntas-container">
+                {% for pregunta in preguntas %}
+                    <div class="pregunta-box" id="pregunta-{{ pregunta.id }}">
+                        <h4>{{ pregunta.pregunta }}</h4>
+                        <div class="opciones-pregunta">
+                            {% for respuesta in pregunta.respuestas.all %}
+                                <div class="opcion-pregunta" 
+                                     data-respuesta-id="{{ respuesta.id }}"
+                                     data-correcta="{{ respuesta.correcta|yesno:'true,false' }}"
+                                     onclick="seleccionarRespuesta(this, '{{ respuesta.retroalimentacion|escapejs }}')">
+                                    {{ respuesta.texto }}
+                                </div>
+                            {% endfor %}
                         </div>
                     </div>
-                </div>
+                {% endfor %}
+            </div>
+            
+            <div id="retroalimentacion-pregunta" class="retroalimentacion-box"></div>
 
-            {% elif etapa.tipo == 'formulario_temas' and temas %}
-                <!-- FORMULARIO DE TEMAS -->
-                <div class="temas-header">
-                    <h3><i class="fas fa-clipboard-list"></i> Revise el listado de posibles preguntas</h3>
-                        <p class="temas-description">Marque las preguntas que desea consultar al paciente:</p>
+        {% elif etapa.tipo == 'video_respuesta' and embed_url %}
+            <!-- VIDEO DE RESPUESTA -->
+            <div class="video-section">
+                <h3><i class="fas fa-video"></i> Explicación: {{ etapa.tema }}</h3>
+                <p class="video-description">Esta explicación complementa la evaluación realizada:</p>
+                
+                <div class="video-container">
+                    <iframe 
+                        width="100%" 
+                        height="500" 
+                        src="{{ embed_url }}" 
+                        title="YouTube video player" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen>
+                    </iframe>
                 </div>
                 
-                <div class="temas-grid">
-                    {% for tema in temas %}
-                        <div class="tema-card" onclick="mostrarOpcionesTema({{ tema.id }})" id="tema-{{ tema.id }}">
-                            <div class="tema-icono">
-                                <i class="{{ tema.icono }}"></i>
-                            </div>
-                            <h4>{{ tema.nombre }}</h4>
-                            <p class="tema-descripcion">{{ tema.descripcion|truncatewords:15 }}</p>
-                            <button class="tema-btn">
-                                <i class="fas fa-arrow-right"></i> Evaluar
-                            </button>
-                        </div>
-                    {% endfor %}
-                </div>
-                
-                <!-- Contenedor para opciones dinámicas -->
-                <div id="opciones-container" class="opciones-container"></div>
-                
-                <!-- Retroalimentación -->
-                <div id="retroalimentacion-tema" class="retroalimentacion-box"></div>
-
-            {% elif etapa.tipo == 'preguntas_tema' and preguntas %}
-                <!-- PREGUNTAS SOBRE TEMA -->
-                <div class="preguntas-header">
-                    <h3><i class="fas fa-question-circle"></i> Preguntas sobre: {{ etapa.tema }}</h3>
-                </div>
-                
-                <div class="preguntas-container">
-                    {% for pregunta in preguntas %}
-                        <div class="pregunta-box" id="pregunta-{{ pregunta.id }}">
-                            <h4>{{ pregunta.pregunta }}</h4>
-                            <div class="opciones-pregunta">
-                                {% for respuesta in pregunta.respuestas.all %}
-                                    <div class="opcion-pregunta" 
-                                         data-respuesta-id="{{ respuesta.id }}"
-                                         data-correcta="{{ respuesta.correcta|yesno:'true,false' }}"
-                                         onclick="seleccionarRespuesta(this, '{{ respuesta.retroalimentacion|escapejs }}')">
-                                        {{ respuesta.texto }}
-                                    </div>
-                                {% endfor %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-                
-                <div id="retroalimentacion-pregunta" class="retroalimentacion-box"></div>
-
-            {% elif etapa.tipo == 'video_respuesta' and embed_url %}
-                <!-- VIDEO DE RESPUESTA -->
-                <div class="video-section">
-                    <h3><i class="fas fa-video"></i> Explicación: {{ etapa.tema }}</h3>
-                    <p class="video-description">Esta explicación complementa la evaluación realizada:</p>
-                    
-                    <div class="video-container">
-                        <iframe 
-                            width="100%" 
-                            height="500" 
-                            src="{{ embed_url }}" 
-                            title="YouTube video player" 
-                            frameborder="0" 
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                            referrerpolicy="no-referrer-when-downgrade"
-                            allowfullscreen>
-                        </iframe>
-                    </div>
-                    
-                    <div id="video-respuesta-completado" class="video-completion" style="display: none;">
-                        <div class="retroalimentacion-box retroalimentacion-correcta">
-                            <i class="fas fa-check-circle"></i> Video visto. Puede continuar.
-                        </div>
+                <div id="video-respuesta-completado" class="video-completion" style="display: none;">
+                    <div class="retroalimentacion-box retroalimentacion-correcta">
+                        <i class="fas fa-check-circle"></i> Video visto, puede continuar.
                     </div>
                 </div>
+            </div>
 
-            {% elif etapa.tipo == 'tratamientos' or etapa.tipo == 'diagnosticos' %}
-                <!-- TRATAMIENTOS O DIAGNÓSTICOS -->
-                <div class="evaluacion-completa">
+        {% elif etapa.tipo == 'diagnosticos' %}
+            <!-- DIAGNÓSTICOS DINÁMICOS -->
+            <div class="diagnosticos-etapa-container">
+                <div class="diagnosticos-header">
                     <h3><i class="fas fa-stethoscope"></i> {{ etapa.nombre }}</h3>
-                    <p class="evaluacion-description">Resumen de hallazgos y recomendaciones:</p>
-                    
-                    <div class="completado-box">
-                        <h4><i class="fas fa-clipboard-check"></i> Evaluación completada</h4>
-                        <p>Ha finalizado la evaluación del paciente. Puede revisar el progreso completo.</p>
-                        
-                        <div class="progreso-actions">
-                            <a href="{% url 'Caso_Clinico:ver_progreso' caso.id parte.id paciente.id %}" 
-                               class="btn-progreso">
-                                <i class="fas fa-chart-line"></i> Ver progreso completo
-                            </a>
+                    <p class="diagnosticos-description">Seleccione los posibles diagnósticos relacionados al caso:</p>
+                </div>
+
+                <div class="diagnosticos-grid">
+                    <!-- COLUMNA IZQUIERDA: LISTA DE DIAGNÓSTICOS -->
+                    <div class="diagnosticos-columna">
+                        <div id="diagnosticos-container" class="diagnosticos-lista">
+                            <div class="diagnosticos-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Cargando posibles diagnósticos...</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- COLUMNA DERECHA: PANEL DE DETALLE -->
+                    <div class="detalle-columna">
+                        <div class="diagnostico-detalle-panel" id="detalleDiagnostico">
+                            <div class="detalle-placeholder">
+                                <i class="fas fa-hand-pointer"></i>
+                                <p>Seleccione un diagnóstico para ver detalles</p>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
 
-            {% else %}
-                <div class="contenido-no-disponible">
-                    <i class="fas fa-exclamation-triangle"></i>
-                    <p>Contenido no disponible para esta etapa.</p>
+        {% elif etapa.tipo == 'tratamientos' %}
+            <!-- TRATAMIENTOS DINÁMICOS -->
+            <div class="tratamientos-etapa-container">
+                <div class="tratamientos-header">
+                    <h3><i class="fas fa-prescription-bottle-alt"></i> {{ etapa.nombre }}</h3>
+                    <p class="tratamientos-description">Seleccione los posibles tratamientos para el caso:</p>
                 </div>
+
+                <div class="tratamientos-grid">
+                    <!-- COLUMNA IZQUIERDA: LISTA DE TRATAMIENTOS -->
+                    <div class="tratamientos-columna">
+                        <div id="tratamientos-container" class="tratamientos-lista">
+                            <div class="tratamientos-loading">
+                                <i class="fas fa-spinner fa-spin"></i>
+                                <p>Cargando posibles tratamientos...</p>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <!-- COLUMNA DERECHA: PANEL DE DETALLE -->
+                    <div class="detalle-columna">
+                        <div class="tratamiento-detalle-panel" id="detalleTratamiento">
+                            <div class="detalle-placeholder">
+                                <i class="fas fa-hand-pointer"></i>
+                                <p>Seleccione un tratamiento para ver detalles</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        {% else %}
+            <div class="contenido-no-disponible">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Contenido no disponible para esta etapa.</p>
+            </div>
+        {% endif %}
+
+        <!-- Navegación -->
+        <div class="nav-buttons">
+            {% if etapa_anterior %}
+                <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_anterior.id %}" 
+                class="btn-nav btn-anterior">
+                    <i class="fas fa-arrow-left"></i> Anterior
+                </a>
+            {% else %}
+                <a href="{% url 'Caso_Clinico:ver_etapas' caso.id parte.id paciente.id %}" 
+                class="btn-nav btn-anterior">
+                <i class="fas fa-list"></i> Ficha Clínica
+                </a>
             {% endif %}
 
-            <!-- Navegación -->
-            <div class="nav-buttons">
-                {% if etapa_anterior %}
-                    <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_anterior.id %}" 
-                       class="btn-nav btn-anterior">
-                        <i class="fas fa-arrow-left"></i> Anterior
-                    </a>
-                {% else %}
-                    <a href="{% url 'Caso_Clinico:ver_etapas' caso.id parte.id paciente.id %}" 
-                       class="btn-nav btn-anterior">
-                        <i class="fas fa-list"></i> Ficha Clínica
-                    </a>
-                {% endif %}
-
-                {% if etapa_siguiente and etapa.tipo != 'formulario_temas' %}
-                    <button class="btn-nav btn-siguiente" id="btnSiguiente" onclick="window.location.href='{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_siguiente.id %}'">
-                        Siguiente <i class="fas fa-arrow-right"></i>
-                    </button>
-                {% elif not etapa_siguiente and etapa.tipo == 'tratamientos' or etapa.tipo == 'diagnosticos' %}
-                    <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" 
-                       class="btn-nav btn-siguiente habilitado btn-finalizar">
-                        Finalizar Caso <i class="fas fa-check"></i>
-                    </a>
-                {% else %}
-                    <button class="btn-nav btn-siguiente" id="btnSiguiente" disabled>
-                        Siguiente <i class="fas fa-arrow-right"></i>
-                    </button>
-                {% endif %}
-            </div>
+            {% if etapa_siguiente %}
+                {% if etapa.tipo == 'formulario_temas' %}
+                <button id="btnSiguiente" class="btn-nav btn-siguiente" disabled
+                    data-next-url="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_siguiente.id %}">
+                    Siguiente <i class="fas fa-arrow-right"></i>
+                </button>
+            {% else %}
+                <a href="{% url 'Caso_Clinico:etapa_detalle' caso.id parte.id paciente.id etapa_siguiente.id %}" 
+                id="btnSiguiente" class="btn-nav btn-siguiente">
+                Siguiente <i class="fas fa-arrow-right"></i>
+                </a>
+            {% endif %}
+            {% else %}
+            <button id="btnFinalizar" class="btn-nav btn-finalizar" onclick="finalizarCaso()">
+            Finalizar Caso <i class="fas fa-check"></i>
+            </button>
+            {% endif %}
         </div>
     </div>
-    <script src="{% static 'js/etapa_detalle.js' %}"></script>
-       
+</div>
+<script src="{% static 'js/etapa_detalle.js' %}"></script>
+   
 <script>
-// Función para mostrar opciones de tema
-function mostrarOpcionesTema(temaId) {
-    console.log('Solicitando opciones para tema:', temaId);
-    
-    // URL de la API - AJUSTA ESTA URL SEGÚN TU PROYECTO
-    const url = `/casos/api/opciones-tema/${temaId}/`;
-    
-    fetch(url)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Error en la petición: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            console.log('Respuesta recibida:', data);
-            
-            if (data.success && data.opciones.length > 0) {
-                const container = document.getElementById('opciones-container');
-                container.innerHTML = `
-                    <div class="opciones-tema" id="opciones-tema-${temaId}" style="display: block;">
-                        <h4>Seleccione una opción para este tema:</h4>
-                        ${data.opciones.map(opcion => `
-                            <div class="opcion-tema" 
-                                 onclick="seleccionarOpcionTema(${opcion.id}, ${temaId}, ${opcion.es_correcta}, '${opcion.retroalimentacion.replace(/'/g, "\\'")}')">
-                                <strong>${opcion.texto}</strong>
-                            </div>
-                        `).join('')}
-                    </div>
-                `;
-            } else {
-                alert('No hay opciones disponibles para este tema.');
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error al cargar opciones. Verifica la consola para más detalles.');
-        });
-}
 
-// Función para seleccionar opción de tema
-function seleccionarOpcionTema(opcionId, temaId, esCorrecta, retroalimentacion) {
-    console.log('Opción seleccionada:', {opcionId, temaId, esCorrecta, retroalimentacion});
+    function mostrarOpcionesTema(temaId) {
+        console.log('Solicitando opciones para tema:', temaId);
+        
+        const url = `/casos/api/opciones-tema/${temaId}/`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la petición: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('Respuesta recibida:', data);
+                
+                if (data.success && data.opciones.length > 0) {
+                    const container = document.getElementById('opciones-container');
+                    
+                    const opcionesHTML = data.opciones.map(opcion => `
+                        <div class="opcion-tema" 
+                             onclick="seleccionarOpcionTema(
+                                 ${opcion.id}, 
+                                 ${temaId}, 
+                                 ${opcion.es_correcta}, 
+                                 '${(opcion.retroalimentacion || '').replace(/'/g, "\\'")}', 
+                                 '${(opcion.embed_url_video || '').replace(/'/g, "\\'")}'
+                             )">
+                            <strong>${opcion.texto}</strong>
+                        </div>
+                    `).join('');
+                    
+                    container.innerHTML = `
+                        <div class="opciones-tema" id="opciones-tema-${temaId}" style="display: block;">
+                            <h4>Seleccione una opción para este tema:</h4>
+                            ${opcionesHTML}
+                        </div>
+                    `;
+                } else {
+                    alert('No hay opciones disponibles para este tema.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error al cargar opciones. Verifica la consola para más detalles.');
+            });
+    }
+
+    function mostrarDetalleDiagnostico(diagId, titulo, descripcion, tipo, elementoClicado) {
+        const detallePanel = document.getElementById('detalleDiagnostico');
     
+        document.querySelectorAll('.diagnostico-card').forEach(card => {
+            card.classList.remove('seleccionado');
+        });
+    
+        elementoClicado.classList.add('seleccionado');
+    
+        const icono = tipo === 'diagnostico' ? 'fas fa-stethoscope' : 'fas fa-prescription-bottle-alt';
+        const tipoTexto = tipo === 'diagnostico' ? 'Diagnóstico' : 'Tratamiento';
+    
+        const detalleHTML = `
+            <div class="detalle-content">
+                <div class="detalle-header">
+                    <i class="${icono}"></i>
+                    <h3>${titulo}</h3>
+                    <span class="badge-tipo">${tipoTexto}</span>
+                </div>
+            
+                <div class="detalle-section">
+                    <h5><i class="fas fa-file-alt"></i> Descripción</h5>
+                    <div class="descripcion-content">
+                        ${descripcion || 'Sin descripción disponible.'}
+                    </div>
+                </div>
+            </div>
+        `;
+    
+        detallePanel.innerHTML = detalleHTML;
+    
+        habilitarBotonSiguiente();
+    }
+
+    function habilitarBotonSiguiente() {
+
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+    
+        if (btnSiguiente) {
+       
+            btnSiguiente.disabled = false;
+            btnSiguiente.classList.add('habilitado');
+        
+        
+            if (btnSiguiente.tagName === 'BUTTON' && btnSiguiente.dataset.nextUrl) {
+                btnSiguiente.outerHTML = `
+                    <a href="${btnSiguiente.dataset.nextUrl}" 
+                        class="btn-nav btn-siguiente habilitado">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </a>
+                `;
+            }
+        } else if (btnFinalizar) {
+       
+            btnFinalizar.disabled = false;
+            btnFinalizar.classList.add('habilitado');
+        }
+    }
+
+    function mostrarDetalleTratamiento(tratId, titulo, descripcion, elementoClicado) {
+        const detallePanel = document.getElementById('detalleTratamiento');
+    
+        document.querySelectorAll('.tratamiento-card').forEach(card => {
+            card.classList.remove('seleccionado');
+        });
+    
+    
+        elementoClicado.classList.add('seleccionado');
+    
+        const detalleHTML = `
+            <div class="detalle-content">
+                <div class="detalle-header">
+                    <i class="fas fa-prescription-bottle-alt"></i>
+                    <h3>${titulo}</h3>
+                    <span class="badge-tipo">Tratamiento</span>
+                </div>
+            
+                <div class="detalle-section">
+                    <h5><i class="fas fa-file-alt"></i> Descripción</h5>
+                    <div class="descripcion-content">
+                        ${descripcion || 'Sin descripción disponible.'}
+                    </div>
+                </div>
+            </div>
+        `;
+    
+        detallePanel.innerHTML = detalleHTML;
+    
+        habilitarBotonSiguiente();
+    }
+
+    function renderizarListaDiagnosticos(diagnosticos) {
+        const container = document.getElementById('diagnosticos-container');
+        container.innerHTML = ''; 
+        
+        const listaHTML = diagnosticos.map(diag => {
+
+            const icono = diag.tipo === 'diagnostico' ? 'fas fa-stethoscope' : 'fas fa-prescription-bottle-alt';
+            const tipoClase = diag.tipo === 'diagnostico' ? 'tipo-diagnostico' : 'tipo-tratamiento';
+            const tipoTexto = diag.tipo === 'diagnostico' ? 'Diagnóstico' : 'Tratamiento';
+            
+            return `
+            <div class="diagnostico-card ${tipoClase}" 
+                 onclick="mostrarDetalleDiagnostico(
+                     ${diag.id}, 
+                     '${diag.titulo.replace(/'/g, "\\'")}', 
+                     '${(diag.descripcion || '').replace(/'/g, "\\'")}', 
+                     '${diag.tipo}', 
+                     this)">
+                <i class="${icono}"></i>
+                <div class="diagnostico-info">
+                    <h4>${diag.titulo}</h4>
+                    <span class="badge-tipo">${tipoTexto}</span>
+                </div>
+            </div>
+            `;
+        }).join('');
+
+        container.innerHTML = listaHTML;
+    }
+
+    function renderizarListaTratamientos(tratamientos) {
+        const container = document.getElementById('tratamientos-container');
+        container.innerHTML = '';
+        
+        const listaHTML = tratamientos.map(trat => {
+            return `
+            <div class="tratamiento-card" 
+                 onclick="mostrarDetalleTratamiento(
+                     ${trat.id}, 
+                     '${trat.titulo.replace(/'/g, "\\'")}', 
+                     '${(trat.descripcion || '').replace(/'/g, "\\'")}', 
+                     this)">
+                <i class="fas fa-prescription-bottle-alt"></i>
+                <div class="tratamiento-info">
+                    <h4>${trat.titulo}</h4>
+                    <span class="badge-tipo">Tratamiento</span>
+                </div>
+            </div>
+            `;
+        }).join('');
+
+        container.innerHTML = listaHTML;
+    }
+
+    function mostrarErrorDiagnosticos(mensaje) {
+        const container = document.getElementById('diagnosticos-container');
+        container.innerHTML = `
+            <div class="error-diagnosticos">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${mensaje}</p>
+            </div>
+        `;
+    }
+
+    function mostrarErrorTratamientos(mensaje) {
+        const container = document.getElementById('tratamientos-container');
+        container.innerHTML = `
+            <div class="error-tratamientos">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>${mensaje}</p>
+            </div>
+        `;
+    }
+
+    function finalizarCaso() {
+
+        window.location.href = "{% url 'Caso_Clinico:detalle_caso' caso.id %}";
+    }
+
+    function marcarEtapaCompletada() {
+        const etapaId = {{ etapa.id }};
+        const casoId = {{ caso.id }};
+        const parteId = {{ parte.id }};
+    
+    // Enviar al servidor para marcar como completada
+        fetch(`/casos/marcar_etapa_completada/${casoId}/${parteId}/${etapaId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': getCookie('csrftoken'),
+                'Content-Type': 'application/json',
+            },
+        }).then(response => {
+            if (response.ok) {
+            console.log('Etapa marcada como completada');
+            }
+        });
+    }
+
+    function seleccionarOpcionTema(opcionId, temaId, esCorrecta, retroalimentacion, embedUrlVideo) {
+        console.log('Opción seleccionada:', {opcionId, temaId, esCorrecta, embedUrlVideo});
+    
+        const retroDiv = document.getElementById('retroalimentacion-tema');
+        const temaCard = document.getElementById(`tema-${temaId}`);
+        const opcionesContainer = document.getElementById('opciones-container');
+        const navButtons = document.querySelector('.nav-buttons');
+
+        if (temaCard) {
+            temaCard.style.borderColor = esCorrecta ? '#28a745' : '#dc3545';
+            temaCard.style.background = esCorrecta ? '#f0fff4' : '#fff0f0';
+        
+            const boton = temaCard.querySelector('button');
+            if (boton) {
+                boton.innerHTML = esCorrecta ? 
+                    '<i class="fas fa-check"></i> Correcto' : 
+                    '<i class="fas fa-times"></i> Incorrecto';
+                boton.style.background = esCorrecta ? '#28a745' : '#dc3545';
+                boton.disabled = true;
+            }
+        }
+    
+        if (esCorrecta && embedUrlVideo && embedUrlVideo.trim() !== '') {
+        opcionesContainer.innerHTML = `
+            <div class="video-respuesta-container">
+                <h4><i class="fas fa-video"></i> Respuesta correcta</h4>
+            
+            <!-- BOTÓN ARRIBA DEL VIDEO -->
+            <div class="video-controls-top">
+                <div class="controls-info">
+                    <p class="instruccion-principal">Respuesta paciente: </p>
+                    <button onclick="volverAlFormulario(${temaId})" class="btn-volver-superior">
+                        <i class="fas fa-arrow-left"></i> Volver al formulario
+                    </button>
+                </div>
+            </div>
+            
+            <!-- VIDEO -->
+            <div class="video-explicativo-container">
+                <h5>Video explicativo:</h5>
+                <div class="video-wrapper">
+                    <iframe 
+                        width="100%" 
+                        height="400" 
+                        src="${embedUrlVideo}"
+                        title="Video respuesta"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        referrerpolicy="no-referrer-when-downgrade"
+                        allowfullscreen>
+                    </iframe>
+                    </div>
+                 </div>
+            </div>
+        `;
+        retroDiv.style.display = 'none';
+
+        if (navButtons) {
+            navButtons.style.display = 'none';
+        }
+        
+    } else {
+        retroDiv.className = `retroalimentacion-box retroalimentacion-incorrecta`;
+        retroDiv.innerHTML = `
+            <h4><i class="fas fa-exclamation-circle"></i> Incorrecto</h4>
+            <p>${retroalimentacion}</p>
+            <button onclick="reintentarTema(${temaId})" class="btn-reintentar">
+                <i class="fas fa-redo"></i> Intentar de nuevo
+            </button>
+        `;
+        retroDiv.style.display = 'block';
+        
+        opcionesContainer.innerHTML = '';
+    }
+    
+    verificarTemasCompletados();
+    }
+
+    function volverAlFormulario(temaId) {
+    const opcionesContainer = document.getElementById('opciones-container');
+    const retroDiv = document.getElementById('retroalimentacion-tema');
+    const navButtons = document.querySelector('.nav-buttons');
+    
+    opcionesContainer.innerHTML = '';
+    retroDiv.style.display = 'none';
+    if (navButtons) {
+        navButtons.style.display = 'flex';
+    }
+    
+    verificarTemasCompletados();
+    }
+
+    function reintentarTema(temaId) {
     const retroDiv = document.getElementById('retroalimentacion-tema');
     const temaCard = document.getElementById(`tema-${temaId}`);
-    
-    // Marcar tema como completado
+
     if (temaCard) {
-        temaCard.style.borderColor = esCorrecta ? '#28a745' : '#dc3545';
-        temaCard.style.background = esCorrecta ? '#f0fff4' : '#fff0f0';
+        temaCard.style.borderColor = '';
+        temaCard.style.background = '';
         
         const boton = temaCard.querySelector('button');
         if (boton) {
-            boton.innerHTML = esCorrecta ? 
-                '<i class="fas fa-check"></i> Correcto' : 
-                '<i class="fas fa-times"></i> Incorrecto';
-            boton.style.background = esCorrecta ? '#28a745' : '#dc3545';
-            boton.disabled = true;
+            boton.innerHTML = '<i class="fas fa-arrow-right"></i> Evaluar';
+            boton.style.background = '';
+            boton.disabled = false;
         }
     }
     
-    // Mostrar retroalimentación
-    retroDiv.className = `retroalimentacion-box ${esCorrecta ? 'retroalimentacion-correcta' : 'retroalimentacion-incorrecta'}`;
-    retroDiv.innerHTML = `
-        <h4><i class="fas fa-${esCorrecta ? 'check-circle' : 'exclamation-circle'}"></i> 
-        ${esCorrecta ? '¡Correcto!' : 'Incorrecto'}</h4>
-        <p>${retroalimentacion}</p>
-        ${esCorrecta ? '<p><strong>Este tema ha sido completado.</strong></p>' : ''}
-    `;
-    retroDiv.style.display = 'block';
+    retroDiv.style.display = 'none';
     
-    // Verificar si todos los temas están completados
-    verificarTemasCompletados();
-}
 
-// Función para verificar si todos los temas están completados
-function verificarTemasCompletados() {
-    const temasCards = document.querySelectorAll('.tema-card');
-    let todosCompletados = true;
+    mostrarOpcionesTema(temaId);
+    }
+    function verificarTemasCompletados() {
+        const temasCards = document.querySelectorAll('.tema-card');
+        let todosCompletados = true;
     
-    temasCards.forEach(card => {
-        const boton = card.querySelector('button');
-        if (boton && !boton.disabled) {
-            todosCompletados = false;
+        temasCards.forEach(card => {
+            const boton = card.querySelector('button');
+            if (boton && !boton.disabled) {
+                todosCompletados = false;
+            }
+        });
+    
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        if (btnSiguiente && todosCompletados) {
+        
+            if (btnSiguiente.tagName === 'BUTTON' && btnSiguiente.dataset.nextUrl) {
+                btnSiguiente.outerHTML = `
+                    <a href="${btnSiguiente.dataset.nextUrl}" 
+                        id="btnSiguiente" 
+                        class="btn-nav btn-siguiente habilitado">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </a>
+                `;
+            } else if (btnSiguiente.tagName === 'A') {
+            
+                btnSiguiente.classList.add('habilitado');
+            }
         }
+    }
+
+    function habilitarBotonSiguiente() {
+        const btnSiguiente = document.getElementById('btnSiguiente');
+        const btnFinalizar = document.getElementById('btnFinalizar');
+    
+        if (btnSiguiente) {
+            if (btnSiguiente.tagName === 'BUTTON' && btnSiguiente.dataset.nextUrl) {
+
+                btnSiguiente.outerHTML = `
+                    <a href="${btnSiguiente.dataset.nextUrl}" 
+                        id="btnSiguiente" 
+                        class="btn-nav btn-siguiente habilitado">
+                        Siguiente <i class="fas fa-arrow-right"></i>
+                    </a>
+                `;
+            } else if (btnSiguiente.tagName === 'A') {
+            
+                btnSiguiente.classList.add('habilitado');
+            }
+        } else if (btnFinalizar) {
+        btnFinalizar.disabled = false;
+            btnFinalizar.classList.add('habilitado');
+        }
+    }
+
+    function cargarContenidoPorTipo(tipo) {
+        const etapaId = {{ etapa.id }};
+        const url = `/casos/api/diagnosticos/${etapaId}/`;
+    
+        return fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                throw new Error(`Error al cargar ${tipo}: ` + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success && data.diagnosticos && data.diagnosticos.length > 0) {
+                
+                    const contenidoFiltrado = data.diagnosticos.filter(item => 
+                        item.tipo && item.tipo.toLowerCase() === tipo.toLowerCase()
+                    );
+                
+                    return {
+                        success: true,
+                        contenido: contenidoFiltrado
+                    };
+                } else {
+                    return {
+                        success: false,
+                        error: `No hay ${tipo}s disponibles para esta etapa.`
+                    };
+                }
+            })
+            .catch(error => {
+                console.error(`Error en la carga de ${tipo}:`, error);
+                return {
+                    success: false,
+                    error: `Error al cargar ${tipo}s. Verifica la consola para más detalles.`
+                };
+            });
+    }
+
+    function cargarDiagnosticos() {
+        cargarContenidoPorTipo('diagnostico')
+            .then(resultado => {
+                if (resultado.success && resultado.contenido.length > 0) {
+                    renderizarListaDiagnosticos(resultado.contenido);
+                } else {
+                    mostrarErrorDiagnosticos(resultado.error);
+                }
+            });
+    }
+
+    function cargarTratamientos() {
+        cargarContenidoPorTipo('tratamiento')
+            .then(resultado => {
+                if (resultado.success && resultado.contenido.length > 0) {
+                    renderizarListaTratamientos(resultado.contenido);
+                } else {
+                    mostrarErrorTratamientos(resultado.error);
+                }
+            });
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if etapa.tipo == 'diagnosticos' %}
+            cargarDiagnosticos();
+        {% elif etapa.tipo == 'tratamientos' %}
+            cargarTratamientos();
+        {% endif %}
     });
-    
-    // Habilitar botón siguiente si todos los temas están completados
-    const btnSiguiente = document.getElementById('btnSiguiente');
-    if (btnSiguiente && todosCompletados) {
-        btnSiguiente.classList.add('habilitado');
-        btnSiguiente.disabled = false;
-        btnSiguiente.onclick = function() {
-            window.location.href = "{% url 'Caso_Clinico:detalle_caso' caso.id %}";
-        };
-    }
-}
-
 </script>
 
 {% endblock %}
-</body>
-</html>
