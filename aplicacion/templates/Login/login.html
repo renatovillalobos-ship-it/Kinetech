@@ -78,7 +78,14 @@
             <input class="form__input" type="text" name="nombre_doc" placeholder="Nombre*" required>
             <input class="form__input" type="text" name="apellido_doc" placeholder="Apellido*" required>
             <input class="form__input" type="email" name="correo_doc" placeholder="Correo electrónico*" required>
-            <input class="form__input" type="text" name="asigna_doc" placeholder="Asignatura*" required>
+            <select class="form__input" name="asigna_doc" required>
+                <option value="">Seleccione asignatura*</option>
+                    {% for a in asignaturas %}
+                        <option value="{{ a }}">{{ a }}</option>
+                    {% endfor %}
+                </select>
+            </select>
+
 
             <!-- País -->
             <select class="form__input" name="pais_doc" required>
