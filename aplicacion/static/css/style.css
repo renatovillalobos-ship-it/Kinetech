@@ -1,4 +1,3 @@
-/********** Template CSS **********/
 :root {
     --primary: #06BBCC;
     --light: #F0FBFC;
@@ -21,8 +20,6 @@
     z-index: 99;
 }
 
-
-/*** Spinner ***/
 #spinner {
     opacity: 0;
     visibility: hidden;
@@ -36,18 +33,14 @@
     opacity: 1;
 }
 
-
-/*** Button ***/
-/* BOTONES — Pantone 540 C / Blanco / Source Sans Pro Semibold */
 .btn {
-    background-color: #012A4A !important; /* Pantone 540 C */
+    background-color: #012A4A !important;
     color: #FFFFFF !important;
     font-family: 'Source Sans Pro', sans-serif !important;
-    font-weight: 600 !important; /* Semibold */
+    font-weight: 600 !important;
     border: none !important;
 }
 
-/* BOTÓN HOVER (opcional pero recomendado) */
 .btn:hover {
     background-color: #013864 !important;
     color: #FFFFFF !important;
@@ -84,8 +77,6 @@
     border-radius: 0px;
 }
 
-
-/*** Navbar ***/
 .navbar .dropdown-toggle::after {
     border: none;
     content: "\f107";
@@ -104,12 +95,10 @@
     outline: none;
 }
 
-/* Hover en menú: texto pasa a Pantone 649 C */
 .navbar .nav-link:hover {
-    color: #9BBAD1 !important; /* Pantone 649 C */
+    color: #9BBAD1 !important;
 }
 
-/* Página activa / presionado: fondo Pantone 652 */
 .navbar .nav-link.active,
 .navbar .nav-link:focus,
 .navbar .nav-link.active {
@@ -117,7 +106,6 @@
     color: #FFFFFF !important;
     border-radius: 6px;
 }
-
 
 @media (max-width: 991.98px) {
     .navbar-light .navbar-nav .nav-link  {
@@ -169,8 +157,6 @@
     }
 }
 
-
-/*** Header carousel ***/
 @media (max-width: 768px) {
     .header-carousel .owl-carousel-item {
         position: relative;
@@ -230,8 +216,6 @@
     color: var(--light);
 }
 
-
-/*** Section Title ***/
 .section-title {
     position: relative;
     display: inline-block;
@@ -270,8 +254,6 @@
     left: 0;
 }
 
-
-/*** Service ***/
 .service-item {
     background: var(--light);
     transition: .5s;
@@ -290,8 +272,6 @@
     color: var(--light) !important;
 }
 
-
-/*** Categories & Courses ***/
 .category img,
 .course-item img {
     transition: .5s;
@@ -302,8 +282,6 @@
     transform: scale(1.1);
 }
 
-
-/*** Team ***/
 .team-item img {
     transition: .5s;
 }
@@ -312,8 +290,6 @@
     transform: scale(1.1);
 }
 
-
-/*** Testimonial ***/
 .testimonial-carousel::before {
     position: absolute;
     content: "";
@@ -385,8 +361,6 @@
     border-color: var(--primary);
 }
 
-
-/*** Footer ***/
 .footer .btn.btn-social {
     margin-right: 5px;
     width: 35px;
@@ -464,24 +438,21 @@
 
 .navbar-title {
     font-family: 'Source Sans Pro', sans-serif !important;
-    font-weight: 600 !important; /* Semibold */
-    color: #012A4A !important;   /* Pantone 540 C */
+    font-weight: 600 !important;
+    color: #012A4A !important;
 }
 
-/* ======== GENERAL BODY ======== */
 body {
-    background-color: #f8fbfd; /* blanco muy suave con tono celeste */
+    background-color: #f8fbfd;
     font-family: 'Source Sans Pro', sans-serif;
     color: #3a3a3a;
     min-height: 100vh;
 }
 
-/* ======== TITULOS ======== */
 h1, h2, h3, h4, h5, h6 {
-    font-weight: 600; /* Semibold */
+    font-weight: 600;
 }
 
-/* ======== CONTENEDORES PRINCIPALES ======== */
 .section-wrapper {
     background: #ffffff;
     padding: 35px;
@@ -490,9 +461,8 @@ h1, h2, h3, h4, h5, h6 {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
 }
 
-/* ======== TEXTOS ======== */
 .text-primary {
-    color: #00718c !important; /* Turquesa institucional */
+    color: #00718c !important;
 }
 
 a {
@@ -502,7 +472,6 @@ a:hover {
     color: #004d5e;
 }
 
-/* ======== TIPOGRAFÍA HERO ======== */
 .hero-wrapper h1,
 .hero-wrapper h2,
 .hero-wrapper h3,
@@ -510,14 +479,13 @@ a:hover {
 .hero-wrapper h5,
 .hero-wrapper h6 {
     font-family: 'Source Sans Pro', sans-serif !important;
-    font-weight: 600 !important; /* Semibold */
+    font-weight: 600 !important;
 }
 
-/* ======== NAVBAR TIPOGRAFÍA — Source Sans Pro ======== */
 .navbar .nav-link,
 .navbar .dropdown-menu a {
     font-family: 'Source Sans Pro', sans-serif !important;
-    font-weight: 600 !important; /* Semibold */
+    font-weight: 600 !important;
     letter-spacing: 0.5px;
 }
 
@@ -525,10 +493,6 @@ a:hover {
     font-family: 'Source Sans Pro', sans-serif !important;
     font-weight: 600 !important;
 }
-
-/* ========================================
-   MODAL DE CURSOS MEJORADO
-   ======================================== */
 
 .curso-modal-mejorado {
     border: none !important;
@@ -669,11 +633,6 @@ a:hover {
     }
 }
 
-/* ============================================
-   MODO OSCURO PARA BASE.HTML
-   ============================================ */
-
-/* Variables de color */
 :root {
     --bg-main: #ffffff;
     --bg-card: #ffffff;
@@ -692,9 +651,8 @@ body.dark-mode {
     --shadow: rgba(0, 0, 0, 0.3);
 }
 
-/* Toggle del tema - Esquina superior derecha */
 .theme-toggle-container {
-    position: relative;  /* ya no fijo */
+    position: relative;
     background-color: transparent;
     width: auto;
     height: auto;
@@ -781,13 +739,11 @@ input:checked ~ .slider .moon {
     opacity: 1;
 }
 
-/* Aplicar modo oscuro a elementos principales */
 body.dark-mode {
     background-color: var(--bg-main) !important;
     color: var(--text-primary) !important;
 }
 
-/* Navbar */
 body.dark-mode .navbar {
     background-color: var(--bg-navbar) !important;
     box-shadow: 0 2px 10px var(--shadow) !important;
@@ -806,7 +762,6 @@ body.dark-mode .nav-link.active {
     background-color: #2d3b52 !important;
 }
 
-/* Cards y contenedores */
 body.dark-mode .bg-light,
 body.dark-mode .bg-white {
     background-color: var(--bg-card) !important;
@@ -823,7 +778,6 @@ body.dark-mode .card {
     border-color: #374151 !important;
 }
 
-/* Texto */
 body.dark-mode .text-secondary,
 body.dark-mode .text-muted {
     color: var(--text-secondary) !important;
@@ -838,7 +792,6 @@ body.dark-mode h6 {
     color: var(--text-primary) !important;
 }
 
-/* Footer */
 body.dark-mode .footer,
 body.dark-mode footer {
     background-color: var(--bg-navbar) !important;
@@ -850,12 +803,10 @@ body.dark-mode footer a {
     color: var(--text-secondary) !important;
 }
 
-/* Spinner */
 body.dark-mode #spinner {
     background-color: var(--bg-main) !important;
 }
 
-/* Dropdowns */
 body.dark-mode .dropdown-menu {
     background-color: var(--bg-card) !important;
     border-color: #374151 !important;
@@ -869,12 +820,10 @@ body.dark-mode .dropdown-item:hover {
     background-color: #374151 !important;
 }
 
-/* Badges */
 body.dark-mode .badge {
     background-color: #4B70E2 !important;
 }
 
-/* Modales - mantener diseño original */
 body.dark-mode .modal-content:not(.curso-modal-mejorado) {
     background-color: var(--bg-card) !important;
     color: var(--text-primary) !important;
@@ -885,7 +834,6 @@ body.dark-mode .modal-header:not(.curso-modal-header) {
     border-bottom-color: #374151 !important;
 }
 
-/* Tablas */
 body.dark-mode .table {
     color: var(--text-primary) !important;
 }
@@ -894,7 +842,6 @@ body.dark-mode .table th {
     background-color: #374151 !important;
 }
 
-/* Forms */
 body.dark-mode input,
 body.dark-mode select,
 body.dark-mode textarea {
@@ -903,7 +850,6 @@ body.dark-mode textarea {
     border-color: #374151 !important;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .theme-toggle-container {
         top: 10px;
@@ -928,19 +874,19 @@ body.dark-mode textarea {
 }
 
 .disabled-course {
-    filter: grayscale(100%);  /* hace que todo se vea gris */
-    opacity: 0.6;             /* más efecto de deshabilitado */
-    pointer-events: none;     /* evita interacción */
+    filter: grayscale(100%);
+    opacity: 0.6;
+    pointer-events: none;
     transition: 0.3s;
 }
 
 .disabled-course:hover {
-    opacity: 0.6;             /* evita que cambie al pasar el mouse */
+    opacity: 0.6;
 }
 
 .pregunta-card {
-    background-color: var(--bg-card); /* usa la variable en vez de blanco fijo */
-    color: var(--text-primary);       /* asegura que el texto se vea */
+    background-color: var(--bg-card);
+    color: var(--text-primary);
     border-radius: 12px;
     padding: 20px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
@@ -965,57 +911,47 @@ body.dark-mode textarea {
 }
 
 body.dark-mode .curso-seccion {
-    background: #232e3e !important; /* O el color oscuro que prefieras */
-    /* Puedes cambiar los bordes o texto si es necesario */
+    background: #232e3e !important;
 }
 
 body.dark-mode .curso-seccion-titulo {
-    color: #F0F6FC !important; /* Asegura contraste sobre fondo oscuro */
+    color: #F0F6FC !important;
 }
 
 body.dark-mode .curso-seccion,
 body.dark-mode .curso-texto,
 body.dark-mode .curso-lista li {
-    color: #f1f5f9 !important;      /* Blanco suave para buen contraste */
+    color: #f1f5f9 !important;
 }
 
 body.dark-mode .curso-lista li::before {
-    color: #06BBCC !important;      /* Turquesa para los bullets, si quieres mantenerlo */
+    color: #06BBCC !important;
 }
 
 body.dark-mode .curso-lista li strong {
-    color: #FFF !important;         /* Texto destacado en blanco puro */
+    color: #FFF !important;
 }
 
-/* Evita que el scroll se propague al body */
 #panel-dinamico {
     overscroll-behavior: contain;
 }
 
 .descripcion-curso {
     font-size: 1.05rem;
-    max-width: 90%; /* evita que ocupe todo el ancho */
-    word-break: break-word; /* fuerza corte aunque no existan espacios */
-    overflow-wrap: break-word; /* soporte ampliado */
-    white-space: normal; /* evita que el texto se mantenga en una sola línea */
+    max-width: 90%;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
 }
 
-
-/* ============================
-   SCROLLBAR MODERNA Y MINIMALISTA
-   ============================ */
-
-/* ----- Scrollbar base ----- */
 #panel-dinamico::-webkit-scrollbar {
-    width: 6px;        /* ancho MUY delgado */
+    width: 6px;
 }
 
-/* Track (fondo) */
 #panel-dinamico::-webkit-scrollbar-track {
-    background: transparent;   /* invisible */
+    background: transparent;
 }
 
-/* Thumb (barra que se mueve) */
 #panel-dinamico::-webkit-scrollbar-thumb {
     background: rgba(120, 120, 120, 0.45);
     border-radius: 10px;
@@ -1026,15 +962,11 @@ body.dark-mode .curso-lista li strong {
     background: rgba(120, 120, 120, 0.75);
 }
 
-/* Para Firefox */
 #panel-dinamico {
     scrollbar-width: thin;
     scrollbar-color: rgba(120,120,120,0.45) transparent;
 }
 
-/* ============================
-   MODO OSCURO
-   ============================ */
 body.dark-mode #panel-dinamico::-webkit-scrollbar-thumb {
     background: rgba(200, 200, 200, 0.35);
 }

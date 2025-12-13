@@ -2,7 +2,7 @@ from django.db import models
 from django.forms import ValidationError
 from Applications.Docente.models import Curso
 from django.core.validators import RegexValidator
-from datetime import datetime  # Añade este import
+from datetime import datetime
 
 solo_letras = RegexValidator(
     r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$',
@@ -147,19 +147,15 @@ class Etapa(models.Model):
             if '/shorts/' in url:
                 video_id = url.split('/shorts/')[1].split('?')[0][:11]
             
-            # Caso 2: Enlaces youtu.be
             elif 'youtu.be/' in url:
                 video_id = url.split('youtu.be/')[1].split('?')[0][:11]
             
-            # Caso 3: Enlaces watch?v=
             elif 'watch?v=' in url:
                 video_id = url.split('watch?v=')[1].split('&')[0][:11]
             
-            # Caso 4: Enlaces embed/
             elif 'embed/' in url:
                 video_id = url.split('embed/')[1].split('?')[0][:11]
             
-            # Caso 5: Enlaces youtu.be con shorts (alternativo)
             elif 'youtu.be/shorts/' in url:
                 video_id = url.split('youtu.be/shorts/')[1].split('?')[0][:11]
             
@@ -209,23 +205,18 @@ class OpcionTema(models.Model):
             video_id = ""
             url = self.video_respuesta
             
-            # Caso 1: YouTube Shorts (como en la imagen: https://youtube.com/shorts/fMjFxdEGbQk?feature=share)
             if '/shorts/' in url:
                 video_id = url.split('/shorts/')[1].split('?')[0][:11]
             
-            # Caso 2: Enlaces youtu.be
             elif 'youtu.be/' in url:
                 video_id = url.split('youtu.be/')[1].split('?')[0][:11]
             
-            # Caso 3: Enlaces watch?v=
             elif 'watch?v=' in url:
                 video_id = url.split('watch?v=')[1].split('&')[0][:11]
             
-            # Caso 4: Enlaces embed/
             elif 'embed/' in url:
                 video_id = url.split('embed/')[1].split('?')[0][:11]
             
-            # Caso 5: Enlaces youtu.be con shorts (alternativo)
             elif 'youtu.be/shorts/' in url:
                 video_id = url.split('youtu.be/shorts/')[1].split('?')[0][:11]
             

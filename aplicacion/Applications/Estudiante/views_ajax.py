@@ -9,17 +9,13 @@ from Applications.Docente.models import Curso
 from django.urls import reverse
 
 
-# -------------------------------------------
 # Función para traer preguntas de un cuestionario
-# -------------------------------------------
 def obtener_preguntas(cuest_id):
     preguntas = Preguntas.objects.filter(cuestionario_id=cuest_id).prefetch_related("respuesta_set")
     return preguntas
 
 
-# -------------------------------------------
 # AJAX: INSTRUCCIONES
-# -------------------------------------------
 def ajax_instrucciones(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     return render(request, "estudiante/ajax/instrucciones.html", {
@@ -27,16 +23,12 @@ def ajax_instrucciones(request, curso_id):
     })
 
 
-# -------------------------------------------
 # AJAX: CUESTIONARIO
-# -------------------------------------------
 def ajax_cuestionario(request, curso_id, cuest_id):
     preguntas = obtener_preguntas(cuest_id)
     
-    # Obtener el cuestionario para saber su tipo
     cuestionario_obj = get_object_or_404(cuestionario, id=cuest_id)
     
-    # Variables para el diagnóstico
     respuestas_estudiante = {} 
     nivel_diagnostico = None
     porcentaje_correctas = 0
@@ -49,7 +41,6 @@ def ajax_cuestionario(request, curso_id, cuest_id):
         try:
             estudiante = Estudiante.objects.get(id=estudiante_id)
             
-            # Verificar si ya respondió este cuestionario
             resultado_existente = ResultadoCuestionario.objects.filter(
                 estudiante=estudiante,
                 cuestionario=cuestionario_obj
@@ -58,25 +49,20 @@ def ajax_cuestionario(request, curso_id, cuest_id):
             if resultado_existente:
                 cuestionario_respondido = True
                 
-                # Obtener todas las respuestas del estudiante para este cuestionario
                 respuestas = RespuestaEstudiante.objects.filter(
                     estudiante=estudiante,
                     pregunta__cuestionario=cuestionario_obj
                 ).select_related('respuesta')
                 
-                # Crear diccionario SIMPLE de respuestas del estudiante
                 for respuesta_est in respuestas:
-                    # Solo guardamos el ID de la respuesta seleccionada
                     respuestas_estudiante[respuesta_est.pregunta.id] = respuesta_est.respuesta.id
                     
                     if respuesta_est.respuesta.es_correcta:
                         respuestas_correctas += 1
                 
-                # Calcular porcentaje y nivel
                 if total_preguntas > 0:
                     porcentaje_correctas = (respuestas_correctas / total_preguntas) * 100
                     
-                    # Determinar nivel según porcentaje
                     if porcentaje_correctas >= 80:
                         nivel_diagnostico = 'alta'
                     elif porcentaje_correctas >= 50:
@@ -107,9 +93,8 @@ def ajax_cuestionario(request, curso_id, cuest_id):
         "cuestionario_respondido": cuestionario_respondido,
     })
 
-# -------------------------------------------
+
 # AJAX: CASO CLÍNICO
-# -------------------------------------------
 def ajax_caso_clinico(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     return render(request, "estudiante/ajax/caso_clinico.html", {
@@ -123,9 +108,7 @@ def ajax_guia_kine(request, curso_id):
     })
 
 
-# -------------------------------------------
 # AJAX: EVALUACIONES
-# -------------------------------------------
 def ajax_evaluaciones(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     return render(request, "estudiante/ajax/evaluaciones.html", {
@@ -136,12 +119,10 @@ def ajax_evaluaciones(request, curso_id):
 def curso_panel(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     
-    # Separar cuestionarios por tipo
     cuestionarios_todos = cuestionario.objects.filter(Curso=curso)
     cuestionarios_iniciales = cuestionarios_todos.filter(nombre='Inicial')
     cuestionarios_finales = cuestionarios_todos.filter(nombre='Final')
 
-    # Para saber cuáles cuestionarios ya respondió este estudiante
     estudiante_id = request.session.get("usuario_id")
     cuestionarios_respondidos = []
 
@@ -170,7 +151,6 @@ def ajax_guardar_respuestas(request, curso_id, cuest_id):
     if request.method != "POST":
         return JsonResponse({"error": "Método no permitido"}, status=405)
 
-    # Obtener estudiante desde la sesión
     estudiante_id = request.session.get("usuario_id")
     if not estudiante_id:
         return JsonResponse({"error": "Estudiante no autenticado"}, status=401)
@@ -192,14 +172,12 @@ def ajax_guardar_respuestas(request, curso_id, cuest_id):
     texto_nivel = ""
     texto_recomendacion = ""
 
-    # Guardar respuestas individuales
     for pregunta in preguntas:
         respuesta_id = request.POST.get(f"pregunta_{pregunta.id}")
 
         if respuesta_id:
             respuesta = Respuesta.objects.get(id=respuesta_id)
 
-            # Registrar respuesta del estudiante
             RespuestaEstudiante.objects.update_or_create(
                 estudiante=estudiante,
                 pregunta=pregunta,
@@ -219,7 +197,6 @@ def ajax_guardar_respuestas(request, curso_id, cuest_id):
 
     porcentaje = (puntaje_final / total_preguntas) * 100 if total_preguntas > 0 else 0
     
-    # Calcular nivel de diagnóstico
     if porcentaje >= 80:
         nivel_diagnostico = 'alta'
     elif porcentaje >= 50:
@@ -238,7 +215,6 @@ def ajax_guardar_respuestas(request, curso_id, cuest_id):
         texto_nivel = "Bajo"
         texto_recomendacion = "Te recomendamos revisar los contenidos."
 
-    # Guardar resultado final
     ResultadoCuestionario.objects.create(
         estudiante=estudiante,
         cuestionario=cuest,
@@ -260,18 +236,14 @@ def ajax_guardar_respuestas(request, curso_id, cuest_id):
         "respuestas_correctas": puntaje_final,
     })
 
-# -------------------------------------------
-# NUEVA: AJAX para cargar sidebar con cuestionarios separados
-# -------------------------------------------
+# AJAX para cargar sidebar con cuestionarios separados
 def ajax_sidebar_curso(request, curso_id):
     curso = get_object_or_404(Curso, id=curso_id)
     
-    # Separar cuestionarios por tipo
     cuestionarios_todos = cuestionario.objects.filter(Curso=curso)
     cuestionarios_iniciales = cuestionarios_todos.filter(nombre='Inicial')
     cuestionarios_finales = cuestionarios_todos.filter(nombre='Final')
 
-    # Para saber cuáles cuestionarios ya respondió este estudiante
     estudiante_id = request.session.get("usuario_id")
     cuestionarios_respondidos = []
 

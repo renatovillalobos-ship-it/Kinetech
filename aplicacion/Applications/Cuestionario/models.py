@@ -1,10 +1,8 @@
 from django.db import models
 from django.core.exceptions import ValidationError
-
 from Applications.Docente.models import Curso
 
 
-# Create your models here.
 class cuestionario(models.Model):
     Curso = models.ForeignKey(Curso, on_delete=models.CASCADE)
 
@@ -40,7 +38,7 @@ class Preguntas(models.Model):
             raise ValidationError("⚠ Este cuestionario ya tiene 10 preguntas.")
         
     def save(self, *args, **kwargs):
-        self.clean()  # forza la validación antes de guardar
+        self.clean()
         super().save(*args, **kwargs)
     
     def __str__(self):
@@ -62,7 +60,7 @@ class Respuesta(models.Model):
             raise ValidationError("⚠ Esta pregunta ya tiene 4 respuestas.")
    
     def save(self, *args, **kwargs):
-        self.clean()  # forza la validación antes de guardar
+        self.clean()
         super().save(*args, **kwargs)
 
     def __str__(self):

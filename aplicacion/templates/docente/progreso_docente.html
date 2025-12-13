@@ -13,12 +13,10 @@
     <button type="button" class="navbar-toggler me-4" data-bs-toggle="collapse" data-bs-target="#navbarCollapse">
         <span class="navbar-toggler-icon"></span>
     </button>
-    
     <div class="collapse navbar-collapse" id="navbarCollapse">
         <div class="navbar-nav ms-auto p-4 p-lg-0">
             <a href="{% url 'docente:home_docente' %}" class="nav-item nav-link">Cursos</a>
             <a href="{% url 'docente:perfil_docente' %}" class="nav-item nav-link">Perfil</a>
-            
             <div class="nav-item dropdown">
                 <a href="#" class="nav-link dropdown-toggle active" data-bs-toggle="dropdown">Progreso</a>
                 <div class="dropdown-menu fade-down m-0">
@@ -31,7 +29,6 @@
                     {% endfor %}
                 </div>
             </div>
-            
             <a href="{% url 'docente:logout' %}" class="btn btn-warning py-4 px-lg-5 d-none d-lg-block">Cerrar Sesión</a>
         </div>
     </div>
@@ -41,10 +38,6 @@
 {% block content %}
 <div class="container-xxl py-5">
     <div class="container">
-        
-        <!-- ============================================= -->
-        <!-- SECCIÓN 1: CATÁLOGO DE CURSOS (SIEMPRE VISIBLE) -->
-        <!-- ============================================= -->
         <div class="row mb-5">
             <div class="col-12">
                 <h2 class="mb-4 text-primary">Mis Cursos</h2>
@@ -83,10 +76,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- ==================================================== -->
-        <!-- SECCIÓN 2: PROGRESO DEL CURSO SELECCIONADO (SI HAY) -->
-        <!-- ==================================================== -->
         {% if curso_seleccionado %}
         <div class="row">
             <div class="col-12">
@@ -97,7 +86,6 @@
                             Progreso - {{ curso_seleccionado.nombre_del_Curso }}
                         </h4>
                     </div>
-                    
                     <div class="card-body p-4">
                         {% if progreso_estudiantes %}
                         <div class="table-responsive">
@@ -193,10 +181,9 @@
     </div>
 </footer>
 
-<!-- Estilo para mejorar la tabla -->
 <style>
     .table th {
-        background-color: #7E9BC0; /* Pantone 652 */
+        background-color: #7E9BC0;
         color: white;
         font-family: 'Source Sans Pro', sans-serif;
         font-weight: 600;

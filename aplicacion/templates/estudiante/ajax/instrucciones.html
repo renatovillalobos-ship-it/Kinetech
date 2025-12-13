@@ -6,11 +6,10 @@
     margin: 0 auto;
 }
 
-/* === TITULO === */
 .instrucciones-title {
     font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text-primary);  /* antes #0d47a1 */
+    color: var(--text-primary);
     text-align: center;
     margin-bottom: 15px;
 }
@@ -18,13 +17,12 @@
 .instrucciones-subtitle {
     text-align: center;
     font-size: 1rem;
-    color: var(--text-secondary); /* antes #666 */
+    color: var(--text-secondary);
     margin-bottom: 25px;
 }
 
-/* === CARD === */
 .instrucciones-card {
-    background: var(--bg-card); /* antes #f8faff */
+    background: var(--bg-card);
     border-left: 4px solid #0d47a1;
     border-radius: 8px;
     padding: 18px;
@@ -44,15 +42,13 @@
     color: var(--text-primary);
 }
 
-/* === DIVIDER === */
 .instrucciones-divider {
     margin: 20px 0;
     border-top: 1px solid #ddd;
 }
 
-/* === TIP === */
 .instrucciones-tip {
-    background: var(--bg-card); /* antes #e8f3ff */
+    background: var(--bg-card);
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #1565c0;
@@ -63,22 +59,18 @@
     color: var(--text-primary);
 }
 
-/* =============================== */
-/*        MODO OSCURO REAL         */
-/* =============================== */
-
 body.dark-mode .instrucciones-title {
     color: var(--text-primary) !important;
 }
 
 body.dark-mode .instrucciones-card {
     background-color: var(--bg-card) !important;
-    border-left-color: #3b82f6 !important; /* azul claro */
+    border-left-color: #3b82f6 !important;
     box-shadow: none !important;
 }
 
 body.dark-mode .instrucciones-card h5 {
-    color: #60a5fa !important; /* azul claro */
+    color: #60a5fa !important;
 }
 
 body.dark-mode .instrucciones-list li {
@@ -96,20 +88,15 @@ body.dark-mode .instrucciones-divider {
 }
 </style>
 <div class="instrucciones-container">
-
-    <!-- Imagen UCN arriba -->
     <div class="text-center mb-3">
         <img src="{% static 'img/ucn_escudo.png' %}"
              style="height: 90px;"
              alt="UCN Escudo">
     </div>
-
     <h2 class="instrucciones-title">Bienvenido al Panel del Curso</h2>
     <p class="instrucciones-subtitle">
         Usa este panel para navegar de forma clara entre todos los contenidos del curso.
     </p>
-
-    <!-- CARD 1 – Cómo funciona el panel -->
     <div class="instrucciones-card">
         <h5><i class="fa-solid fa-compass me-2"></i>Navegación por el curso</h5>
         <ul class="instrucciones-list">
@@ -119,8 +106,6 @@ body.dark-mode .instrucciones-divider {
             <li>En <strong>Evaluaciones</strong> encontrarás actividades sumativas cuando estén disponibles.</li>
         </ul>
     </div>
-
-    <!-- CARD 2 – Cómo leer el contenido -->
     <div class="instrucciones-card">
         <h5><i class="fa-solid fa-book-open me-2"></i>Carga dinámica de contenido</h5>
         <ul class="instrucciones-list">
@@ -129,8 +114,6 @@ body.dark-mode .instrucciones-divider {
             <li>Desplázate dentro del panel derecho para leer o responder completamente.</li>
         </ul>
     </div>
-
-    <!-- CARD 3 – Uso del cuestionario -->
     <div class="instrucciones-card">
         <h5><i class="fa-solid fa-clipboard-list me-2"></i>Cuestionarios</h5>
         <ul class="instrucciones-list">
@@ -139,10 +122,7 @@ body.dark-mode .instrucciones-divider {
             <li>Algunos cursos pueden permitir retroalimentación inmediata.</li>
         </ul>
     </div>
-
     <div class="instrucciones-divider"></div>
-
-    <!-- TIP BOX -->
     <div class="instrucciones-tip">
         <i class="fa-solid fa-lightbulb text-warning fa-lg"></i>
         <div>
@@ -150,5 +130,4 @@ body.dark-mode .instrucciones-divider {
             Te recomendamos completar primero los <strong>Conocimientos Previos</strong> antes de avanzar al caso clínico o a las evaluaciones. Esto garantiza un progreso más sólido.
         </div>
     </div>
-
 </div>

@@ -16,10 +16,8 @@ def lista_videos_estudiante(request):
         messages.warning(request, "No estás asignado a ningún curso.")
         return render(request, 'estudiante/lista_videos.html', {'videos_data': []})
     
-    # Obtener todos los casos clínicos del CURSO ACTUAL del estudiante
     casos_clinicos = Caso_clinico.objects.filter(Curso=curso_actual)
     
-    # Estructurar datos para el template
     videos_data = []
     for caso in casos_clinicos:
         partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso)
@@ -28,7 +26,6 @@ def lista_videos_estudiante(request):
             etapas = Etapa.objects.filter(ParteCuerpo=parte)
             
             for etapa in etapas:
-                # Verificar si el estudiante ya vio este video
                 video_visto = Progreso.objects.filter(
                     progreso_estudiante=estudiante,
                     etapa_completada=etapa,
@@ -53,7 +50,6 @@ def ver_video(request, etapa_id):
     estudiante_id = request.session.get('usuario_id')  
     estudiante = get_object_or_404(Estudiante, id=estudiante_id)  
     
-    # Marcar automáticamente como visto cuando se accede a la página
     marcar_video_como_visto(estudiante, etapa)
     
     return render(request, 'estudiante/ver_video.html', {
@@ -66,7 +62,6 @@ def marcar_video_como_visto(estudiante, etapa):
     curso_etapa = etapa.ParteCuerpo.CasoClinico.Curso
     docente_curso = curso_etapa.curso_docente
     
-    # Verificar si ya existe registro para ESTA ETAPA específica
     if not Progreso.objects.filter(
         progreso_estudiante=estudiante,
         etapa_completada=etapa
@@ -78,7 +73,7 @@ def marcar_video_como_visto(estudiante, etapa):
             puntaje_obtenido_inicial=0,
             puntaje_obtenido_final=10,
             porcentaje_progreso=100,
-            progreso_curso=curso_etapa,  # CURSO DE LA ETAPA, no del estudiante
+            progreso_curso=curso_etapa,
             progreso_estudiante=estudiante,
             docente_Correspondiente_progreso=docente_curso,
             parte_cuerpo=etapa.ParteCuerpo,
@@ -96,10 +91,8 @@ def lista_videos_curso(request, curso_id):
     
     curso = get_object_or_404(Curso, id=curso_id)
     
-    # Obtener casos clínicos del CURSO ESPECÍFICO
     casos_clinicos = Caso_clinico.objects.filter(Curso=curso)
     
-    # Estructurar datos para el template
     videos_data = []
     for caso in casos_clinicos:
         partes_cuerpo = Partes_cuerpo.objects.filter(CasoClinico=caso)
@@ -108,7 +101,6 @@ def lista_videos_curso(request, curso_id):
             etapas = Etapa.objects.filter(ParteCuerpo=parte)
             
             for etapa in etapas:
-                # Verificar si el estudiante ya vio este video
                 video_visto = Progreso.objects.filter(
                     progreso_estudiante=estudiante,
                     etapa_completada=etapa,
@@ -124,6 +116,6 @@ def lista_videos_curso(request, curso_id):
     
     return render(request, 'estudiante/curso.html', {
     'curso_actual': curso,
-    'curso_id': curso.id  # <-- Agregamos curso_id
+    'curso_id': curso.id
 })
 

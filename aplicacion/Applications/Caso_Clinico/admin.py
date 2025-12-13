@@ -81,7 +81,6 @@ class Diagnostico_TratamientoAdmin(admin.ModelAdmin):
     search_fields = ('titulo', 'descripcion')
     list_editable = ('orden',)
 
-# Register your models here UNA SOLA VEZ
 admin.site.register(Pacientes, PacientesAdmin)
 admin.site.register(Caso_clinico, CasoClinicoAdmin)
 admin.site.register(Etapa, EtapaAdmin)

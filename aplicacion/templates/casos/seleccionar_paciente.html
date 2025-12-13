@@ -6,7 +6,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/casos.css' %}">
-
 </head>
 <style>
      .container {
@@ -17,14 +16,11 @@
 </style>
 <body>
     <div class="container">
-        
         <a href="{% url 'Caso_Clinico:detalle_caso' caso.id %}" class="volver-btn">
             <i class="fas fa-arrow-left"></i> Volver a partes del cuerpo
         </a>
-        
         <h1>Seleccionar Paciente</h1>
         <p style="color: #AC6D33; font-weight: 600;">Evaluando: {{ parte.ParteCuerpo }} (Caso: {{ caso.caso }})</p>
-        
         <h2>Pacientes Disponibles</h2>
         
         {% if relaciones %}

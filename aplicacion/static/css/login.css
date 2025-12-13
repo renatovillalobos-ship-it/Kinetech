@@ -5,7 +5,6 @@
   user-select: none;
 }
 
-/* Generic */
 body {
   width: 100%;
   height: 100vh;
@@ -18,7 +17,6 @@ body {
   color: #a0a5a8;
 }
 
-/**/
 .main {
   position: relative;
   width: 1000px;
@@ -144,7 +142,6 @@ body {
   outline: none;
 }
 
-/**/
 .a-container {
   z-index: 100;
   left: calc(100% - 600px );
@@ -212,7 +209,6 @@ body {
   transition: 0.25s;
 }
 
-/**/
 .is-txr {
   left: calc(100% - 400px );
   transition: 1.25s;
@@ -250,7 +246,6 @@ body {
   }
 }
 
-/* === SELECTOR DE ROL MEJORADO === */
 .role-selector {
     display: flex;
     justify-content: center;
@@ -291,12 +286,11 @@ body {
     color: #4B70E2;
 }
 
-/* Logo circular */
 .switch__container img,
 .logo-ucn {
     width: 150px;
     height: 150px;
-    border-radius: 50%; /* Esto lo hace circular */
+    border-radius: 50%;
     object-fit: cover;
     box-shadow: 6px 6px 12px #d1d9e6, -6px -6px 12px #f9f9f9;
     margin-bottom: 20px;
@@ -313,7 +307,6 @@ body {
   background-color: #ecf0f353;
   color: #a0a5a8;
   
-  /* Ruta correcta para CSS */
   background-image: url('../img/campus_guayacan.jpg');
   background-size: cover;
   background-position: center;
@@ -321,7 +314,6 @@ body {
   background-attachment: fixed;
 }
 
-/* Overlay semi-transparente */
 body::before {
   content: '';
   position: fixed;
@@ -329,13 +321,11 @@ body::before {
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(160, 165, 168, 0.50); /* Cambiado de 0.85 a 0.50 */
+  background-color: rgba(160, 165, 168, 0.50);
   z-index: -1;
 }
 
-/* === MODO OSCURO === */
 :root {
-    /* Colores claros (por defecto) */
     --bg-main: #ecf0f3;
     --bg-input: #ecf0f3;
     --shadow-dark: #d1d9e6;
@@ -345,7 +335,6 @@ body::before {
 }
 
 body.dark-mode {
-    /* Colores oscuros */
     --bg-main: #1e293b;
     --bg-input: #0f172a;
     --shadow-dark: #0a0f1a;
@@ -354,21 +343,20 @@ body.dark-mode {
     --text-secondary: #cbd5e1;
 }
 
-/* Contenedor del toggle - CENTRADO */
 .theme-toggle-container {
     position: fixed;
     top: 30px;
     left: 30px;
     display: flex;
     align-items: center;
-    justify-content: center; /* Añadido para centrar */
+    justify-content: center;
     z-index: 9999;
     background-color: rgba(255, 255, 255, 0.95);
-    padding: 12px; /* Reducido porque no hay texto */
+    padding: 12px;
     border-radius: 50px;
     box-shadow: 4px 4px 12px rgba(0, 0, 0, 0.15);
-    width: 84px; /* Ancho fijo para que quede perfecto */
-    height: 54px; /* Alto fijo */
+    width: 84px;
+    height: 54px;
 }
 
 body.dark-mode .theme-toggle-container {
@@ -387,7 +375,6 @@ body.dark-mode .theme-label {
     color: #f1f5f9;
 }
 
-/* Switch deslizante */
 .theme-switch {
     position: relative;
     display: inline-block;
@@ -437,7 +424,6 @@ input:checked + .slider:before {
     transform: translateX(30px);
 }
 
-/* Iconos del sol y luna - INVERTIDOS */
 .slider-icon {
     position: absolute;
     font-size: 16px;
@@ -451,19 +437,16 @@ input:checked + .slider:before {
     line-height: 1;
 }
 
-/* Sol a la DERECHA cuando el botón está a la izquierda (modo claro) */
 .sun {
     right: 5px;
     opacity: 1;
 }
 
-/* Luna a la IZQUIERDA cuando el botón está a la derecha (modo oscuro) */
 .moon {
     left: 5px;
     opacity: 0;
 }
 
-/* Cuando se activa el modo oscuro */
 input:checked ~ .slider .sun {
     opacity: 0;
 }
@@ -472,18 +455,13 @@ input:checked ~ .slider .moon {
     opacity: 1;
 }
 
-/* Hover effect */
 .theme-toggle-container:hover {
     box-shadow: 6px 6px 16px rgba(0, 0, 0, 0.2);
 }
 
-/* Overlay para modo oscuro */
 body.dark-mode::before {
     background-color: rgba(15, 23, 42, 0.75) !important;
 }
-
-/* POR DEFECTO TODO ES BLANCO (NO APLICAR VARIABLES AÚN) */
-/* Solo aplicamos las variables cuando dark-mode está activo */
 
 body.dark-mode .main {
     background-color: var(--bg-main) !important;
@@ -568,56 +546,42 @@ body.dark-mode .form__checkbox-label {
     color: var(--text-primary);
 }
 
-
-
-
-
-
-
-
-/* DE ACA PONGO YO *\
-/* === ESTILOS PARA MENSAJES DE VALIDACIÓN - MEJORADO === */
-/* === ESTILOS PARA MENSAJES DE VALIDACIÓN - TAMAÑO REDUCIDO === */
 .correo-validation {
-    padding: 8px 12px; /* Reducido de 12px 15px */
-    margin: 10px 0; /* Reducido de 15px 0 */
-    border-radius: 6px; /* Reducido de 8px */
-    font-size: 12px; /* Reducido de 14px */
+    padding: 8px 12px;
+    margin: 10px 0;
+    border-radius: 6px;
+    font-size: 12px;
     text-align: center;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 600;
-    border: 1.5px solid transparent; /* Reducido de 2px */
+    border: 1.5px solid transparent;
     transition: all 0.3s ease;
     width: 100%;
-    max-width: 320px; /* Reducido de 350px */
+    max-width: 320px;
 }
 
 .correo-validation.alert-success {
     background: rgba(76, 175, 80, 0.1);
     color: #2e7d32;
     border-color: #4caf50;
-    box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2); /* Reducido de 0 2px 8px */
+    box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
 }
 
 .correo-validation.alert-error {
     background: rgba(244, 67, 54, 0.1);
     color: #c62828;
     border-color: #f44336;
-    box-shadow: 0 1px 4px rgba(244, 67, 54, 0.2); /* Reducido de 0 2px 8px */
+    box-shadow: 0 1px 4px rgba(244, 67, 54, 0.2);
 }
 
 .correo-validation small {
-    font-size: 10px; /* Reducido de 12px */
+    font-size: 10px;
     font-weight: normal;
     opacity: 0.8;
     display: block;
-    margin-top: 3px; /* Reducido de 5px */
+    margin-top: 3px;
 }
 
-
-
-
-/* En modo oscuro */
 body.dark-mode .correo-validation.alert-success {
     background: rgba(76, 175, 80, 0.15);
     color: #81c784;
@@ -630,16 +594,11 @@ body.dark-mode .correo-validation.alert-error {
     border-color: #f44336;
 }
 
-/* Efectos hover para consistencia */
 .correo-validation:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-
-/* === ESTILOS PARA BOTÓN DESHABILITADO - AGREGAR AL FINAL DEL ARCHIVO === */
-
-/* Botón deshabilitado - ESTILOS ESPECÍFICOS */
 .form__button.button.submit:disabled {
     cursor: not-allowed !important;
     opacity: 0.6 !important;
@@ -654,14 +613,12 @@ body.dark-mode .correo-validation.alert-error {
     cursor: not-allowed !important;
 }
 
-/* Botón habilitado - mantener estilos normales */
 .form__button.button.submit:not(:disabled) {
     cursor: pointer !important;
     opacity: 1 !important;
     background-color: #4B70E2 !important;
 }
 
-/* En modo oscuro */
 body.dark-mode .form__button.button.submit:disabled {
     background-color: #475569 !important;
     color: #94a3b8 !important;
@@ -672,54 +629,48 @@ body.dark-mode .form__button.button.submit:not(:disabled) {
     color: #f9f9f9 !important;
 }
 
-/* === ESTILOS PARA VALIDACIÓN DE EXISTENCIA DE CUENTA === */
-
-/* === ESTILOS PARA VALIDACIÓN DE EXISTENCIA DE CUENTA - TAMAÑO REDUCIDO === */
-
 .existencia-validation {
-    padding: 6px 10px; /* Reducido de 10px 15px */
-    margin: 8px 0; /* Reducido de 10px 0 */
-    border-radius: 6px; /* Reducido de 8px */
-    font-size: 12px; /* Reducido de 14px */
+    padding: 6px 10px;
+    margin: 8px 0;
+    border-radius: 6px;
+    font-size: 12px;
     text-align: center;
     font-family: 'Source Sans Pro', sans-serif;
     font-weight: 600;
-    border: 1.5px solid transparent; /* Reducido de 2px */
+    border: 1.5px solid transparent;
     transition: all 0.3s ease;
     width: 100%;
-    max-width: 320px; /* Reducido de 350px */
+    max-width: 320px;
 }
 
 .existencia-validation.alert-success {
     background: rgba(76, 175, 80, 0.1);
     color: #2e7d32;
     border-color: #4caf50;
-    box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2); /* Reducido de 0 2px 8px */
+    box-shadow: 0 1px 4px rgba(76, 175, 80, 0.2);
 }
 
 .existencia-validation.alert-error {
     background: rgba(244, 67, 54, 0.1);
     color: #c62828;
     border-color: #f44336;
-    box-shadow: 0 1px 4px rgba(244, 67, 54, 0.2); /* Reducido de 0 2px 8px */
+    box-shadow: 0 1px 4px rgba(244, 67, 54, 0.2);
 }
 
 .existencia-validation small {
-    font-size: 10px; /* Reducido de 12px */
+    font-size: 10px;
     font-weight: normal;
     opacity: 0.8;
     display: block;
-    margin-top: 3px; /* Reducido de 5px */
+    margin-top: 3px;
 }
 
-/* Efectos hover reducidos */
 .correo-validation:hover,
 .existencia-validation:hover {
     transform: translateY(-1px);
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Reducido de 0 4px 12px */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
-/* En modo oscuro */
 body.dark-mode .existencia-validation.alert-success {
     background: rgba(76, 175, 80, 0.15);
     color: #81c784;
@@ -732,7 +683,6 @@ body.dark-mode .existencia-validation.alert-error {
     border-color: #f44336;
 }
 
-/* Contenedor de mensajes del formulario login */
 .form__messages {
     width: 100%;
     display: flex;
@@ -742,10 +692,6 @@ body.dark-mode .existencia-validation.alert-error {
     margin: 10px 0;
 }
 
-
-
-
-/* === ESTILOS PARA PROCESANDO REGISTRO === */
 .procesando-registro {
     padding: 10px 15px;
     margin: 10px 0;
@@ -757,7 +703,6 @@ body.dark-mode .existencia-validation.alert-error {
     border: 2px solid #2196f3;
 }
 
-/* === MODAL POLÍTICAS DE PRIVACIDAD === */
 .modal-politicas {
     display: none;
     position: fixed;
@@ -804,12 +749,6 @@ body.dark-mode .existencia-validation.alert-error {
     margin-bottom: 15px;
 }
 
-
-/* =========================================== */
-/* ESTILOS PARA PÁGINAS CENTRADAS (Password Reset) */
-/* =========================================== */
-
-/* Contenedor principal centrado */
 .centered-page {
     min-height: 100vh;
     display: flex;
@@ -823,7 +762,6 @@ body.dark-mode .centered-page {
     background: linear-gradient(145deg, #1a1a2e, #16213e);
 }
 
-/* Tarjeta centrada */
 .centered-card {
     width: 100%;
     max-width: 450px;
@@ -839,7 +777,6 @@ body.dark-mode .centered-card {
     box-shadow: 14px 14px 20px #1a202c, -14px -14px 20px #4a5568;
 }
 
-/* Logo en páginas centradas */
 .centered-logo {
     width: 100px;
     height: 100px;
@@ -862,7 +799,6 @@ body.dark-mode .centered-logo {
     border-radius: 8px;
 }
 
-/* Título en páginas centradas */
 .centered-title {
     color: #333;
     font-size: 28px;
@@ -875,7 +811,6 @@ body.dark-mode .centered-title {
     color: #f9f9f9;
 }
 
-/* Descripción/Texto en páginas centradas */
 .centered-description {
     color: #666;
     font-size: 15px;
@@ -887,7 +822,6 @@ body.dark-mode .centered-description {
     color: #cbd5e0;
 }
 
-/* Formularios en páginas centradas */
 .centered-form .form__input {
     width: 100%;
     margin-bottom: 20px;
@@ -906,7 +840,6 @@ body.dark-mode .centered-form .form__input {
     box-shadow: inset 6px 6px 6px #1a202c, inset -6px -6px 6px #4a5568;
 }
 
-/* Botón en páginas centradas */
 .centered-button {
     width: 100%;
     margin-top: 20px;
@@ -916,7 +849,6 @@ body.dark-mode .centered-form .form__input {
     letter-spacing: 1px;
 }
 
-/* Enlace de regreso */
 .centered-back-link {
     display: inline-block;
     margin-top: 25px;
@@ -940,7 +872,6 @@ body.dark-mode .centered-back-link:hover {
     color: #93c5fd;
 }
 
-/* Íconos de éxito/error */
 .centered-icon {
     font-size: 60px;
     margin: 20px 0;

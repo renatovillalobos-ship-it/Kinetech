@@ -29,7 +29,6 @@
     <div class="row justify-content-center">
         <div class="col-lg-10">
             <div class="card shadow border-0 p-4">
-                <!-- Encabezado con foto y nombre -->
                 <div class="text-center">
                     <!-- Sistema de mensajes filtrado -->
                     {% if messages %}
@@ -86,11 +85,9 @@
                         <p class="text-danger mt-3">No se encontró información del estudiante.</p>
                     {% endif %}
                 </div>
-                
                 <hr class="my-4">
-                
                 <div class="row mt-4">
-                    <!-- Sección izquierda: Información personal -->
+                    <!-- Información personal -->
                     <div class="col-lg-6">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-header bg-primary text-white">
@@ -141,8 +138,7 @@
                             </div>
                         </div>
                     </div>
-                    
-                    <!-- Sección derecha: Gráfico de progreso -->
+                    <!-- Gráfico de progreso -->
                     <div class="col-lg-6">
                         <div class="card h-100 border-0 shadow-sm">
                             <div class="card-header bg-success text-white">
@@ -150,16 +146,13 @@
                             </div>
                             <div class="card-body text-center">
                                 {% if progreso %}
-                                    <!-- Gráfico Circular SVG -->
+                                    <!-- Gráfico Circular -->
                                     <div class="position-relative d-inline-block">
                                         <svg width="220" height="220" viewBox="0 0 120 120" class="progress-chart">
-                                            <!-- Fondo del círculo -->
                                             <circle cx="60" cy="60" r="54" 
                                                     stroke="#e9ecef" 
                                                     stroke-width="10" 
                                                     fill="none"/>
-                                            
-                                            <!-- Círculo de progreso (animado) -->
                                             <circle id="progress-circle" cx="60" cy="60" r="54" 
                                                     stroke="#4CAF50" 
                                                     stroke-width="10" 
@@ -168,8 +161,6 @@
                                                     stroke-dasharray="339.292"
                                                     stroke-dashoffset="339.292"
                                                     transform="rotate(-90 60 60)"/>
-                                            
-                                            <!-- Porcentaje en el centro -->
                                             <text id="progress-text" x="60" y="60" 
                                                   text-anchor="middle" 
                                                   dy="0.3em" 
@@ -177,19 +168,14 @@
                                                   font-weight="bold"
                                                   fill="#2c3e50">0%</text>
                                         </svg>
-                                        
-                                        <!-- Información adicional -->
                                         <div class="mt-4">
                                             <h4 class="fw-bold text-success mb-3">Tu progreso: <span id="progress-value">{{ progreso }}</span>%</h4>
-                                            
-                                            <!-- Barra de progreso alternativa -->
                                             <div class="progress mb-3" style="height: 20px;">
                                                 <div id="progress-bar" class="progress-bar bg-gradient progress-bar-striped progress-bar-animated" 
                                                      role="progressbar" 
                                                      style="width: 0%">
                                                 </div>
                                             </div>
-                                            
                                             <!-- Mensaje motivacional -->
                                             <div id="progress-message" class="alert alert-light border">
                                                 <i class="fas fa-spinner fa-spin me-2"></i>
@@ -218,8 +204,6 @@
         </div>
     </div>
 </div>
-
-<!-- CSS para el gráfico -->
 <style>
     .progress-chart {
         transition: all 0.5s ease;
@@ -230,7 +214,6 @@
         transition: width 1.5s ease-in-out;
     }
     
-    /* Estilos para los mensajes de alerta */
     .messages {
         list-style: none;
         padding-left: 0;
@@ -244,7 +227,6 @@
     }
 </style>
 
-<!-- JavaScript para animar el gráfico -->
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         {% if progreso %}
@@ -254,12 +236,8 @@
         const bar = document.getElementById('progress-bar');
         const message = document.getElementById('progress-message');
         const header = document.querySelector('.card-header.bg-success');
-    
-        // Calcular el offset del círculo SVG
         const circumference = 2 * Math.PI * 54;
         const offset = circumference - (progress / 100) * circumference;
-        
-        // Determinar color según el porcentaje (SCRUM-163)
         let progressColor, progressGradient, headerColor;
         
         if (progress < 40) {
@@ -276,19 +254,13 @@
             headerColor = 'bg-success';
         }
         
-        // Aplicar color al círculo
         circle.style.stroke = progressColor;
-        
-        // Aplicar color a la barra de progreso
         bar.style.background = progressGradient;
-        
-        // Cambiar color del encabezado de la tarjeta
         if (header) {
             header.classList.remove('bg-success', 'bg-warning', 'bg-danger');
             header.classList.add(headerColor);
         }
-        
-        // Cambiar color del título "Tu progreso"
+
         const progressTitle = document.querySelector('h4.fw-bold.text-success');
         if (progressTitle) {
             if (progress < 40) {
@@ -299,7 +271,7 @@
                 progressTitle.classList.add('text-warning');
             }
         }
-        
+
         // Mensajes según el progreso
         const messages = [
             { min: 0, max: 20, text: "¡Comienza tu camino en Kinesiología!", icon: "fas fa-flag", color: "text-secondary" },
@@ -310,7 +282,6 @@
             { min: 100, max: 100, text: "¡Felicidades, completaste todo!", icon: "fas fa-crown", color: "text-danger" }
         ];
         
-        // Encontrar el mensaje adecuado
         let currentMessage = messages[0];
         for (let msg of messages) {
             if (progress >= msg.min && progress <= msg.max) {
@@ -319,12 +290,9 @@
             }
         }
         
-        // Animar el círculo SVG
         setTimeout(() => {
             circle.style.transition = 'stroke-dashoffset 2s ease-in-out';
             circle.style.strokeDashoffset = offset;
-            
-            // Animar el texto del porcentaje
             let current = 0;
             const increment = progress / 50;
             const timer = setInterval(() => {
@@ -334,14 +302,8 @@
                     clearInterval(timer);
                 }
                 text.textContent = Math.round(current) + '%';
-                
-                // Actualizar barra de progreso
                 bar.style.width = current + '%';
-                
-                // Actualizar número
                 document.getElementById('progress-value').textContent = Math.round(current);
-                
-                // Cambiar color del texto del porcentaje según SCRUM-163
                 if (current < 40) {
                     text.setAttribute('fill', '#dc3545');
                 } else if (current >= 40 && current <= 80) {
@@ -351,14 +313,12 @@
                 }
             }, 30);
             
-            // Actualizar mensaje motivacional
             message.innerHTML = `
                 <i class="${currentMessage.icon} me-2 ${currentMessage.color}"></i>
                 <strong class="${currentMessage.color}">${currentMessage.text}</strong>
                 <span class="float-end text-muted small">${progress}% completado</span>
             `;
             
-            // Añadir fondo según el color del progreso
             if (progress < 40) {
                 message.style.backgroundColor = '#f8d7da';
                 message.style.borderColor = '#dc3545';

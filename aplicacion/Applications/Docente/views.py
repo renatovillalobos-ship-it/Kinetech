@@ -1,49 +1,36 @@
 from django.shortcuts import render, get_object_or_404, redirect
-#from django.contrib.auth.mixins import LoginRequiredMixin --> no se está utilizando
 from django.views import View
 from django.views.generic import TemplateView
 from django.contrib import messages
 from django.contrib.auth.hashers import make_password, check_password
 from django.db import IntegrityError
-#from django.db.models import Avg  --> no se está utilizando
 from django.core.exceptions import ValidationError
-
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import Group
 from django.db import transaction
-
-
 import os
 import re  
 import time
 from django.http import JsonResponse
-
 from django.db.models import Count, Prefetch
-
 from ..Estudiante.models import Estudiante, Progreso  
 from .models import Docente, Curso
-
 from Applications.Caso_Clinico.models import Caso_clinico, Partes_cuerpo, Etapa
-
 from django.shortcuts import redirect
 
 class LoginRequeridoDocenteMixin(View):
     login_url = '/docente/login/'
 
     def dispatch(self, request, *args, **kwargs):
-        #if request.session.get('usuario_tipo') != 'docente' or not request.session.get('usuario_id'):
-         #   return redirect(self.login_url)
-        #return super().dispatch(request, *args, **kwargs)
+
         usuario_tipo = request.session.get('usuario_tipo')
         usuario_id = request.session.get('usuario_id')
         
-        # Verificar sesión de docente
         if usuario_tipo != 'docente' or not usuario_id:
             return redirect(self.login_url)
         
-        # Verificar que el docente existe
         try:
             docente = Docente.objects.get(id=usuario_id)
         except Docente.DoesNotExist:
@@ -52,16 +39,14 @@ class LoginRequeridoDocenteMixin(View):
             
         return super().dispatch(request, *args, **kwargs)
 
-# -----------------------------------------------------------
+
 # LOGIN DOCENTE
-# -----------------------------------------------------------
 class Login(TemplateView):
     template_name = 'login/login.html'
    
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        # Tomar nombres únicos de cursos (asignaturas)
         asignaturas = (
             Curso.objects.values_list('nombre_del_Curso', flat=True)
             .distinct()
@@ -77,7 +62,6 @@ class Login(TemplateView):
         usuario_tipo = request.session.get('usuario_tipo')
         usuario_id = request.session.get('usuario_id')
         
-        # Si hay sesión activa → redirigir
         if usuario_tipo and usuario_id and request.session.get_expiry_age() > 0:
 
             try:
@@ -92,22 +76,12 @@ class Login(TemplateView):
             except (Docente.DoesNotExist, Estudiante.DoesNotExist):
                 request.session.flush()
 
-        # Si no hay sesión → cargar login con asignaturas en el contexto
         return super().get(request, *args, **kwargs)
 
 
-
-
-# -----------------------------------------------------------
 # HOME DOCENTE (PROTEGIDO POR SESIÓN)
-# -----------------------------------------------------------
 class Home_docente(TemplateView):
     template_name = 'docente/home_docente.html'
-
-    #def get(self, request, *args, **kwargs):
-     #   if request.session.get('usuario_tipo') != 'docente':
-      #      return redirect('login')
-       # return super().get(request, *args, **kwargs)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -117,21 +91,16 @@ class Home_docente(TemplateView):
 
         context['docente'] = docente
     
-    # Si el docente tiene un curso principal
         if docente.curso_principal:
             context['cursos'] = [docente.curso_principal]
         else:
-            context['cursos'] = Curso.objects.none()  # Lista vacía
+            context['cursos'] = Curso.objects.none()
 
         return context
 
-# ----------------------------------------
-# VISTA PARA DETALLE Y PROGRESO
-# ----------------------------------------
 
-# ESTA FUNCIÓN FALTANTE DEBE ESTAR FUERA DE CUALQUIER CLASE.
+# VISTA PARA DETALLE Y PROGRESO
 def detalle_curso(request, id):
-    # Lógica para obtener el curso
     curso = get_object_or_404(Curso, id=id) 
     contexto = {'curso': curso}
     return render(request, 'docente/detalle_curso.html', contexto)
@@ -154,22 +123,19 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                     curso_seleccionado = get_object_or_404(
                     Curso, 
                     id=curso_id, 
-                    docentes=docente  # ✅
+                    docentes=docente
                     )
                 
                     context['curso_seleccionado'] = curso_seleccionado
                     
-                    # SOLO estudiantes de ESTE curso (NO "all()")
                     estudiantes_curso = Estudiante.objects.filter(
                         cursos=curso_seleccionado
                     ).select_related().order_by('apellido_estudiante', 'nombre_estudiante')
                     
-                    # OPTIMIZADO: prefetch_related para reducir consultas
                     casos_clinicos = Caso_clinico.objects.filter(
                         Curso=curso_seleccionado
                     ).prefetch_related('partes_cuerpo_set__etapa_set')
                     
-                    # OPTIMIZADO: Una sola consulta con annotate
                     progresos_curso = Progreso.objects.filter(
                         progreso_curso=curso_seleccionado,
                         video_visto=True
@@ -177,7 +143,6 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                         total_videos_vistos=Count('id')
                     )
                     
-                    # Diccionario para acceso rápido
                     progresos_dict = {}
                     for p in progresos_curso:
                         key = (p['progreso_estudiante'], p['parte_cuerpo'])
@@ -254,12 +219,9 @@ class ProgresoDocenteView(LoginRequeridoDocenteMixin, TemplateView):
                 pass
         
         return context
-    
-    
 
-# -----------------------------------------------------------
+
 # PERFIL DOCENTE
-# -----------------------------------------------------------
 class PerfilDocente(TemplateView):
     template_name = 'docente/perfil_docente.html'
 
@@ -272,9 +234,7 @@ class PerfilDocente(TemplateView):
         return context
 
 
-# -----------------------------------------------------------
 # SUBIR FOTO DOCENTE
-# -----------------------------------------------------------
 def subir_foto_docente(request, id):
     docente = get_object_or_404(Docente, id=id)
 
@@ -283,7 +243,6 @@ def subir_foto_docente(request, id):
         if foto:
             docente.foto_perfil_docente = foto
             try:
-                # Validar solo la imagen
                 docente.foto_perfil_docente.field.clean(foto, docente)
                 docente.save()
                 messages.success(request, 'Foto actualizada correctamente.')
@@ -293,9 +252,7 @@ def subir_foto_docente(request, id):
     return redirect('docente:perfil_docente')
 
 
-# -----------------------------------------------------------
 # ELIMINAR FOTO DOCENTE
-# -----------------------------------------------------------
 def eliminar_foto_docente(request, id):
     docente = get_object_or_404(Docente, id=id)
 
@@ -309,11 +266,7 @@ def eliminar_foto_docente(request, id):
     return redirect('docente:perfil_docente')
 
 
-# -----------------------------------------------------------
 # REGISTRO DOCENTE
-# -----------------------------------------------------------
-
-# En views.py de Docente (donde está tu clase RegistroDocente)
 from Applications.Docente.models import Curso, Docente
 from django.contrib.auth.models import User, Group
 from django.db import transaction
@@ -329,15 +282,13 @@ class RegistroDocente(View):
     success_url_name = 'login'
 
     def get(self, request):
-        # Obtener cursos disponibles
         cursos_disponibles = Curso.objects.all()
         
-        # Mantener la lista de asignaturas si la necesitas para otro propósito
         asignaturas = ['Anatomía', 'Fisiología', 'Patología', 'Farmacología', 'Otra']
         
         context = {
             'cursos_disponibles': cursos_disponibles,
-            'asignaturas': asignaturas,  # Si aún la necesitas
+            'asignaturas': asignaturas,
         }
         return render(request, self.template_name, context)
 
@@ -347,11 +298,9 @@ class RegistroDocente(View):
         nombre = request.POST.get('nombre_doc')
         apellido = request.POST.get('apellido_doc')
         
-        # CORRECCIÓN: curso_id debe ser el ID numérico, no texto
-        curso_id = request.POST.get('curso_id')  # Este debería ser número (1, 2, 3...)
+        curso_id = request.POST.get('curso_id')
         
-        # Si estás usando el campo "asigna_doc" para el curso
-        curso_seleccionado = request.POST.get('asigna_doc')  # Esto es el texto
+        curso_seleccionado = request.POST.get('asigna_doc')
         
         pais = request.POST.get('pais_doc')
         correo = request.POST.get('correo_doc')
@@ -361,7 +310,6 @@ class RegistroDocente(View):
             messages.error(request, "Todos los campos son obligatorios.")
             return render(request, self.template_name)
 
-        # Validar correo
         dominios_permitidos = ('@gmail.com', '@hotmail.com', '@ucn.cl', '@ce.ucn.cl')
         if not any(correo.endswith(d) for d in dominios_permitidos):
             messages.error(request, f"El correo debe pertenecer a uno de estos dominios: {dominios_permitidos}")
@@ -382,7 +330,6 @@ class RegistroDocente(View):
                 # 2. Obtener el Curso basado en la selección
                 curso = None
                 
-                # OPCIÓN A: Si curso_id es numérico (ID del curso)
                 if curso_id and curso_id.isdigit():
                     try:
                         curso = Curso.objects.get(id=int(curso_id))
@@ -390,9 +337,7 @@ class RegistroDocente(View):
                         messages.error(request, "El curso seleccionado no existe.")
                         return render(request, self.template_name)
                 
-                # OPCIÓN B: Si asigna_doc es el nombre del curso
                 elif curso_seleccionado:
-                    # Buscar curso por nombre o crear uno nuevo
                     curso, creado = Curso.objects.get_or_create(
                         nombre_del_Curso=curso_seleccionado,
                         defaults={
@@ -412,8 +357,7 @@ class RegistroDocente(View):
                     nombre_docente=nombre,
                     apellido_docente=apellido,
                     pais_docente=pais,
-                    # asignatura_docente se llenará automáticamente en save()
-                    curso_principal=curso  # Asignar el curso
+                    curso_principal=curso
                 )
                 
                 # 4. Asignar al grupo de Docentes
@@ -437,10 +381,9 @@ class RegistroDocente(View):
             tiempo = round(time.time() - inicio, 2)
             messages.error(request, f"Error al crear docente: {str(e)} ({tiempo}s)")
             return render(request, self.template_name)
-# -----------------------------------------------------------
-# AUTENTICAR USUARIO (ESTUDIANTE O DOCENTE)
-# -----------------------------------------------------------
 
+
+# AUTENTICAR USUARIO (ESTUDIANTE O DOCENTE)
 class AutenticarUsuario(View):
     template_name = 'login/login.html'
 
@@ -449,30 +392,26 @@ class AutenticarUsuario(View):
         password = request.POST.get('contrasena')
         remember_me = request.POST.get('remember_me') 
         
-        # ✅ SISTEMA DE BLOQUEO (3 intentos)
         intentos_key = f'intentos_{correo}'
         intentos = request.session.get(intentos_key, 0)
         
         if intentos >= 3:
             print(f"📧 Email bloqueo enviado a: {correo}")
             return render(request, 'Login/blocked.html')
-        # ✅ FIN BLOQUEO
 
         # Verificar estudiante
         estudiante = Estudiante.objects.filter(correo_estudiante=correo).first()
         if estudiante and check_password(password, estudiante.contrasena_estudiante):
-            # ✅ ÉXITO: Resetear intentos
             if intentos_key in request.session:
                 del request.session[intentos_key]
 
             request.session['usuario_tipo'] = 'estudiante'
             request.session['usuario_id'] = estudiante.id
 
-            # IMPLEMENTAR "RECORDARME" PARA ESTUDIANTE
             if remember_me:
-                request.session.set_expiry(2592000)  # 30 días
+                request.session.set_expiry(2592000)
             else:
-                request.session.set_expiry(0)  # Sesión navegador
+                request.session.set_expiry(0)
 
             return redirect('estudiante:home_estudiante')
 
@@ -481,21 +420,16 @@ class AutenticarUsuario(View):
         if user_django is not None:
             try:
                 docente = Docente.objects.get(user=user_django)
-                # ✅ ÉXITO: Resetear intentos
                 if intentos_key in request.session:
                     del request.session[intentos_key]
                 
-                # LIMPIAR sesión anterior
                 request.session.flush()
-                # Inicia la sesión de Django
                 login(request, user_django) 
 
-                # IMPLEMENTAR "RECORDARME" PARA DOCENTE
                 if remember_me:
-                    request.session.set_expiry(2592000)  # 30 días
+                    request.session.set_expiry(2592000)
                 else:
-                    request.session.set_expiry(0)  # Sesión navegador
-                # Inicia la sesión de Django
+                    request.session.set_expiry(0)
                 
                 request.session['usuario_tipo'] = 'docente'
                 request.session['usuario_id'] = docente.pk 
@@ -503,15 +437,7 @@ class AutenticarUsuario(View):
                 return redirect('docente:home_docente')
             except Docente.DoesNotExist:
                 messages.error(request, "Error en el perfil de docente.")
-                #pass
-        #Código anterior (por si acaso)
-        #docente = Docente.objects.filter(correo_docente=correo).first()
-        #if docente and check_password(password, docente.contrasena_docente):
-            #request.session['usuario_tipo'] = 'docente'
-            #request.session['usuario_id'] = docente.id
-            #return redirect('docente:home_docente')
-        
-         # ❌ FALLO: Contar intento
+                
         intentos += 1
         request.session[intentos_key] = intentos
         
@@ -524,9 +450,7 @@ class AutenticarUsuario(View):
         return render(request, self.template_name)
 
 
-# -----------------------------------------------------------
 # CERRAR SESIÓN
-# -----------------------------------------------------------
 class CerrarSesion(View):
     def get(self, request):
         request.session.flush()
@@ -534,10 +458,7 @@ class CerrarSesion(View):
         return redirect('login')
 
 
-# -----------------------------------------------------------
 # PÁGINA PRINCIPAL DE CURSOS
-# -----------------------------------------------------------
-
 def pagina_principal_docente(request, curso_id):
 
     curso = get_object_or_404(Curso, pk=curso_id)
@@ -549,9 +470,7 @@ def pagina_principal_docente(request, curso_id):
     return render(request, 'docente/docente_pagina_principal.html', contexto)
 
 
-# -----------------------------------------------------------
 # VALIDACIÓN DE CORREO UCN (FUNCIONAL Y OPTIMIZADA)
-# -----------------------------------------------------------
 def validar_correo_ucn(request):
     """Valida correos @alumnos.ucn.cl en menos de 10 segundos"""
     if request.method != 'POST':
@@ -560,7 +479,6 @@ def validar_correo_ucn(request):
     inicio = time.time()
     correo = request.POST.get('correo', '').strip().lower()
     
-    # Validación ultra-rápida con expresión regular
     patron = r'^[a-zA-Z0-9\.\-_]+@alumnos\.ucn\.cl$'
     es_valido = bool(re.match(patron, correo))
     
@@ -579,9 +497,8 @@ def validar_correo_ucn(request):
         'tiempo': tiempo
     })
 
-# -----------------------------------------------------------
+
 # VALIDACIÓN DE EXISTENCIA DE CUENTA
-# -----------------------------------------------------------
 def validar_existencia_cuenta(request):
     """Valida si una cuenta existe en menos de 10 segundos"""
     if request.method != 'POST':

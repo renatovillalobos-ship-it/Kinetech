@@ -1,7 +1,5 @@
 // Funciones específicas para etapa_detalle.html
 
-
-// Inicialización cuando el DOM está listo
 document.addEventListener('DOMContentLoaded', function() {
     const itemsInteractivos = document.querySelectorAll('.item-interactivo');
     const descripcionBox = document.getElementById('descripcion-resultado');
@@ -37,7 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Configurar para videos (si no hay script inline)
     const tieneVideo = document.querySelector('.video-container iframe');
     if (tieneVideo && !document.querySelector('script[data-video-managed]')) {
         manejarVideoAutomatico();
@@ -52,7 +49,6 @@ function manejarVideoAutomatico() {
             btnSiguiente.classList.add('habilitado');
             btnSiguiente.disabled = false;
             
-            // Mostrar mensaje de video visto
             const videoId = document.querySelector('.video-section h3 i.fa-video') ? 
                            'video-completado' : 'video-respuesta-completado';
             const videoCompletado = document.getElementById(videoId);

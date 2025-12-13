@@ -16,14 +16,11 @@
             <h2>Etapa {{ etapa_actual_numero }} de {{ total_etapas }}: {{ etapa.nombre }}</h2>
             <p>Caso: <strong>{{ caso.caso }}</strong> | Paciente: <strong>{{ paciente.nombre }}</strong></p>
         </div>
-
-        <!-- CONTENIDO ESPECÍFICO POR TIPO DE ETAPA -->
         {% if etapa.tipo == 'video_inicial' and embed_url %}
             <!-- VIDEO INICIAL -->
             <div class="video-section">
                 <h3><i class="fas fa-video"></i> Motivo de consulta </h3>
                 <p class="video-description">Mire atentamente el siguiente video antes de continuar:</p>
-                
                 <div class="video-container">  
                     <iframe width="560" height="315"
                         src="{{ embed_url }}"
@@ -34,21 +31,18 @@
                         allowfullscreen>
                     </iframe>
                 </div>
-                
                 <div id="video-completado" class="video-completion" style="display: none;">
                     <div class="retroalimentacion-box retroalimentacion-correcta">
                         <i class="fas fa-check-circle"></i> Puede continuar
                     </div>
                 </div>
             </div>
-
         {% elif etapa.tipo == 'formulario_temas' and temas %}
             <!-- FORMULARIO DE TEMAS -->
             <div class="temas-header">
                 <h3><i class="fas fa-clipboard-list"></i> Revise el listado de posibles preguntas</h3>
                     <p class="temas-description">Marque las preguntas que desea consultar al paciente:</p>
             </div>
-            
             <div class="temas-grid">
                 {% for tema in temas %}
                     <div class="tema-card" onclick="mostrarOpcionesTema({{ tema.id }})" id="tema-{{ tema.id }}">
@@ -63,19 +57,12 @@
                     </div>
                 {% endfor %}
             </div>
-            
-            <!-- Contenedor para opciones dinámicas -->
             <div id="opciones-container" class="opciones-container"></div>
-            
-            <!-- Retroalimentación -->
             <div id="retroalimentacion-tema" class="retroalimentacion-box"></div>
-
         {% elif etapa.tipo == 'preguntas_tema' and preguntas %}
-            <!-- PREGUNTAS SOBRE TEMA -->
             <div class="preguntas-header">
                 <h3><i class="fas fa-question-circle"></i> Preguntas sobre: {{ etapa.tema }}</h3>
             </div>
-            
             <div class="preguntas-container">
                 {% for pregunta in preguntas %}
                     <div class="pregunta-box" id="pregunta-{{ pregunta.id }}">
@@ -93,15 +80,12 @@
                     </div>
                 {% endfor %}
             </div>
-            
             <div id="retroalimentacion-pregunta" class="retroalimentacion-box"></div>
-
         {% elif etapa.tipo == 'video_respuesta' and embed_url %}
             <!-- VIDEO DE RESPUESTA -->
             <div class="video-section">
                 <h3><i class="fas fa-video"></i> Explicación: {{ etapa.tema }}</h3>
                 <p class="video-description">Esta explicación complementa la evaluación realizada:</p>
-                
                 <div class="video-container">
                     <iframe 
                         width="100%" 
@@ -114,24 +98,20 @@
                         allowfullscreen>
                     </iframe>
                 </div>
-                
                 <div id="video-respuesta-completado" class="video-completion" style="display: none;">
                     <div class="retroalimentacion-box retroalimentacion-correcta">
                         <i class="fas fa-check-circle"></i> Video visto, puede continuar.
                     </div>
                 </div>
             </div>
-
         {% elif etapa.tipo == 'diagnosticos' %}
-            <!-- DIAGNÓSTICOS DINÁMICOS -->
             <div class="diagnosticos-etapa-container">
                 <div class="diagnosticos-header">
                     <h3><i class="fas fa-stethoscope"></i> {{ etapa.nombre }}</h3>
                     <p class="diagnosticos-description">Seleccione los posibles diagnósticos relacionados al caso:</p>
                 </div>
-
                 <div class="diagnosticos-grid">
-                    <!-- COLUMNA IZQUIERDA: LISTA DE DIAGNÓSTICOS -->
+                    <!-- LISTA DE DIAGNÓSTICOS -->
                     <div class="diagnosticos-columna">
                         <div id="diagnosticos-container" class="diagnosticos-lista">
                             <div class="diagnosticos-loading">
@@ -140,8 +120,7 @@
                             </div>
                         </div>
                     </div>
-    
-                    <!-- COLUMNA DERECHA: PANEL DE DETALLE -->
+                    <!-- PANEL DE DETALLE -->
                     <div class="detalle-columna">
                         <div class="diagnostico-detalle-panel" id="detalleDiagnostico">
                             <div class="detalle-placeholder">
@@ -152,17 +131,14 @@
                     </div>
                 </div>
             </div>
-
         {% elif etapa.tipo == 'tratamientos' %}
-            <!-- TRATAMIENTOS DINÁMICOS -->
             <div class="tratamientos-etapa-container">
                 <div class="tratamientos-header">
                     <h3><i class="fas fa-prescription-bottle-alt"></i> {{ etapa.nombre }}</h3>
                     <p class="tratamientos-description">Seleccione los posibles tratamientos para el caso:</p>
                 </div>
-
                 <div class="tratamientos-grid">
-                    <!-- COLUMNA IZQUIERDA: LISTA DE TRATAMIENTOS -->
+                    <!-- LISTA DE TRATAMIENTOS -->
                     <div class="tratamientos-columna">
                         <div id="tratamientos-container" class="tratamientos-lista">
                             <div class="tratamientos-loading">
@@ -171,8 +147,7 @@
                             </div>
                         </div>
                     </div>
-    
-                    <!-- COLUMNA DERECHA: PANEL DE DETALLE -->
+                    <!-- PANEL DE DETALLE -->
                     <div class="detalle-columna">
                         <div class="tratamiento-detalle-panel" id="detalleTratamiento">
                             <div class="detalle-placeholder">
@@ -183,14 +158,12 @@
                     </div>
                 </div>
             </div>
-
         {% else %}
             <div class="contenido-no-disponible">
                 <i class="fas fa-exclamation-triangle"></i>
                 <p>Contenido no disponible para esta etapa.</p>
             </div>
         {% endif %}
-
         <!-- Navegación -->
         <div class="nav-buttons">
             {% if etapa_anterior %}
@@ -228,12 +201,10 @@
 <script src="{% static 'js/etapa_detalle.js' %}"></script>
    
 <script>
-
     function mostrarOpcionesTema(temaId) {
         console.log('Solicitando opciones para tema:', temaId);
-        
         const url = `/casos/api/opciones-tema/${temaId}/`;
-        
+
         fetch(url)
             .then(response => {
                 if (!response.ok) {
@@ -452,7 +423,6 @@
         const casoId = {{ caso.id }};
         const parteId = {{ parte.id }};
     
-    // Enviar al servidor para marcar como completada
         fetch(`/casos/marcar_etapa_completada/${casoId}/${parteId}/${etapaId}/`, {
             method: 'POST',
             headers: {

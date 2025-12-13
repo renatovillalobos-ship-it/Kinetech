@@ -6,11 +6,10 @@
     margin: 0 auto;
 }
 
-/* === TITULO === */
 .pasos-title {
     font-size: 1.6rem;
     font-weight: 700;
-    color: var(--text-primary);  /* antes #0d47a1 */
+    color: var(--text-primary);
     text-align: center;
     margin-bottom: 15px;
 }
@@ -18,13 +17,12 @@
 .pasos-subtitle {
     text-align: center;
     font-size: 1rem;
-    color: var(--text-secondary); /* antes #666 */
+    color: var(--text-secondary);
     margin-bottom: 25px;
 }
 
-/* === CARD === */
 .pasos-guia {
-    background: var(--bg-card); /* antes #f8faff */
+    background: var(--bg-card);
     border-left: 4px solid #0d47a1;
     border-radius: 8px;
     padding: 18px;
@@ -44,15 +42,13 @@
     color: var(--text-primary);
 }
 
-/* === DIVIDER === */
 .instrucciones-divider {
     margin: 20px 0;
     border-top: 1px solid #ddd;
 }
 
-/* === TIP === */
 .instrucciones-tip {
-    background: var(--bg-card); /* antes #e8f3ff */
+    background: var(--bg-card);
     padding: 15px;
     border-radius: 8px;
     border-left: 4px solid #1565c0;
@@ -63,22 +59,18 @@
     color: var(--text-primary);
 }
 
-/* =============================== */
-/*        MODO OSCURO REAL         */
-/* =============================== */
-
 body.dark-mode .pasos-title {
     color: var(--text-primary) !important;
 }
 
 body.dark-mode .pasos-guia{
     background-color: var(--bg-card) !important;
-    border-left-color: #3b82f6 !important; /* azul claro */
+    border-left-color: #3b82f6 !important;
     box-shadow: none !important;
 }
 
 body.dark-mode .pasos-guia h5 {
-    color: #60a5fa !important; /* azul claro */
+    color: #60a5fa !important;
 }
 
 body.dark-mode .pasos-list li {
@@ -96,20 +88,15 @@ body.dark-mode .instrucciones-divider {
 }
 </style>
 <div class="pasos-container">
-
-    <!-- Imagen UCN arriba -->
     <div class="text-center mb-3">
         <img src="{% static 'img/ucn_escudo.png' %}"
              style="height: 90px;"
              alt="UCN Escudo">
     </div>
-
     <h2 class="pasos-title">Guía Kinésica</h2>
     <p class="pasos-subtitle">
        Aquí encontrarás los pasos a seguir para realizar una correcta atención a los pacientes.
     </p>
-
-        <!-- Paso 1 – Entrevista Inicial y Anamnesis (Recolección de Información) -->
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-handshake me-2"></i>Entrevista Inicial y Anamnesis (Recolección de Información)</h5>
             <ul class="pasos-list">
@@ -130,8 +117,6 @@ body.dark-mode .instrucciones-divider {
                     </ul>
             </ul>
         </div>
-
-        <!-- Paso 2 – Observación y Evaluación Postural -->
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-eye me-2"></i>Observación y Evaluación Postural</h5>
             <ul class="pasos-list">
@@ -140,9 +125,7 @@ body.dark-mode .instrucciones-divider {
                     <ul><li>Busca desalineaciones (escoliosis, pie plano, hiperlordosis), asimetrías (hombro más bajo), atrofia muscular o edema (hinchazón).</li></ul>
                 <li><strong>Observación Dinámica:</strong> Pídele al paciente que realice movimientos funcionales o relevantes a su queja (ej. caminar, agacharse, levantar el brazo).</li>
             </ul>
-        </div>
-        
-        <!-- Paso 3 – Exploración Física Específica -->
+        </div>        
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-hand-pointer me-2"></i>Exploración Física Específica</h5>
             <ul class="pasos-list">
@@ -158,8 +141,6 @@ body.dark-mode .instrucciones-divider {
                 <li><strong>Evaluación Neurológica (si es relevante):</strong> Evalúa sensibilidad (dermatomas), reflejos osteotendíneos (ROT) y fuerza de músculos clave (miotomas).</li>
             </ul>
         </div>
-
-        <!-- Paso 4 – Análisis y Diagnóstico Kinésico -->
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-brain me-2"></i>Análisis y Diagnóstico Kinésico</h5>
             <ul class="pasos-list">
@@ -170,8 +151,6 @@ body.dark-mode .instrucciones-divider {
                 <li><strong>Establecimiento de Objetivos:</strong> Define metas a corto, mediano y largo plazo que sean *SMART* (Específicas, Medibles, Alcanzables, Relevantes, con límite de Tiempo).</li>
             </ul>
         </div>
-        
-        <!-- Paso 5 – Plan de Tratamiento (Intervención) -->
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-list-check me-2"></i>Plan de Tratamiento (Intervención)</h5>
             <ul class="pasos-list">
@@ -182,8 +161,6 @@ body.dark-mode .instrucciones-divider {
                 <li><strong>Planificación:</strong> Detalla la frecuencia y duración de las sesiones.</li>
             </ul>
         </div>
-        
-        <!-- Paso 6 – Registro y Cierre -->
         <div class="pasos-guia">
             <h5><i class="fa-solid fa-clipboard-list me-2"></i>Registro y Cierre</h5>
             <ul class="pasos-list">
@@ -193,7 +170,5 @@ body.dark-mode .instrucciones-divider {
                 <li><strong>Consejo para Estudiantes:</strong> El flujo de información debe guiar la exploración. Las preguntas y hallazgos deben orientar las pruebas que realices.</li>
             </ul>
         </div>
-        
     </div>
-
 </html>

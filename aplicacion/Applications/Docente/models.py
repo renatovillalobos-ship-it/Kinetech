@@ -1,33 +1,25 @@
 from django.db import models
-#from Applications.Administrador.models import Administrador --> no se usa
 from django.core.exceptions import ValidationError
 from PIL import Image
-
-from django.core.validators import RegexValidator #Validador de letras y números
-
+from django.core.validators import RegexValidator
 from django.contrib.auth import get_user_model
 
-
-# Create your models here.
-
 solo_letras = RegexValidator(
-    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$', # Patrón permitido
-    'Este campo solo puede contener letras y espacios.' # Mensaje de error
+    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$',
+    'Este campo solo puede contener letras y espacios.'
 )
 
-
 def validacion_imagen(value):
-    ext = value.name.split('.')[-1].lower()  # extrae extensión
+    ext = value.name.split('.')[-1].lower()
     
     formatos_validos = ['png', 'jpg', 'jpeg']
     
     if ext not in formatos_validos:
         raise ValidationError("La imagen debe ser PNG, JPG o JPEG.")
     
-    # Validar que realmente sea una imagen válida usando Pillow
     try:
         img = Image.open(value)
-        img.verify()  # Verifica que el archivo sea una imagen real
+        img.verify()
     except Exception:
         raise ValidationError("El archivo no es una imagen válida.")
     
@@ -37,7 +29,6 @@ class Curso(models.Model):
     Descripcion_breve_del_curso=models.TextField('Breve Descripción', max_length=150, null=False)
     fecha_realización_curso = models.DateField('Fecha Realización Curso')
     paralelo_curso= models.IntegerField('Paralelo Curso', null=False)
-    #curso_docente = models.ForeignKey(Docente, on_delete=models.CASCADE,blank=True, related_name='cursos_asignados')
 
     class Meta: 
         verbose_name='Curso'
@@ -51,7 +42,7 @@ User = get_user_model()
 
 class Docente(models.Model):
 
-    user = models.OneToOneField(User, on_delete=models.CASCADE) #correo y contraseña
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     pais_opciones = [('CL', 'Chile'),
                      ('AR','Argentina'),
                      ('BR', 'Brasil'),
@@ -76,7 +67,7 @@ class Docente(models.Model):
                                         null=True, blank=True,default=None, related_name='docentes')
     foto_perfil_docente = models.ImageField(
     'Foto perfil docente', 
-    upload_to='perfiles/docentes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    upload_to='perfiles/docentes/',
     validators=[validacion_imagen],
     null=True, blank=True
 )
@@ -87,7 +78,6 @@ class Docente(models.Model):
         ordering=['apellido_docente', 'nombre_docente']
 
     def save(self, *args, **kwargs):
-        # CORRECCIÓN: usar curso_principal en lugar de curso
         if self.curso_principal:
             self.asignatura_docente = self.curso_principal.nombre_del_Curso
         super().save(*args, **kwargs)

@@ -6,12 +6,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Sistema UCN{% endblock %}</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <!-- Otros CSS que necesites -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
     {% block content %}{% endblock %}
-    
     <script src="{% static 'js/login.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>

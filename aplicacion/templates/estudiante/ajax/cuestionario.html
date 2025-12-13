@@ -1,6 +1,5 @@
 {% load static %}
 
-
 <div class="ajax-cuestionario">
     <div class="text-center mb-4">
         <img src="{% static 'img/logo_ucn.jpg' %}" 
@@ -25,7 +24,7 @@
         </p>
     </div>
 
-    <!-- Mostrar nivel de diagnóstico si ya fue respondido -->
+    <!-- Mostrar nivel de diagnóstico si ya se respondido -->
     {% if cuestionario_respondido %}
     <div class="alert alert-success text-center mb-4 mx-auto" style="max-width:650px;" id="nivelDiagnostico">
         <h4 class="fw-bold mb-2">
