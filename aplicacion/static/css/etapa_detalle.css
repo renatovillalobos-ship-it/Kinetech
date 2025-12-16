@@ -28,7 +28,6 @@
     font-size: 1.05em;
 }
 
-/* Secciones de video */
 .video-section {
     text-align: center;
     margin: 25px 0;
@@ -45,7 +44,6 @@
     display: none;
 }
 
-/* Sección de temas */
 .temas-header {
     text-align: center;
     margin-bottom: 30px;
@@ -105,7 +103,6 @@
     background: #0056b3;
 }
 
-/* Contenedor de opciones */
 .opciones-container {
     margin-top: 30px;
 }
@@ -142,7 +139,6 @@
     transform: translateX(5px);
 }
 
-/* Sección de preguntas */
 .preguntas-header {
     text-align: center;
     margin-bottom: 25px;
@@ -188,7 +184,6 @@
     border-color: #4B70E2;
 }
 
-/* Evaluación completa */
 .evaluacion-completa {
     text-align: center;
     margin: 20px 0;
@@ -230,7 +225,6 @@
     background: #218838;
 }
 
-/* Contenido no disponible */
 .contenido-no-disponible {
     text-align: center;
     padding: 40px;
@@ -310,7 +304,6 @@
     background: #c82333;
 }
 
-/* Retroalimentación */
 .retroalimentacion-box {
     padding: 20px;
     margin: 20px 0;
@@ -331,7 +324,6 @@
     color: #721c24;
 }
 
-/* Contenedor principal de diagnósticos */
 .diagnosticos-etapa-container {
     margin: 30px 0;
 }
@@ -352,7 +344,6 @@
     font-size: 1.1em;
 }
 
-/* Layout de dos columnas */
 .diagnosticos-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -376,21 +367,18 @@
     border: 1px solid #e0e0e0;
 }
 
-/* Asegurar altura adecuada */
 .diagnosticos-columna, .detalle-columna {
     min-height: 500px;
     max-height: 700px;
     overflow-y: auto;
 }
 
-/* Lista de diagnósticos */
 .diagnosticos-lista {
     display: flex;
     flex-direction: column;
     gap: 15px;
 }
 
-/* Cards de diagnóstico */
 .diagnostico-card {
     background: white;
     border-radius: 10px;
@@ -416,7 +404,6 @@
     box-shadow: 0 4px 12px rgba(74, 144, 226, 0.2);
 }
 
-/* Íconos y tipografía */
 .diagnostico-card i {
     font-size: 24px;
     color: #4a90e2;
@@ -433,7 +420,6 @@
     font-size: 1.1em;
 }
 
-/* Badge para tipo */
 .badge-tipo {
     display: inline-block;
     padding: 3px 10px;
@@ -445,7 +431,6 @@
     margin-bottom: 8px;
 }
 
-/* Estilos para diferenciar tipos */
 .tipo-diagnostico {
     border-left: 4px solid #4a90e2;
 }
@@ -471,7 +456,6 @@
     margin: 5px 0 0 0;
 }
 
-/* Panel de detalle */
 .diagnostico-detalle-panel {
     height: 100%;
 }
@@ -493,7 +477,6 @@
     margin: 0;
 }
 
-/* Contenido del detalle */
 .detalle-content {
     animation: fadeIn 0.5s ease;
 }
@@ -559,7 +542,6 @@
     transform: translateY(-2px);
 }
 
-/* Estilos para mensajes de carga/error */
 .diagnosticos-loading {
     text-align: center;
     padding: 40px;
@@ -684,7 +666,6 @@
     border: none;
 }
 
-
 @media (max-width: 992px) {
     .diagnosticos-grid {
         grid-template-columns: 1fr;
@@ -776,7 +757,7 @@
         border: 2px solid #e0e0e0;
         box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         margin-bottom: 15px;
-        border-left: 4px solid #50c878; /* Verde para tratamientos */
+        border-left: 4px solid #50c878;
     }
 
     .tratamiento-card:hover {
@@ -807,7 +788,6 @@
         font-size: 1.1em;
     }
 
-    /* Botón Finalizar */
     .btn-finalizar {
         background: #28a745;
         color: white;
@@ -833,7 +813,6 @@
         box-shadow: 0 4px 8px rgba(40, 167, 69, 0.3);
     }
 
-    /* Estilos responsive */
     @media (max-width: 992px) {
         .tratamientos-grid {
             grid-template-columns: 1fr;

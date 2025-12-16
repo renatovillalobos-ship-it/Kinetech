@@ -8,9 +8,6 @@ function inicializarAplicacion() {
     inicializarNavegacion();
 }
 
-// ================================
-// 1. CARGA DINÁMICA DE CONTENIDO
-// ================================
 function inicializarCargaContenido() {
     const botones = document.querySelectorAll(".cargar-contenido");
     const panel = document.getElementById("panel-dinamico");
@@ -23,7 +20,6 @@ function inicializarCargaContenido() {
         cargarContenido(urlInicial, panel);
     }
 
-    // Event listeners para botones
     botones.forEach(boton => {
         boton.addEventListener("click", e => {
             e.preventDefault();
@@ -46,7 +42,6 @@ function cargarContenido(url, panel) {
             panel.innerHTML = html;
             panel.scrollTop = 0;
             
-            // Si se cargó un cuestionario, inicializar sus eventos
             if (html.includes('ajax-cuestionario')) {
                 inicializarCuestionarioForm();
             }
@@ -57,9 +52,6 @@ function cargarContenido(url, panel) {
         });
 }
 
-// ================================
-// 2. NAVEGACIÓN Y ESTADO ACTIVO
-// ================================
 function inicializarNavegacion() {
     document.addEventListener("click", function (e) {
         if (e.target.classList.contains("cargar-contenido")) {
@@ -69,32 +61,24 @@ function inicializarNavegacion() {
 }
 
 function marcarActivo(elemento) {
-    // Quitar selección anterior
     document.querySelectorAll(".sidebar-link").forEach(link => {
         link.classList.remove("active-link");
     });
 
-    // Marcar el nuevo como seleccionado
     elemento.classList.add("active-link");
 }
 
-// ================================
-// 3. MANEJO DE CUESTIONARIO
-// ================================
+
 function inicializarCuestionario() {
-    // Este método se llama al cargar la página
 }
 
 function inicializarCuestionarioForm() {
-    // Este método se llama cuando se carga un cuestionario dinámicamente
     const form = document.getElementById("cuestionarioForm");
     if (!form) return;
 
-    // Remover listeners anteriores si existen
     const nuevoForm = form.cloneNode(true);
     form.parentNode.replaceChild(nuevoForm, form);
 
-    // Agregar listener al nuevo formulario
     document.getElementById("cuestionarioForm").addEventListener("submit", manejarEnvioCuestionario);
 }
 
@@ -210,7 +194,6 @@ function revisarVisualmenteCuestionario(form, btn, detalle_respuestas) {
             const respuestaEnviadaId = detalle.respuesta_enviada_id;
             const esCorrecta = detalle.es_correcta;
 
-            // Iterar sobre todos los inputs de la pregunta
             const inputsPregunta = form.querySelectorAll(`input[name="pregunta_${detalle.pregunta_id}"]`);
             
             inputsPregunta.forEach(input => {
@@ -222,11 +205,9 @@ function revisarVisualmenteCuestionario(form, btn, detalle_respuestas) {
                     input.checked = true;
                 }
 
-                // Si esta es la respuesta CORRECTA (se le agrega el badge verde)
                 if (input.value == respuestaCorrectaId) {
                     label.innerHTML += ' <span class="badge bg-success ms-2">✓ Correcta</span>';
                 } 
-                // Si fue la respuesta seleccionada Y es INCORRECTA (se le agrega el badge rojo)
                 else if (input.value == respuestaEnviadaId && !esCorrecta) {
                     label.innerHTML += ' <span class="badge bg-danger ms-2">✗ Tu respuesta</span>';
                 }
@@ -234,7 +215,6 @@ function revisarVisualmenteCuestionario(form, btn, detalle_respuestas) {
         });
     }
     
-    // 3. Cambiar estilo del botón
     btn.classList.remove("btn-success");
     btn.classList.add("btn-secondary");
     btn.innerHTML = "Cuestionario completado";
@@ -250,7 +230,6 @@ function marcarComoCompletado(sectionId) {
 }
 
 function actualizarEstadoSidebar(sectionId) {
-    // Buscar el enlace en el sidebar y actualizarlo
     const sidebarLink = document.querySelector(`.sidebar-link[data-section="${sectionId}"] .estado-item`);
     if (sidebarLink) {
         sidebarLink.classList.add("completado");
@@ -258,9 +237,7 @@ function actualizarEstadoSidebar(sectionId) {
     }
 }
 
-// ================================
-// 4. SISTEMA DE MENSAJES
-// ================================
+
 function mostrarMensaje(texto, tipo = "info") {
     const panel = document.getElementById("panel-dinamico");
     if (!panel) return;
@@ -283,7 +260,6 @@ function mostrarMensaje(texto, tipo = "info") {
 
     panel.appendChild(mensaje);
     
-    // Auto-eliminar después de 5 segundos
     setTimeout(() => {
         if (mensaje.parentNode) {
             mensaje.remove();
@@ -295,7 +271,6 @@ function mostrarMensajeCuestionario(texto, tipo = "info") {
     const cuestionarioDiv = document.querySelector(".ajax-cuestionario");
     if (!cuestionarioDiv) return;
 
-    // Remover mensajes anteriores
     const mensajesAnteriores = cuestionarioDiv.querySelectorAll(".mensaje-cuestionario");
     mensajesAnteriores.forEach(msg => msg.remove());
 
@@ -310,7 +285,6 @@ function mostrarMensajeCuestionario(texto, tipo = "info") {
     
     mensaje.innerHTML = texto;
 
-    // Insertar después del encabezado
     const encabezado = cuestionarioDiv.querySelector(".text-center");
     if (encabezado) {
         encabezado.parentNode.insertBefore(mensaje, encabezado.nextSibling);
@@ -318,7 +292,6 @@ function mostrarMensajeCuestionario(texto, tipo = "info") {
         cuestionarioDiv.prepend(mensaje);
     }
 
-    // Auto-eliminar después de 7 segundos (excepto mensajes de éxito)
     if (tipo !== "success") {
         setTimeout(() => {
             if (mensaje.parentNode) {
@@ -328,9 +301,6 @@ function mostrarMensajeCuestionario(texto, tipo = "info") {
     }
 }
 
-// ================================
-// 5. FUNCIONES AUXILIARES
-// ================================
 function syncSidebarHeight() {
     const main = document.getElementById("mainCursoContent");
     const sidebar = document.getElementById("sidebarCurso");
@@ -349,13 +319,11 @@ function syncSidebarHeight() {
     }
 }
 
-// Inicializar sincronización de altura
 if (document.getElementById("sidebarCurso")) {
     document.addEventListener('DOMContentLoaded', syncSidebarHeight);
     window.addEventListener('resize', syncSidebarHeight);
     window.addEventListener('load', syncSidebarHeight);
     
-    // Observar cambios en el contenido principal
     if (typeof MutationObserver !== 'undefined') {
         const main = document.getElementById("mainCursoContent");
         if (main) {

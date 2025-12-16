@@ -6,18 +6,15 @@ from django.shortcuts import redirect
 def ver_cuestionario(request, curso_id, cuestionario_id=None):
     curso = get_object_or_404(Curso, id=curso_id)
     
-    # Si no se pasa un cuestionario_id, tomar el primero
     if not cuestionario_id:
         cuestionarios = CuestionarioModelo.objects.filter(Curso=curso)
         if cuestionarios.exists():
             cuestionario = cuestionarios.first()
             return redirect('cuestionario:cuestionario_detalle', curso_id=curso_id, cuestionario_id=cuestionario.id)
     
-    # Obtener el cuestionario específico
     cuestionario = get_object_or_404(CuestionarioModelo, id=cuestionario_id, Curso=curso)
     preguntas = Preguntas.objects.filter(cuestionario=cuestionario).prefetch_related('respuesta_set')
     
-    # Obtener todos los cuestionarios para el sidebar
     cuestionarios_todos = CuestionarioModelo.objects.filter(Curso=curso)
     cuestionarios_iniciales = cuestionarios_todos.filter(nombre='Inicial')
     cuestionarios_finales = cuestionarios_todos.filter(nombre='Final')
@@ -29,7 +26,6 @@ def ver_cuestionario(request, curso_id, cuestionario_id=None):
             if respuesta_id:
                 respuestas_seleccionadas[pregunta.id] = int(respuesta_id)
 
-        # Calcular puntaje
         puntaje = 0
         for pregunta in preguntas:
             selected_id = respuestas_seleccionadas.get(pregunta.id)

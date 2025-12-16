@@ -89,7 +89,6 @@ def ver_etapas(request, caso_id, parte_id, paciente_id):
 
 
 def etapa_detalle(request, caso_id, parte_id, paciente_id, etapa_id):
-    # Obtener objetos
     caso = get_object_or_404(Caso_clinico, id=caso_id)
     parte = get_object_or_404(Partes_cuerpo, id=parte_id)
     paciente = get_object_or_404(Pacientes, id=paciente_id)
@@ -166,7 +165,7 @@ def api_opciones_tema(request, tema_id):
                 'es_correcta': opcion.es_correcta,
                 'retroalimentacion': opcion.retroalimentacion or '',
                 'video_respuesta': opcion.video_respuesta or '',
-                'embed_url_video': opcion.embed_url(),  # IMPORTANTE: usar el método embed_url()
+                'embed_url_video': opcion.embed_url(),
             }
             opciones_data.append(opcion_data)
         
@@ -191,16 +190,13 @@ def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
         try:
             opcion_id = request.POST.get('opcion_id')
             
-            # Obtener la opción seleccionada
             opcion = get_object_or_404(OpcionTema, id=opcion_id)
             
-            # Obtener contexto
             caso = get_object_or_404(Caso_clinico, id=caso_id)
             parte = get_object_or_404(Partes_cuerpo, id=parte_id)
             paciente = get_object_or_404(Pacientes, id=paciente_id)
             etapa = get_object_or_404(Etapa, id=etapa_id, ParteCuerpo=parte)
             
-            # Guardar la respuesta en sesión
             if 'respuestas_caso' not in request.session:
                 request.session['respuestas_caso'] = {}
             
@@ -213,13 +209,10 @@ def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
             }
             request.session.modified = True
             
-            # Determinar qué hacer según si es correcta o no
             if opcion.es_correcta:
-                # Si tiene redirección específica
                 if opcion.lleva_a_etapa:
                     siguiente_etapa = opcion.lleva_a_etapa
                 else:
-                    # Buscar siguiente etapa del mismo tipo o la siguiente en orden
                     siguiente_etapa = Etapa.objects.filter(
                         ParteCuerpo=parte,
                         orden__gt=etapa.orden
@@ -234,7 +227,6 @@ def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
                                      args=[caso_id, parte_id, paciente_id, siguiente_etapa.id])
                     })
                 else:
-                    # No hay más etapas
                     return JsonResponse({
                         'success': True,
                         'correcta': True,
@@ -243,7 +235,6 @@ def procesar_respuesta(request, caso_id, parte_id, paciente_id, etapa_id):
                                      args=[caso_id, parte_id, paciente_id])
                     })
             else:
-                # Respuesta incorrecta - quedarse en la misma etapa
                 return JsonResponse({
                     'success': True,
                     'correcta': False,
@@ -268,7 +259,6 @@ def ver_progreso(request, caso_id, parte_id, paciente_id):
     
     etapas = Etapa.objects.filter(ParteCuerpo=parte).order_by('orden')
     
-    # Obtener respuestas de sesión
     respuestas = request.session.get('respuestas_caso', {})
     etapas_completadas = 0
     

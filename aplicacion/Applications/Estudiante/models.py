@@ -2,7 +2,7 @@ from django.db import models
 from Applications.Docente.models import Curso
 from Applications.Docente.models import Docente
 from Applications.Caso_Clinico.models import Partes_cuerpo, Etapa  
-from django.core.validators import RegexValidator #Validador de letras y números
+from django.core.validators import RegexValidator
 from django.core.exceptions import ValidationError
 from Applications.Cuestionario.models import cuestionario, Preguntas, Respuesta
 from PIL import Image
@@ -10,32 +10,27 @@ from PIL import Image
 
 
 solo_letras = RegexValidator(
-    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$', # Patrón permitido
-    'Este campo solo puede contener letras y espacios.' # Mensaje de error
+    r'^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s\-\.]*$',
+    'Este campo solo puede contener letras y espacios.'
 )
 
 def validacion_imagen(value):
-    # Extensiones permitidas
     extensiones_validas = ['png', 'jpg', 'jpeg']
 
-    # Verificar extensión por nombre del archivo
     extension = value.name.split('.')[-1].lower()
     if extension not in extensiones_validas:
         raise ValidationError("Formato no permitido. Usa PNG, JPG o JPEG.")
 
-    # Validar que el archivo realmente sea una imagen válida
     try:
         imagen = Image.open(value)
-        imagen.verify()  # Comprueba integridad del archivo
+        imagen.verify()
 
-        # Validar formato real del archivo
         if imagen.format not in ['PNG', 'JPEG', 'JPG']:
             raise ValidationError("El archivo debe ser una imagen PNG, JPG o JPEG real.")
     except Exception:
         raise ValidationError("Archivo inválido o corrupto.")
 
 
-# Create your models here.
 class Estudiante(models.Model):
 
     pais_opciones = [('Chile', 'Chile'),
@@ -59,7 +54,7 @@ class Estudiante(models.Model):
                                        default='Chile')
     foto_perfil_estudiante= models.ImageField(
     'Foto perfil estudiante', 
-    upload_to='perfiles/estudiantes/', # 'perfiles/estudiantes/' se creará DENTRO de la nueva carpeta 'media'
+    upload_to='perfiles/estudiantes/',
     validators=[validacion_imagen],
     null=True, blank=True
 )
@@ -86,7 +81,6 @@ class Progreso(models.Model):
     progreso_estudiante = models.ForeignKey(Estudiante, on_delete=models.CASCADE)
     docente_Correspondiente_progreso = models.ForeignKey(Docente, on_delete=models.CASCADE)
     
-    # NUEVOS CAMPOS para tracking de videos
     parte_cuerpo = models.ForeignKey(Partes_cuerpo, on_delete=models.CASCADE, null=True, blank=True)
     etapa_completada = models.ForeignKey(Etapa, on_delete=models.CASCADE, null=True, blank=True)
     video_visto = models.BooleanField(default=False)
@@ -108,7 +102,7 @@ class RespuestaEstudiante(models.Model):
     class Meta:
         verbose_name = "Respuesta Estudiante"
         verbose_name_plural = "Respuestas Estudiantes"
-        unique_together = ('estudiante', 'pregunta')  # Evita duplicados
+        unique_together = ('estudiante', 'pregunta')
 
     def __str__(self):
         return f"{self.estudiante} - Pregunta {self.pregunta.id}"

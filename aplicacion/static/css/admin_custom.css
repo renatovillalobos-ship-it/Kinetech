@@ -4,7 +4,6 @@
   --background: #F2F2F2;
 }
 
-/* ======= Cabecera y sidebar ======= */
 .main-header {
   background-color: var(--primary) !important;
   color: white !important;
@@ -18,7 +17,6 @@
   color: white !important;
 }
 
-/* ======= Sidebar ======= */
 .main-sidebar {
   background-color: var(--primary) !important;
   color: white !important;
@@ -33,7 +31,6 @@
   color: white !important;
 }
 
-/* ======= Botones primarios ======= */
 .btn.btn-primary,
 button.btn-primary,
 a.btn-primary,
@@ -52,7 +49,6 @@ input[type="submit"].btn-primary:hover {
   color: #fff !important;
 }
 
-/* ======= Botones secundarios ======= */
 .btn.btn-secondary,
 button.btn-secondary,
 a.btn-secondary {
@@ -68,22 +64,18 @@ a.btn-secondary:hover {
   border-color: #7E9BC0 !important;
 }
 
-/* Ajuste del tamaño del logo en la pantalla de login */
 .login-logo img {
-    width: 200px !important;  /* puedes probar con 150 o 180 si prefieres */
+    width: 200px !important;
     height: auto !important;
     margin: 20px auto !important;
     display: block;
 }
 
-/* ===== BOTONES PRINCIPALES DEL ADMIN ===== */
-
-/* Botones de acción generales (Guardar, Añadir, Editar) */
 .content-wrapper .btn.btn-primary,
 .content-wrapper .btn-primary,
 .card-footer .btn.btn-primary,
 .card-footer .btn-primary {
-    background-color: #003865 !important;   /* azul institucional UCN */
+    background-color: #003865 !important;
     border-color: #003865 !important;
     color: #fff !important;
 }
@@ -92,11 +84,10 @@ a.btn-secondary:hover {
 .content-wrapper .btn-primary:hover,
 .card-footer .btn.btn-primary:hover,
 .card-footer .btn-primary:hover {
-    background-color: #005a8c !important;   /* azul claro UCN */
+    background-color: #005a8c !important;
     border-color: #005a8c !important;
 }
 
-/* Botones de éxito (Guardar cambios, etc.) */
 .content-wrapper .btn.btn-success,
 .content-wrapper .btn-success,
 .card-footer .btn.btn-success {

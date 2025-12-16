@@ -12,32 +12,26 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 SECRET_KEY = 'django-insecure-sw$_&cx=rdqf$+j(dt57hi6@9#v(ghhnwy-8)lmu#uzay5mk$3'
 
 
-DEBUG = True  # Asegúrate que sea True para desarrollo
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']  # <- Agregar esto si no está
+DEBUG = True  #True para desarrollo
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
 
 # ==============================================================================
 # CONFIGURACIÓN DE SESIONES PARA "RECORDARME"
 # ==============================================================================
 
-# Motor de sesiones (base de datos recomendado)
 SESSION_ENGINE = 'django.contrib.sessions.backends.db'
 
 # Tiempo de expiración de la sesión (30 días en segundos)
 SESSION_COOKIE_AGE = 2592000
 
-# La sesión NO expira cuando se cierra el navegador (permite "Recordarme")
 SESSION_EXPIRE_AT_BROWSER_CLOSE = False
 
-# Renovar la sesión en cada petición (recomendado para mejor UX)
 SESSION_SAVE_EVERY_REQUEST = True
 
-# Configuración de cookies de sesión
 SESSION_COOKIE_SECURE = False  # True en producción con HTTPS
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = 'Lax'
-
-
 
 
 # Application definition
@@ -50,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django.contrib.sites',  # <- AÑADIR ESTO
+    'django.contrib.sites',
     
     
     #Aplicaciones Propias
@@ -125,7 +119,7 @@ USE_TZ = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 STATICFILES_DIRS = [BASE_DIR / "static"]
-# 🔹 Agrega esta línea:
+
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 JAZZMIN_SETTINGS = {
@@ -136,34 +130,29 @@ JAZZMIN_SETTINGS = {
     "site_logo": "img/logo_ucn.jpg",
     "custom_css": "css/admin_custom.css",
     "custom_js": None,
-        ############
+    
+    ############
     # Top Menu #
     ############
 
-
-      # Links to put along the top menu
     "topmenu_links": [
 
-        # Url that gets reversed (Permissions can be added)
         {"name": "Home",  "url": "admin:index", "permissions": ["auth.view_user"]},
 
-        # external url that opens in a new window (Permissions can be added)
         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
 
-        # model admin to link to (Permissions checked against model)
         {"model": "auth.User"},
 
-        # App with dropdown menu to all its models pages (Permissions checked against models)
         {"app": "Caso_Clinico"},
         {"app": "Cuestionario"},
         {"app": "Docente"},
         {"app": "Estudiante"},
     ],
-     #############
+
+    #############
     # User Menu #
     #############
 
-    # Additional links to include in the user menu on the top right ("app" url type is not allowed)
     "usermenu_links": [
         {"name": "Support", "url": "https://github.com/farridav/django-jazzmin/issues", "new_window": True},
         {"model": "auth.user"}
@@ -171,19 +160,13 @@ JAZZMIN_SETTINGS = {
 }
 
 
-
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') 
-# La URL para acceder a esas fotos (debe ser distinta a STATIC_URL)
 MEDIA_URL = '/media/' 
 
-# 2. ARCHIVOS DEL CÓDIGO (STATIC)
 STATIC_URL = '/static/'
-# Directorio donde Django busca tus archivos estáticos
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
-
-
 
 # ============================================
 # CONFIGURACIÓN EMAIL - RESTABLECIMIENTO
@@ -194,19 +177,16 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configuración personalizada
 DEFAULT_FROM_EMAIL = 'soporte@sistema-ucn.cl'
-SITE_ID = 1  # Importante para que funcione correctamente
-
-# Hosts permitidos para desarrollo
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+SITE_ID = 1
 
 # ============================================
 # CONFIGURACIÓN DE AUTENTICACIÓN
 # ============================================
 
 # Redirección después de login/logout
-LOGIN_URL = '/login/'  # O la URL de tu login
-LOGIN_REDIRECT_URL = '/'  # Página después de login exitoso
-LOGOUT_REDIRECT_URL = '/login/'  # Página después de logout
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/login/'
 
 # Tiempo de expiración del token de restablecimiento (24 horas en segundos)
 PASSWORD_RESET_TIMEOUT = 86400

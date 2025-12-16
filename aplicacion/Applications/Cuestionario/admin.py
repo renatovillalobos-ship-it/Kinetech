@@ -15,7 +15,6 @@ class PreguntasAdmin(admin.ModelAdmin):
     )
     list_filter = ('cuestionario__nombre',)
 
-    # Limitar máximo 10 preguntas por cuestionario
     def save_model(self, request, obj, form, change):
         total = Preguntas.objects.filter(cuestionario=obj.cuestionario).count()
         if not change and total >= 10:
@@ -36,7 +35,6 @@ class RespuestaAdmin(admin.ModelAdmin):
     )
     list_filter = ('es_correcta',)
 
-    # Limitar máximo 4 respuestas por pregunta
     def save_model(self, request, obj, form, change):
         total = Respuesta.objects.filter(ID_pregunta=obj.ID_pregunta).count()
         if not change and total >= 4:

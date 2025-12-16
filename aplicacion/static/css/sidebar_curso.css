@@ -1,4 +1,3 @@
-/* Contenedor general */
 .sidebar-modern .accordion-item {
     border: none;
     margin-bottom: 10px;
@@ -6,7 +5,6 @@
     overflow: hidden;
 }
 
-/* Header de cada sección */
 .sidebar-section {
     font-weight: 600;
     background: #f8f9fa;
@@ -14,7 +12,6 @@
     padding-right: 40px;
 }
 
-/* Estado (punto o ticket) */
 .estado-item {
     position: absolute;
     right: 15px;
@@ -32,7 +29,6 @@
     color: #0d6efd;
 }
 
-/* Links internos */
 .sidebar-link {
     padding: 12px 18px;
     font-size: 0.95rem;
@@ -43,37 +39,29 @@
     align-items: center;
 }
 
-/* Hover */
 .sidebar-link:hover {
     background: #f0f7ff;
     border-left-color: #0d6efd;
 }
 
-/* Link activo */
 .sidebar-link.active-link {
     background: #e8f1ff;
     border-left-color: #0d6efd;
     font-weight: 600;
 }
 
-/* Evitar que el accordion cambie a celeste cuando está abierto */
 .accordion-button:not(.collapsed) {
     background-color: #ffffff !important;
     color: inherit !important;
     box-shadow: none !important;
 }
 
-/* Opcional: cuando se pasa el mouse por arriba del título */
 .accordion-button:hover {
     background-color: #f7f7f7 !important;
 }
 
-/* ============================================= */
-/*                   MODO OSCURO                 */
-/* ============================================= */
-
 body.dark-mode .sidebar-modern .accordion-item {
-    background: #1f2937; /* gris azulado oscuro */
+    background: #1f2937;
     color: #e2e8f0;
 }
 
@@ -82,7 +70,6 @@ body.dark-mode .sidebar-section {
     color: #e2e8f0;
 }
 
-/* accordion abierto */
 body.dark-mode .accordion-button:not(.collapsed) {
     background-color: #1f2937 !important;
     color: #e2e8f0 !important;
@@ -92,7 +79,6 @@ body.dark-mode .accordion-button:hover {
     background-color: #273445 !important;
 }
 
-/* Links internos */
 body.dark-mode .sidebar-link {
     background: #1f2937; 
     color: #e2e8f0;
@@ -100,7 +86,7 @@ body.dark-mode .sidebar-link {
 }
 
 body.dark-mode .sidebar-link:hover {
-    background: rgba(96, 165, 250, 0.12); /* azul suave */
+    background: rgba(96, 165, 250, 0.12);
     border-left-color: #60a5fa;
 }
 
@@ -110,7 +96,6 @@ body.dark-mode .sidebar-link.active-link {
     font-weight: 700;
 }
 
-/* Estado items */
 body.dark-mode .estado-item {
     color: #94a3b8;
 }

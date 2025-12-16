@@ -6,26 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 
     <link rel="stylesheet" href="{% static 'css/login.css' %}">
-    <!-- CORREGIDO: Agregar los 3 pesos de la fuente -->
-    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- NUEVO: Estilos para aplicar los pesos correctamente -->
+    <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">    
     <style>
         body, h1, h2, h3, h4, h5, h6, p, input, button, textarea, select, a, span, div {
             font-family: 'Source Sans Pro', sans-serif;
         }
         
-        /* TÍTULOS: Bold (700) */
         h1, h2, h3, .form_title, .title, .switch__title, h4 {
             font-weight: 700;
         }
         
-        /* SUBTÍTULOS: Semibold (600) */
         .switch__description, .form__checkbox-label, label, .text-muted, small {
             font-weight: 600;
         }
         
-        /* CONTENIDO: Regular (400) */
         body, p, input, .form__input, .description, .politicas-texto, ul, li {
             font-weight: 400;
         }
@@ -34,7 +28,6 @@
 
 <body>
 
-<!-- Toggle modo oscuro mejorado -->
 <div class="theme-toggle-container">
     <span class="theme-label"></span>
     <label class="theme-switch">
@@ -47,16 +40,10 @@
 </div>
 
 <div class="main">
-
-    <!-- CONTENEDOR REGISTRO -->
     <div class="container a-container" id="a-container">
-
-        <!-- FORMULARIO DOCENTE -->
         <form class="form" id="docente-form" method="POST" action="{% url 'docente:registro_docente' %}">
             {% csrf_token %}
-
             <h2 class="form_title title">Crear cuenta</h2>
-
             <!-- Mensajes -->
             <div id="messages-container-docente">
                 {% if messages %}
@@ -67,13 +54,11 @@
                     </ul>
                 {% endif %}
             </div>
-
             <!-- Selección de rol -->
             <div class="role-selector">
                 <button type="button" class="role-btn is-active docente-btn">Docente</button>
                 <button type="button" class="role-btn estudiante-btn">Estudiante</button>
             </div>
-
             <!-- CAMPOS DOCENTE -->
             <input class="form__input" type="text" name="nombre_doc" placeholder="Nombre*" required>
             <input class="form__input" type="text" name="apellido_doc" placeholder="Apellido*" required>
@@ -115,7 +100,6 @@
                 <option value="TG1">Trabajo de Grado I</option>
                 <option value="TG2">Trabajo de Grado II</option>
             </select>
-
             <!-- País -->
             <select class="form__input" name="pais_doc" required>
                 <option value="">Selecciona tu país</option>
@@ -125,28 +109,20 @@
                 <option value="BR">Brasil</option>
                 <option value="OTRO">Otro</option>
             </select>
-
             <input class="form__input" type="password" name="password_doc" placeholder="Contraseña*" required>
-            
-            <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
             <div class="form__checkbox-label mb-3">
                 <input type="checkbox" name="acepto_privacidad" required>
                 <span>
                     Acepto las <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </span>
             </div>
-            <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
-
-
             <button class="form__button button submit" type="submit">CREAR CUENTA</button>
         </form>
-
         <!-- FORMULARIO ESTUDIANTE -->
         <form class="form" id="estudiante-form" method="POST" action="{% url 'estudiante:registro_estudiante' %}" style="display:none;">
             {% csrf_token %}
 
             <h2 class="form_title title">Crear cuenta</h2>
-
             <!-- Mensajes -->
             <div id="messages-container-estudiante">
                 {% if messages %}
@@ -157,18 +133,15 @@
                     </ul>
                 {% endif %}
             </div>
-
             <!-- Selección de rol -->
             <div class="role-selector">
                 <button type="button" class="role-btn docente-btn">Docente</button>
                 <button type="button" class="role-btn is-active estudiante-btn">Estudiante</button>
             </div>
-
             <!-- CAMPOS ESTUDIANTE -->
             <input class="form__input" type="text" name="nombre_est" placeholder="Nombre*" required>
             <input class="form__input" type="text" name="apellido_est" placeholder="Apellido*" required>
             <input class="form__input" type="email" name="correo_est" placeholder="Correo electrónico*" required>
-
             <!-- País -->
             <select class="form__input" name="pais_est" required>
                 <option value="">Selecciona tu país</option>
@@ -178,75 +151,48 @@
                 <option value="BR">Brasil</option>
                 <option value="OTRO">Otro</option>
             </select>
-
             <input class="form__input" type="password" name="password_est" placeholder="Contraseña*" required>
-
-             <!-- ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA -->
             <div class="form__checkbox-label mb-3">
                 <input type="checkbox" name="acepto_privacidad" required>
                 <span>
                     Acepto las <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </span>
             </div>
-            <!-- este parrafito -->
-
             <button class="form__button button submit" type="submit">CREAR CUENTA</button>
         </form>
-
     </div>
 
     <!-- CONTENEDOR LOGIN -->
     <div class="container b-container" id="b-container">
-
         <form class="form" id="b-form" method="POST" action="{% url 'docente:autenticar' %}">
             {% csrf_token %}
-
             <h2 class="form_title title">Iniciar sesión</h2>
-           
-            <!-- -------- -->
             <div class="form__messages"></div>
-            <!-- -------- -->
-
             <input class="form__input" type="text" placeholder="Correo electrónico" name="correo" required>
             <input class="form__input" type="password" placeholder="Contraseña" name="contrasena" required>
-
             <label class="form__checkbox-label">
                 <input type="checkbox" name="remember_me" class="form__checkbox">
                 Recordarme en este dispositivo
             </label>
-            
-            <!--ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA-->
             <div class="text-center mt-4">
                 <small class="text-muted">
                     Al iniciar sesión, aceptas nuestras 
                     <a href="#politicas" style="color: #AC6D33;">Políticas de Privacidad</a>
                 </small>
             </div>
-            <!-- -------- -->
-
-            <button class="form__button button submit">INGRESAR</button>
-
-            <!-- <a class="form__link" href="#">Olvidé mi contraseña</a> -->
-            
-            <!-- -------- -->
-            <a class="form__link" href="{% url 'reset_password' %}">Olvidé mi contraseña</a>  <!-- ← CAMBIADO: ahora apunta a reset_password -->
-            <!-- -------- -->
-        
+            <button class="form__button button submit">INGRESAR</button>            
+            <a class="form__link" href="{% url 'reset_password' %}">Olvidé mi contraseña</a>        
         </form>
-
     </div>
-
     <!-- SWITCH -->
     <div class="switch" id="switch-cnt">
         <div class="switch__circle"></div>
         <div class="switch__circle switch__circle--t"></div>
-
         <div class="switch__container" id="switch-c1">
             <img src="{% static 'img/logo_ucn.jpg' %}" class="logo-ucn">
             <h2 class="switch__title title">Acceder</h2>
             <button class="switch__button button switch-btn">INICIAR SESIÓN</button>
         </div>
-
         <div class="switch__container is-hidden" id="switch-c2">
             <img src="{% static 'img/logo_ucn.jpg' %}" class="logo-ucn">
             <h2 class="switch__title title">¡BIENVENIDO!</h2>
@@ -254,24 +200,19 @@
             <button class="switch__button button switch-btn">REGISTRARME</button>
         </div>
     </div>
-
 </div>
-
 <script src="{% static 'js/login.js' %}"></script>
-
 <script>
+
 // TOGGLE MODO OSCURO
 const themeToggle = document.getElementById('theme-toggle');
 const body = document.body;
-
-// Verificar si hay preferencia guardada
 const currentTheme = localStorage.getItem('theme');
 if (currentTheme === 'dark') {
     body.classList.add('dark-mode');
     themeToggle.checked = true;
 }
 
-// Evento cuando cambia el checkbox
 themeToggle.addEventListener('change', function() {
     if (this.checked) {
         body.classList.add('dark-mode');
@@ -283,8 +224,6 @@ themeToggle.addEventListener('change', function() {
 });
 </script>
 
-
-<!-- ---- -->
 <!-- Modal de Políticas de Privacidad -->
 <div id="modalPoliticas" class="modal-politicas">
     <div class="modal-contenido">
@@ -319,6 +258,5 @@ themeToggle.addEventListener('change', function() {
         <button class="button" id="aceptarPoliticas">Aceptar</button>
     </div>
 </div>
-
 </body>
 </html>

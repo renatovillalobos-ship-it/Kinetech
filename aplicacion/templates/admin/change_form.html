@@ -2,32 +2,25 @@
 
 {% block extrahead %}
     {{ block.super }}
-
-    <!-- CARGAR FUENTE -->
     <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 
     <style>
-        /* FUENTES SOURCE SANS PRO */
         body, #content h1, .form-row label, input, textarea, select, button, p, span, div {
             font-family: 'Source Sans Pro', sans-serif !important;
         }
         
-        /* TÍTULOS: Bold */
         #content h1, h2, h3, h4, h5, h6 {
             font-weight: 700 !important;
         }
         
-        /* SUBTÍTULOS: Semibold (etiquetas de formulario) */
         .form-row label, fieldset legend, .inline-group h2 {
             font-weight: 600 !important;
         }
         
-        /* CONTENIDO: Regular */
         body, input, textarea, select, p, .help, .form-row p {
             font-weight: 400 !important;
         }
 
-        /* MODAL - CORREGIR COLORES INSTITUCIONALES */
         .custom-modal-backdrop {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.6); z-index: 9999;
@@ -45,16 +38,15 @@
             cursor: pointer; 
             border: none; 
             border-radius: 5px; 
-            font-weight: 600 !important; /* Semibold para botones */
+            font-weight: 600 !important;
             font-family: 'Source Sans Pro', sans-serif !important;
         }
-        /* COLORES CORREGIDOS SEGÚN PANTONE */
         .btn-accept { 
-            background-color: #AC6D33 !important; /* Pantone 471 C - Marrón */
+            background-color: #AC6D33 !important;
             color: white !important; 
         }
         .btn-cancel { 
-            background-color: #1E3A5F !important; /* Pantone 540 C - Azul oscuro */
+            background-color: #1E3A5F !important;
             color: white !important; 
         }
     </style>

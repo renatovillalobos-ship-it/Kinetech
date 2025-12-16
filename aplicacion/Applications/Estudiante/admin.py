@@ -39,5 +39,4 @@ class EstudianteAdmin(admin.ModelAdmin):
             )
         return "Sin foto"
     foto_preview.short_description = "Foto de perfil"
-# Register your models here.
 admin.site.register(Estudiante,EstudianteAdmin)

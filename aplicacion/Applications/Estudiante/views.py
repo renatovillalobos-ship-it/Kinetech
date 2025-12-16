@@ -8,26 +8,17 @@ from django.core.exceptions import ValidationError
 from django.db.models import Count
 from Applications.Cuestionario.models import cuestionario
 from Applications.Estudiante.models import ResultadoCuestionario
-
 import os
-
 from ..Docente.models import Curso
 from .models import Estudiante, Progreso
 from Applications.Caso_Clinico.models import Caso_clinico, Etapa 
-
-
-# ------------------
 import time
 from django.http import JsonResponse
-
-# ✅ AGREGAR ESTE IMPORT
 from django.contrib.auth import get_user_model
-import re  # ← ESTO FALTA EN EL ARCHIVO
-# ------------------
+import re
 
-# -----------------------------------------------------------
-# HOME ESTUDIANTE (PROTEGIDO POR SESIÓN)
-# -----------------------------------------------------------
+
+# HOME ESTUDIANTE
 class Home_estudiante(TemplateView):
     template_name = 'estudiante/home_estudiante.html'
 
@@ -46,16 +37,13 @@ class Home_estudiante(TemplateView):
                 estudiante = Estudiante.objects.get(id=estudiante_id)
                 context['estudiante'] = estudiante
 
-                # Obtener cursos asignados
                 cursos_asignados = estudiante.cursos.all()
-                context['cursos'] = cursos_asignados  # ← CAMBIÉ 'cursos_asignados' a 'cursos'
+                context['cursos'] = cursos_asignados
                 
-                # Cursos NO asignados al estudiante
                 cursos_disponibles = Curso.objects.exclude(id__in=cursos_asignados)
                 context['cursos_disponibles'] = cursos_disponibles
 
                 if cursos_asignados.exists():
-                    # Contar videos de todos los cursos asignados
                     total_videos = Etapa.objects.filter(
                         ParteCuerpo__CasoClinico__Curso__in=cursos_asignados
                     ).count()
@@ -80,38 +68,31 @@ class CerrarSesion(View):
         messages.info(request, "Sesión cerrada correctamente.")
         return redirect('login')
 
-# -----------------------------------------------------------
-# PROGRESO
-# -----------------------------------------------------------
 
+# PROGRESO
 def calcular_progreso_estudiante(estudiante):
     cursos = estudiante.cursos.all()
 
     if not cursos.exists():
-        return 0  # SIN CURSOS = 0%
-
-    # --- VIDEOS TOTALES ---
+        return 0
+    
     total_videos = Etapa.objects.filter(
         ParteCuerpo__CasoClinico__Curso__in=cursos
     ).count()
 
-    # --- VIDEOS VISTOS ---
     videos_vistos = Progreso.objects.filter(
         progreso_estudiante=estudiante,
         video_visto=True
     ).values('etapa_completada').distinct().count()
 
-    # --- CUESTIONARIOS TOTALES ---
     cuestionarios_totales = cuestionario.objects.filter(
         Curso__in=cursos
     ).count()
 
-    # --- CUESTIONARIOS COMPLETADOS ---
     cuestionarios_completados = ResultadoCuestionario.objects.filter(
         estudiante=estudiante
     ).values('cuestionario').distinct().count()
 
-    # --- ACTIVIDADES TOTALES ---
     total_actividades = total_videos + cuestionarios_totales
     actividades_completadas = videos_vistos + cuestionarios_completados
 
@@ -121,9 +102,8 @@ def calcular_progreso_estudiante(estudiante):
     progreso_final = (actividades_completadas / total_actividades) * 100
     return round(progreso_final, 2)
 
-# -----------------------------------------------------------
+
 # PERFIL ESTUDIANTE
-# -----------------------------------------------------------
 class Perfil_estudiante(TemplateView):
     template_name = 'estudiante/perfil_estudiante.html'
 
@@ -141,9 +121,7 @@ class Perfil_estudiante(TemplateView):
         return context
 
 
-# -----------------------------------------------------------
 # SUBIR FOTO
-# -----------------------------------------------------------
 def subir_foto_estudiante(request, id):
     estudiante = get_object_or_404(Estudiante, id=id)
 
@@ -154,14 +132,12 @@ def subir_foto_estudiante(request, id):
             messages.error(request, "Debes seleccionar una imagen.")
             return redirect('estudiante:perfil_estudiante')
 
-        # Intentar validar imagen antes de guardar
         try:
             estudiante.foto_perfil_estudiante.field.clean(foto, estudiante)
         except ValidationError as e:
             messages.error(request, e.messages[0])
             return redirect('estudiante:perfil_estudiante')
 
-        # Eliminar foto anterior (si existía)
         if estudiante.foto_perfil_estudiante:
             try:
                 if os.path.isfile(estudiante.foto_perfil_estudiante.path):
@@ -179,9 +155,7 @@ def subir_foto_estudiante(request, id):
     return redirect('estudiante:perfil_estudiante')
 
 
-# -----------------------------------------------------------
 # ELIMINAR FOTO
-# -----------------------------------------------------------
 def eliminar_foto_estudiante(request, id):
     estudiante = get_object_or_404(Estudiante, id=id)
 
@@ -196,15 +170,13 @@ def eliminar_foto_estudiante(request, id):
     return redirect('estudiante:perfil_estudiante')
 
 
-# -----------------------------------------------------------
 # REGISTRO ESTUDIANTE
-# -----------------------------------------------------------
 class RegistroEstudiante(View):
     template_name = 'login/login.html'
     success_url_name = 'login'
 
     def post(self, request):
-        inicio = time.time()  # ✅ INICIAR MEDICIÓN
+        inicio = time.time()
 
         nombre = request.POST.get('nombre_est')
         apellido = request.POST.get('apellido_est')
@@ -221,7 +193,6 @@ class RegistroEstudiante(View):
             messages.error(request, "El correo debe terminar en @alumnos.ucn.cl.")
             return render(request, self.template_name)
         
-         # VERIFICAR SI EL CORREO YA EXISTE
         if Estudiante.objects.filter(correo_estudiante=correo).exists():
             messages.error(request, f"El correo {correo} ya está registrado.")
             return render(request, self.template_name)
@@ -229,70 +200,52 @@ class RegistroEstudiante(View):
         try:
             hashed_password = make_password(password)
 
-           # CREAR ESTUDIANTE SIN curso_estudiante_id fijo
             Estudiante.objects.create(
                 nombre_estudiante=nombre,
                 apellido_estudiante=apellido,
                 pais_estudiante=pais,
                 correo_estudiante=correo,
                 contrasena_estudiante=hashed_password,
-                #curso_estudiante_id=2,
                 foto_perfil_estudiante=None
             )
 
-            # cambios
-            tiempo = round(time.time() - inicio, 2)  # ✅ CALCULAR TIEMPO
+            tiempo = round(time.time() - inicio, 2)
     
             messages.success(request, f"¡Registro exitoso en {tiempo} segundos! Ahora puedes iniciar sesión.")
           
             messages.error(request, "Correo ya registrado", extra_tags="estudiante")
 
 
-            #messages.success(request, "Registro exitoso. Ahora puedes iniciar sesión.")
             return redirect(self.success_url_name)
         
         except Exception as e:
-             # cambios
             tiempo = round(time.time() - inicio, 2)
             messages.error(request, f"Error en el registro ({tiempo}s): {str(e)}")
     
-            #messages.error(request, f"Error en el registro: {str(e)}")
             return render(request, self.template_name)
 
-       # except IntegrityError:
-        #    messages.error(request, "Este correo ya está registrado.")
-        #    return render(request, self.template_name)
 
-
-# -----------------------------------------------------------
 # LOGIN
-# -----------------------------------------------------------
 def login_estudiante(request):
     return render(request, 'estudiante/login.html')
 
 
-# -----------------------------------------------------------
 # AUTENTICAR
-# -----------------------------------------------------------
 def autenticar_estudiante(request):
     if request.method == 'POST':
         correo = request.POST.get('correo')
         contrasena = request.POST.get('contrasena')
-        remember_me = request.POST.get('remember_me')  # 'on' si está marcado
+        remember_me = request.POST.get('remember_me')
 
-        # ✅ BLOQUEO 3 INTENTOS (AGREGAR)
         intentos = request.session.get(f'bloqueo_{correo}', 0)
         if intentos >= 3:
             print(f"📧 Email bloqueo a: {correo}")
             return render(request, 'Login/blocked.html')
-        # ✅ FIN BLOQUEO
 
 
         estudiante = Estudiante.objects.filter(correo_estudiante=correo).first()
 
         if not estudiante or not check_password(contrasena, estudiante.contrasena_estudiante):
-     # ---------------
-            # ❌ FALLÓ: Contar intento
             intentos += 1
             request.session[f'bloqueo_{correo}'] = intentos
             
@@ -302,33 +255,22 @@ def autenticar_estudiante(request):
                 return render(request, 'Login/blocked.html')
             
             messages.error(request, f"Error. Intentos: {intentos}/3")
-     # ---------------------------
             
             messages.error(request, "Correo o contraseña incorrectos.")
             return redirect('estudiante:login')
         
-        # ---------------
-        # ✅ ÉXITO: Resetear bloqueo
         request.session.pop(f'bloqueo_{correo}', None)
-        # LIMPIAR sesión anterior
         request.session.flush()
-        # ---------------
 
-        # Crear sesión
         request.session['usuario_tipo'] = 'estudiante'
         request.session['usuario_id'] = estudiante.id
 
-        # --------
-        # IMPLEMENTAR "RECORDARME" - FUNCIONALIDAD REQUERIDA AL 100%
         if remember_me:
-            # Sesión de 30 días (2592000 segundos)
             request.session.set_expiry(2592000)
             print("✓ Estudiante - Recordarme ACTIVADO (30 días)")
         else:
-            # Sesión de navegador (se cierra al cerrar el navegador)
             request.session.set_expiry(0)
             print("✓ Estudiante - Recordarme DESACTIVADO (sesión navegador)")
-         # ------
 
         return redirect('estudiante:home_estudiante')
 
@@ -363,9 +305,7 @@ def validar_correo_ucn(request):
     })
 
 
-# -----------------------------------------------------------
 # VALIDACIÓN RÁPIDA DE EXISTENCIA DE CUENTA
-# -----------------------------------------------------------
 def validar_existencia_cuenta(request):
     """Valida si una cuenta existe en menos de 10 segundos"""
     if request.method != 'POST':
@@ -374,10 +314,8 @@ def validar_existencia_cuenta(request):
     inicio = time.time()
     correo = request.POST.get('correo', '').strip().lower()
     
-    # Validación ultra-rápida
     existe_estudiante = Estudiante.objects.filter(correo_estudiante=correo).exists()
     
-    # También verificar docente
     User = get_user_model()
     existe_docente = User.objects.filter(email=correo).exists()
     

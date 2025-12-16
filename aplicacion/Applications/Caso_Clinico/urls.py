@@ -1,4 +1,3 @@
-# urls.py
 from django.urls import path
 from . import views
 from .views import VideoDetailView
@@ -17,13 +16,10 @@ urlpatterns = [
     
     # API endpoints
     path('api/opciones-tema/<int:tema_id>/', views.api_opciones_tema, name='api_opciones_tema'),
-    
     path('procesar-respuesta/<int:caso_id>/<int:parte_id>/<int:paciente_id>/<int:etapa_id>/', 
          views.procesar_respuesta, name='procesar_respuesta'),
-    
     path('progreso/<int:caso_id>/<int:parte_id>/<int:paciente_id>/', 
          views.ver_progreso, name='ver_progreso'),
-
      path("videos/<int:pk>/", VideoDetailView.as_view(), name="detalle_video"),
      path('api/diagnosticos/<int:etapa_id>/', views.api_diagnosticos, name='api_diagnosticos'),
 

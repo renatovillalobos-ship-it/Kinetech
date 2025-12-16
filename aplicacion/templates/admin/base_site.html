@@ -3,29 +3,23 @@
 
 {% block title %}Administrador kinetech{% endblock %}
 
-<!-- NUEVO BLOQUE: Agregar fuente Source Sans Pro -->
 {% block extrastyle %}
 {{ block.super }}
-<!-- Cargar fuente de Google -->
 <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet">
 
 <style>
-    /* APLICAR FUENTE A TODO EL ADMIN */
     body, h1, h2, h3, h4, h5, h6, p, span, div, input, button, textarea, select, a {
         font-family: 'Source Sans Pro', sans-serif !important;
     }
     
-    /* TÍTULOS: Bold (700) */
     h1, h2, h3, h4, h5, h6, #content h1, .module h2 {
         font-weight: 700 !important;
     }
     
-    /* SUBTÍTULOS: Semibold (600) */
     .breadcrumbs, .object-tools, .form-row label, fieldset h2 {
         font-weight: 600 !important;
     }
     
-    /* CONTENIDO: Regular (400) */
     body, p, td, th, li, .form-row p, .help {
         font-weight: 400 !important;
     }

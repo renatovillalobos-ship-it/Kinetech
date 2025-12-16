@@ -45,7 +45,6 @@ window.addEventListener("load", mainF);
 const docenteForm = document.getElementById("docente-form");
 const estudianteForm = document.getElementById("estudiante-form");
 
-// Obtener TODOS los botones por clase
 const docenteBtns = document.querySelectorAll(".docente-btn");
 const estudianteBtns = document.querySelectorAll(".estudiante-btn");
 
@@ -56,7 +55,6 @@ docenteBtns.forEach(btn => {
             docenteForm.style.display = "flex";
             estudianteForm.style.display = "none";
 
-            // Limpiar validación anterior ESTO LO DEBO AGREGAR
             const mensajeContainer = document.querySelector('#messages-container-estudiante');
             if (mensajeContainer) {
                 const mensajesValidacion = mensajeContainer.querySelectorAll('.correo-validation');
@@ -72,20 +70,12 @@ estudianteBtns.forEach(btn => {
         if (docenteForm && estudianteForm) {
             estudianteForm.style.display = "flex";
             docenteForm.style.display = "none";
-
-            // ✅ AGREGAR ESTA LÍNEA PARA ACTIVAR LA VALIDACIÓN
             setTimeout(inicializarValidacionEstudiante, 100);
         }
     });
 });
 
-
-
-//DE ACA AGREGO MUCHOS CAMBIOS IIIIIIIIIIIIIIIIIII
-
-// ✅ FUNCIÓN DE VALIDACIÓN MEJORADA
 function validarCorreo(correo, mensajeContainer, submitBtn) {
-    // Validación básica frontend primero
     if (!correo.includes('@')) {
         mostrarMensajeValidacion(mensajeContainer, 'error', 'Formato de correo inválido', 0);
         actualizarBotonSubmit(false, submitBtn);
@@ -116,7 +106,6 @@ function validarCorreo(correo, mensajeContainer, submitBtn) {
             data.tiempo
         );
         
-        // ✅ CONTROLAR BOTÓN CORRECTAMENTE
         actualizarBotonSubmit(data.valido, submitBtn);
     })
     .catch(error => {
@@ -127,7 +116,6 @@ function validarCorreo(correo, mensajeContainer, submitBtn) {
     });
 }
 
-// ✅ FUNCIÓN AUXILIAR PARA ACTUALIZAR BOTÓN
 function actualizarBotonSubmit(habilitar, submitBtn) {
     if (submitBtn) {
         submitBtn.disabled = !habilitar;
@@ -142,13 +130,11 @@ function actualizarBotonSubmit(habilitar, submitBtn) {
     }
 }
 
-// ✅ FUNCIÓN AUXILIAR PARA MOSTRAR MENSAJES
 function mostrarMensajeValidacion(container, tipo, mensaje, tiempo) {
     // Limpiar mensajes anteriores de validación
     const mensajesAnteriores = container.querySelectorAll('.correo-validation');
     mensajesAnteriores.forEach(msg => msg.remove());
     
-    // Crear nuevo mensaje
     const mensajeElement = document.createElement('div');
     mensajeElement.className = `correo-validation alert ${tipo === 'success' ? 'alert-success' : 'alert-error'}`;
     
@@ -157,7 +143,6 @@ function mostrarMensajeValidacion(container, tipo, mensaje, tiempo) {
     
     container.appendChild(mensajeElement);
     
-    // Auto-eliminar mensaje después de 5 segundos (opcional)
     setTimeout(() => {
         if (mensajeElement.parentNode) {
             mensajeElement.remove();
@@ -165,7 +150,6 @@ function mostrarMensajeValidacion(container, tipo, mensaje, tiempo) {
     }, 5000);
 }
 
-// ✅ FUNCIÓN PARA VALIDAR FORMULARIO COMPLETO
 function validarFormularioCompleto(correoInput, mensajeContainer, submitBtn) {
     const correo = correoInput.value.trim();
     const nombre = document.querySelector('input[name="nombre_est"]')?.value.trim();
@@ -184,7 +168,6 @@ function validarFormularioCompleto(correoInput, mensajeContainer, submitBtn) {
         return;
     }
     
-    // Si el correo está vacío, habilitar botón temporalmente
     if (correo.length === 0) {
         console.log('📝 Correo vacío, habilitando botón temporalmente');
         actualizarBotonSubmit(true, submitBtn);
@@ -217,15 +200,12 @@ function inicializarValidacionEstudiante() {
     
     let timeoutId;
     
-    // ✅ VALIDAR TODOS LOS CAMPOS INICIALMENTE
     validarFormularioCompleto(correoInput, mensajeContainer, submitBtn);
     
-    // Validar cuando se escribe en el correo
     correoInput.addEventListener('input', function() {
         clearTimeout(timeoutId);
         const correo = this.value.trim();
         
-        // Limpiar mensajes anteriores
         const mensajesAnteriores = mensajeContainer.querySelectorAll('.correo-validation');
         mensajesAnteriores.forEach(msg => msg.remove());
         
@@ -241,7 +221,6 @@ function inicializarValidacionEstudiante() {
         }, 800);
     });
     
-    // ✅ Validar cuando cambian otros campos del formulario
     const otrosCampos = [
         document.querySelector('input[name="nombre_est"]'),
         document.querySelector('input[name="apellido_est"]'),
@@ -263,9 +242,6 @@ function inicializarValidacionEstudiante() {
     });
 }
 
-// === 🔥 NUEVO CÓDIGO PARA VALIDACIÓN DE EXISTENCIA DE CUENTA ===
-
-// ✅ FUNCIÓN PARA VALIDAR EXISTENCIA DE CUENTA (LOGIN)
 function validarExistenciaCuenta(correo, mensajeContainer) {
     if (!correo.includes('@')) {
         mostrarMensajeExistencia(mensajeContainer, 'error', 'Formato de correo inválido', 0);
@@ -296,9 +272,7 @@ function validarExistenciaCuenta(correo, mensajeContainer) {
             data.tiempo
         );
         
-        // Opcional: Dar feedback visual adicional
         if (data.existe) {
-            // Cuenta existe - habilitar campo de contraseña si está deshabilitado
             const passwordInput = document.querySelector('#b-form input[type="password"]');
             if (passwordInput) {
                 passwordInput.placeholder = "Ingresa tu contraseña";
@@ -312,13 +286,11 @@ function validarExistenciaCuenta(correo, mensajeContainer) {
     });
 }
 
-// ✅ FUNCIÓN AUXILIAR PARA MOSTRAR MENSAJES DE EXISTENCIA
 function mostrarMensajeExistencia(container, tipo, mensaje, tiempo) {
     // Limpiar mensajes anteriores de existencia
     const mensajesAnteriores = container.querySelectorAll('.existencia-validation');
     mensajesAnteriores.forEach(msg => msg.remove());
     
-    // Crear nuevo mensaje
     const mensajeElement = document.createElement('div');
     mensajeElement.className = `existencia-validation alert ${tipo === 'success' ? 'alert-success' : 'alert-error'}`;
     
@@ -327,7 +299,6 @@ function mostrarMensajeExistencia(container, tipo, mensaje, tiempo) {
     
     container.appendChild(mensajeElement);
     
-    // Auto-eliminar mensaje después de 5 segundos
     setTimeout(() => {
         if (mensajeElement.parentNode) {
             mensajeElement.remove();
@@ -335,18 +306,15 @@ function mostrarMensajeExistencia(container, tipo, mensaje, tiempo) {
     }, 5000);
 }
 
-// ✅ INICIALIZAR VALIDACIÓN DE LOGIN
 function inicializarValidacionLogin() {
     const correoInput = document.querySelector('#b-form input[type="text"]');
     
-    // Crear contenedor de mensajes si no existe
     let mensajeContainer = document.querySelector('#b-form .form__messages');
     if (!mensajeContainer) {
         const form = document.querySelector('#b-form');
         if (form) {
             const newContainer = document.createElement('div');
             newContainer.className = 'form__messages';
-            // Insertar después del título y antes de los campos
             const title = form.querySelector('.title');
             if (title) {
                 title.parentNode.insertBefore(newContainer, title.nextSibling);
@@ -367,12 +335,10 @@ function inicializarValidacionLogin() {
     
     let timeoutId;
     
-    // Validar cuando se escribe en el correo (login)
     correoInput.addEventListener('input', function() {
         clearTimeout(timeoutId);
         const correo = this.value.trim();
         
-        // Limpiar mensajes anteriores
         const mensajesAnteriores = mensajeContainer.querySelectorAll('.existencia-validation');
         mensajesAnteriores.forEach(msg => msg.remove());
         
@@ -386,21 +352,17 @@ function inicializarValidacionLogin() {
     });
 }
 
-// ✅ MODIFICAR LA INICIALIZACIÓN PRINCIPAL - REEMPLAZAR LA ACTUAL
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 Página cargada, inicializando validaciones...');
     
-    // Inicializar validación de login (siempre)
     setTimeout(inicializarValidacionLogin, 300);
     
-    // Inicializar validación de registro (si está visible)
     const estudianteForm = document.getElementById("estudiante-form");
     if (estudianteForm && estudianteForm.style.display !== "none") {
         console.log('🎯 Formulario estudiante visible, inicializando...');
         setTimeout(inicializarValidacionEstudiante, 300);
     }
     
-    // También inicializar si el usuario cambia al formulario de estudiante después
     const estudianteBtns = document.querySelectorAll(".estudiante-btn");
     estudianteBtns.forEach(btn => {
         btn.addEventListener("click", () => {
@@ -409,7 +371,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-// ✅ FUNCIÓN PARA MOSTRAR PROCESANDO REGISTRO
 function mostrarProcesandoRegistro(form, estado) {
     const submitBtn = form.querySelector('.submit');
     const mensajeProcesando = form.querySelector('.procesando-registro');
@@ -434,7 +395,6 @@ function mostrarProcesandoRegistro(form, estado) {
     }
 }
 
-// ✅ AGREGAR EVENTO A LOS FORMULARIOS DE REGISTRO
 document.addEventListener('DOMContentLoaded', function() {
     const formsRegistro = [
         document.getElementById('estudiante-form'),
@@ -446,7 +406,6 @@ document.addEventListener('DOMContentLoaded', function() {
             form.addEventListener('submit', function() {
                 mostrarProcesandoRegistro(this, true);
                 
-                // Opcional: Timeout de seguridad por si tarda más de 10 segundos
                 setTimeout(() => {
                     mostrarProcesandoRegistro(form, false);
                 }, 10000);
@@ -455,11 +414,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
-
-
-
-// === 🔥 FUNCIONALIDAD MODAL POLÍTICAS ===
 function inicializarModalPoliticas() {
     const modal = document.getElementById('modalPoliticas');
     const enlacesPoliticas = document.querySelectorAll('a[href="#politicas"]');
@@ -494,11 +448,6 @@ function inicializarModalPoliticas() {
     });
 }
 
-
-
-// =================================================================
-// ✅ INICIALIZACIÓN PRINCIPAL ÚNICA (COMBINADA)
-// =================================================================
 document.addEventListener('DOMContentLoaded', function() {
     console.log('📄 Página cargada, inicializando todas las funcionalidades...');
     
@@ -527,12 +476,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
-
-
-
-
-
-// === 🚀 DEMOSTRACIÓN 50 USUARIOS ===
 function demostrarCapacidadUsuarios() {
     console.log('='.repeat(50));
     console.log('✅ SISTEMA OPTIMIZADO PARA 50+ USUARIOS SIMULTÁNEOS');
